@@ -9,7 +9,7 @@ export default function Footer() {
     <div className={styles.container}>
         <Link href="/" className={styles.logoContainer}>
           <Image 
-            src="/logo_orangered2.png" 
+            src="/logo_orangered.png" 
             alt="Logo Codev - Création de site web" 
             width={90} 
             height={90} />
