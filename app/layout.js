@@ -63,7 +63,7 @@ export default function RootLayout({ children }) {
         className={`${roboto.variable} ${bebas.variable} ${chewy.variable} ${spice.variable}`}
       >
         <Header />
-        {children}
+          {children}
         <Footer />
       </body>
     </html>
