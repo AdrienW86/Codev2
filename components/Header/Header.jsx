@@ -24,7 +24,7 @@ export default function Header() {
       <div className={styles.container}>
         <Link href="/" className={styles.logoContainer}>
           <Image 
-            src="/logo_white2.png" 
+            src="/logo_white.png" 
             alt="Logo Codev - Création de site web" 
             width={90} 
             height={90} />
