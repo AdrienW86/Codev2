@@ -25,7 +25,7 @@ export default function Banner() {
         </div>
         <div className={styles.intro2}>
             <h2 className={styles.h3}>  Applications web performantes & évolutives</h2>
-                <p className={styles.p}>
+                <p className={styles.p2}>
                     Applications web robustes, évolutives et sécurisées, développées pour
                     répondre aux besoins métier, automatiser les tâches et accélérer la 
                     transformation digitale. 
@@ -40,7 +40,7 @@ export default function Banner() {
         </div>
         <div className={styles.intro4}>
             <h2 className={styles.h3}>  Publicité digitale pour plus de visibilité</h2>
-                <p className={styles.p}>
+                <p className={styles.p2}>
                     Boostez votre activité grâce à des campagnes de publicité en ligne efficaces, ciblées
                     et optimisées pour atteindre vos clients au bon moment, sur les bons canaux.
                 </p>

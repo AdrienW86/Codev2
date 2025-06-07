@@ -88,13 +88,18 @@
     color: var(--third);
 }
 
-.p {
+.p, .p2 {
     color: var(--third);
     padding: 10px;
     line-height: 1.5rem;
     text-align: center;
+    font-weight: bold;
     font-size: 1.2rem;
     font-family: var(--txt);   
+}
+
+.p2 {
+    color: var(--primary)
 }
 
 .bannervideo {
@@ -138,8 +143,7 @@
 }
 
 @media (max-width: 600px) {
-  .p {
-    
+  .p, .p2 {  
     font-size: 0.9rem;
       
 }
