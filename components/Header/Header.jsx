@@ -54,6 +54,9 @@ export default function Header() {
             <li className={styles.li}><Link href="/web" onClick={toggleMenu}>Sites web</Link></li>
             <li className={styles.li}><Link href="/appli" onClick={toggleMenu}>Applis web</Link></li>
             <li className={styles.li}><Link href="/mobiles" onClick={toggleMenu}>Applis mobiles</Link></li>
+            <li className={styles.li}><Link href="/mobiles" onClick={toggleMenu}>Réseaux sociaux</Link></li>
+            <li className={styles.li}><Link href="/appli" onClick={toggleMenu}>Campagnes publicitaires</Link></li>
+                      <li className={styles.li}><Link href="/appli" onClick={toggleMenu}>Qui sommes-nous ?</Link></li>
             
           </ul>
         </nav>
