@@ -99,15 +99,15 @@ export default function HomeComponent() {
             className={styles.video}
           />
           <div className={styles.overlay}></div>
-         <div className={styles.heroContent}>
-  <h1>Boostez votre présence en ligne</h1>
-  <p className={styles.p}>
-    Création de sites web sur-mesure, suivi mensuel et solutions marketing digitales adaptées : SEO, réseaux sociaux et campagnes publicitaires.
-  </p>
-   <p className={styles.p}>
-    Nous aidons les entreprises à attirer de nouveaux clients et développer leur chiffre d’affaires grâce à une présence optimisée sur le web.
-  </p>
-  <a href="#services" className={styles.button}>Découvrir nos offres</a>
+        <div className={styles.heroContent}>
+            <h1 className={styles.h1}>Boostez votre présence en ligne</h1>
+            <p className={styles.p}>
+                Création de sites web sur-mesure, suivi mensuel et solutions marketing digitales adaptées : SEO, réseaux sociaux et campagnes publicitaires.
+            </p>
+            <p className={styles.p}>
+                Nous aidons les entreprises à attirer de nouveaux clients et développer leur chiffre d’affaires grâce à une présence optimisée sur le web.
+            </p>
+            <a href="#services" className={styles.button}>Découvrir nos offres</a>
 </div>
 
         </div>
