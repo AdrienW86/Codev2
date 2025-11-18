@@ -1,0 +1,181 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.title {
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 80px;
+  color: #ffffff;
+}
+
+/* Sections avec dégradé différencié */
+.section {
+  margin-bottom: 100px;
+  padding: 60px 20px;
+  border-radius: 20px;
+  color: #222;
+}
+
+.section.entretien {
+  background: linear-gradient(135deg, #fdfdfd, #f0f8ff);
+}
+
+.section.creation {
+  background: linear-gradient(135deg, #d0e8ff, #f0f8ff);
+}
+
+.sectionTitle {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #111;
+}
+
+.sectionDesc {
+  text-align: center;
+  margin-bottom: 50px;
+  color: #555;
+  font-size: 1.1rem;
+}
+
+/* Zigzag row */
+.cardRow {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 40px;
+}
+
+.cardRow.right {
+  justify-content: flex-end;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 30px;
+  justify-content: center; 
+}
+
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  padding: 30px 25px;
+  width: 320px;
+  background-color: #fff;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  position: relative;
+  transition: transform 0.35s, box-shadow 0.35s;
+  border: 2px solid transparent;
+}
+
+.card .button {
+  margin-top: auto; 
+}
+
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+/* Badge avec dégradé */
+.badge {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background: linear-gradient(135deg, #ff9800, #ffb74d);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+  transition: transform 0.3s;
+}
+
+.card:hover .badge {
+  transform: scale(1.1);
+}
+
+/* Titles & Prices */
+.card h3 {
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 18px;
+  color: #333;
+}
+
+/* List with icons */
+.list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 25px;
+}
+
+.list li {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: #444;
+}
+
+.icon {
+  color: #4caf50;
+  margin-right: 10px;
+}
+
+/* Buttons avec micro-animation */
+.button {
+  display: block;
+  text-align: center;
+  padding: 12px 0;
+  font-weight: bold;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s;
+  font-size: 1rem;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  color: white;
+  transform: translateY(0);
+}
+
+.button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+/* Colors by type */
+.green { border-color: #4caf50; }
+.green .button { background-color: #4caf50; }
+.green .button:hover { background-color: #45a049; }
+
+.orange { border-color: #ff9800; }
+.orange .button { background-color: #ff9800; }
+.orange .button:hover { background-color: #e68900; }
+
+.red { border-color: #f44336; }
+.red .button { background-color: #f44336; }
+.red .button:hover { background-color: #d7372a; }
+
+.blue { border-color: #2196f3; }
+.blue .button { background-color: #2196f3; }
+.blue .button:hover { background-color: #1976d2; }
+
+@media (max-width: 960px) {
+  .cardRow, .cardRow.right {
+    justify-content: center;
+  }
+}

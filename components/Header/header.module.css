@@ -5,7 +5,7 @@
     display: flex;
     flex-direction: column;
     border-bottom: 1px solid black;
-    background-color: var(--primary);
+    background-color: white;
 }
 
 .container {
@@ -50,43 +50,44 @@
 .line {
     width: 100%;
     height: 2px;
-    background-color: var(--third);
+    background-color: var(--primary);
     transition: transform 0.3s, opacity 0.3s;
 }
     
 .line:hover{
-    background-color: var(--white);
+    cursor: pointer;
+    background-color: var(--primary);
 }
       
 .open .line:nth-child(1) {
     transform: rotate(45deg) translate(7px, 7px);
-    background-color: var(--third);
+    background-color: var(--primary);
 }
     
 .open .line:nth-child(2) {
     opacity: 0;
-    background-color: var(--third);
+    background-color: var(--primary);
 }
       
 .open .line:nth-child(3) {
     transform: rotate(-45deg) translate(5px, -5px);
-    background-color: var(--third);
+    background-color: var(--primary);
 }
     
 .open .line, .close .line {
-    background-color: var(--third);
+    background-color: var(--primary);
 }
     
 .open:hover .line, .close:hover .line {
     cursor: pointer;
-    background-color: var(--second);
+    background-color: var(--primary);
 }
 
 .menu {
     position: absolute;
     z-index: 20;
     top: 100px;
-    height: 400px;
+    height: 250px;
     width: 100%;
     list-style: none;
     background-color: #2c3340;

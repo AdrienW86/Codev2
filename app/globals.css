@@ -12,16 +12,19 @@
   }
 }
 
+html {
+  background: white;
+}
+
 html,
 body {
   margin: auto;
-  max-width: 800px;
+  max-width: 1800px;
   overflow-x: hidden;
-  
 }
 
 body {
-
+ background: var(--primary);
 }
 
 * {

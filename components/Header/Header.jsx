@@ -24,7 +24,7 @@ export default function Header() {
       <div className={styles.container}>
         <Link href="/" className={styles.logoContainer}>
           <Image 
-            src="/logo_white.png" 
+            src="/logo.png" 
             alt="Logo Codev - Création de site web" 
             width={90} 
             height={90} />
@@ -52,11 +52,8 @@ export default function Header() {
             <li className={styles.li}><Link href="/" onClick={toggleMenu}>Accueil</Link></li>
             <li className={styles.li}><Link href="/contact" onClick={toggleMenu}>Contact</Link></li>
             <li className={styles.li}><Link href="/web" onClick={toggleMenu}>Sites web</Link></li>
-            <li className={styles.li}><Link href="/appli" onClick={toggleMenu}>Applis web</Link></li>
-            <li className={styles.li}><Link href="/mobiles" onClick={toggleMenu}>Applis mobiles</Link></li>
-            <li className={styles.li}><Link href="/mobiles" onClick={toggleMenu}>Réseaux sociaux</Link></li>
-            <li className={styles.li}><Link href="/appli" onClick={toggleMenu}>Campagnes publicitaires</Link></li>
-                      <li className={styles.li}><Link href="/appli" onClick={toggleMenu}>Qui sommes-nous ?</Link></li>
+            <li className={styles.li}><Link href="/packs" onClick={toggleMenu}>Campagnes publicitaires</Link></li>
+            <li className={styles.li}><Link href="/appli" onClick={toggleMenu}>Qui sommes-nous ?</Link></li>
             
           </ul>
         </nav>

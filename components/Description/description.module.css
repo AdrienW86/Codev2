@@ -1,0 +1,146 @@
+.container {
+    width: 100%;
+    background-color: rgb(201, 201, 201);;
+}
+ 
+.banner {
+    position: relative;
+    width: 100%;
+    transition: .4s ease-in-out;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    max-height: 100vh;
+    max-width: 1400px;
+    margin: auto;
+}
+
+.cardContainer {
+    padding-top: 30px 
+}
+
+.cardContainer2 {
+    position: relative;
+    bottom: 40px;
+    padding-bottom: 30px 
+}
+
+.background {
+    filter: brightness(30%) grayscale(0%);
+}
+
+.background2 {
+    filter: brightness(90%) grayscale(0%);
+}
+
+.intro, .intro2, .intro3, .intro4{
+    position: relative;
+    width: 70%;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.intro, .intro3 {
+    margin-left: 5%;
+    background-color: var(--primary);
+}
+
+.intro2, .intro4 {
+    margin-left: 25%;
+    background-color: var(--second);
+}
+
+.intro {
+    z-index: 8;
+    top: 30px;
+}
+
+.intro2 {
+    z-index: 9;
+    top: 10px;
+}
+
+.intro3 {
+    bottom: 10px;
+    z-index: 10;
+}
+
+.intro4 {
+    bottom: 25px;
+    z-index: 12;
+}
+
+.intro:hover, .intro2:hover, .intro3:hover, .intro4:hover {
+    opacity: 0.9;
+}
+
+.h2, .h3, .h4, .h5 {
+    color: var(--second);
+    text-align: center;
+    letter-spacing: 0.1em;
+    font-family: var(--fun);
+}
+
+.h3 {
+    color: var(--third);
+}
+
+.p, .p2 {
+    color: var(--third);
+    padding: 10px;
+    line-height: 1.5rem;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    font-family: var(--txt);   
+}
+
+.p2 {
+    color: var(--primary)
+}
+
+.bannervideo {
+    position: relative;
+    width: 100%;
+    transition: .4s ease-in-out;
+    aspect-ratio: 3/3;
+    max-height: 80vh;
+    max-width: 1000px;
+    z-index: 1000; 
+}
+
+.backgroundvideo {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    z-index: 21; 
+    z-index: 1000;
+    background-color: white;;
+  }
+
+  .content {
+  position: relative;
+  z-index: 1;
+  color: white; 
+  padding: 20px;
+  font-family: var(--bebas);
+  background-color: var(--primary);
+}
+
+.h4 {
+    font-size: 1.5rem;
+    font-family: var(--bebas);
+}
+
+.h5 {
+    font-size: 1.5rem;
+    font-family: var(--bebas);
+}
+
+@media (max-width: 600px) {
+  .p, .p2 {  
+    font-size: 0.9rem;
+      
+    }
+}

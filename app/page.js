@@ -1,4 +1,9 @@
 import Banner from "@/components/Banner/Banner";
+import Intro from "@/components/Intro/Intro";
+import Description from "@/components/Description/Description";
+import Instagram from "@/components/Instragram/Inbstagram";
+import HomeComponent from "@/components/HomeComponent/HomeComponent";
+import FacebookWidget from "@/components/Facebook/Facebook";
 import styles from "./page.module.css";
 
 export const metadata = {
@@ -8,8 +13,16 @@ export const metadata = {
 
 export default function Home() {
   return (
-   <main>
-    <Banner />
-   </main>
+  <>
+    <HomeComponent /> 
+    {/* <Banner />
+    <Intro />
+    <Description />
+    <Instagram /> */}
+  
+
+ 
+
+   </>
   );
 }

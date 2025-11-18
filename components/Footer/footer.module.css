@@ -1,3 +1,50 @@
 .footer {
+    display: flex;
+    padding: 8px;
+    flex-direction: column;
+    font-family: var(--fun);
     background-color: var(--primary);
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid white;
+}
+
+.logoContainer {
+    width: 30%;
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 70%;
+    color: var(--second);
+    font-size: 1.5rem;
+}
+
+.ul {
+    margin: 10px 0;
+    border-bottom: 1px solid white;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    list-style: none;
+}
+
+.li {
+    text-decoration: underline;
+    margin: 10px;
+    transition: var(--transition);
+}
+
+.li:hover {
+    color: var(--second)
+}
+
+.p {
+    margin: 20px 0;
+    text-align: center;
 }
