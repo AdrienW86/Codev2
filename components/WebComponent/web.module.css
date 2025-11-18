@@ -178,4 +178,13 @@
   .cardRow, .cardRow.right {
     justify-content: center;
   }
+  .section.entretien {
+  background: none;
+  }
+  .section.creation {
+    background: none;
+  }
+  .sectionTitle {
+    color: #ffffff;
+  }
 }
