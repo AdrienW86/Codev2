@@ -81,6 +81,7 @@
 /* Responsive */
 @media (max-width: 600px) {
   .heroContent h1 {
+    margin-top: none;
     font-size: 1.6rem;
   }
   .heroContent p {
