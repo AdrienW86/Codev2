@@ -10,6 +10,8 @@
 
 .h1 {
   margin-top: 0px;
+  font-weight: bold;
+  color: var(--primary)
 }
 
 /* Hero */
@@ -276,6 +278,6 @@
     font-size: 1.4rem;
   }
   .heroContent p {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 }
