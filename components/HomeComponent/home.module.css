@@ -273,7 +273,7 @@
 /* Mobile */
 @media (max-width: 600px) {
   .heroContent h1 {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
   .heroContent p {
     font-size: 1.1rem;
