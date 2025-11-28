@@ -1,8 +1,11 @@
 :root {
-  --primary: rgb(44, 51, 64);
+  --primary: rgba(31, 31, 31, 0.712);
   --second: orangered;
   --third: rgb(255, 255, 255);
   --transition: .4s ease-in-out;
+   --inter: 'Inter', sans-serif;
+
+    --primary2: rgb(44, 51, 64);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -13,13 +16,13 @@
 }
 
 html {
-  background: white;
+  background: rgb(0, 0, 0);
 }
 
 html,
 body {
   margin: auto;
-  max-width: 1800px;
+  
   overflow-x: hidden;
 }
 

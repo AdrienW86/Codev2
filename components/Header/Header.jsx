@@ -24,13 +24,13 @@ export default function Header() {
       <div className={styles.container}>
         <Link href="/" className={styles.logoContainer}>
           <Image 
-            src="/logo.png" 
+            src="/logo_white.png" 
             alt="Logo Codev - Création de site web" 
             width={90} 
             height={90} />
         </Link>
 
-        <span role="presentation" className={styles.title}>Solutions Numériques</span>
+      
 
         <button 
           className={`${styles.hamburger} ${isMenuOpen ? styles.open : ''}`} 

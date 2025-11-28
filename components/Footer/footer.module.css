@@ -3,7 +3,7 @@
     padding: 8px;
     flex-direction: column;
     font-family: var(--fun);
-    background-color: var(--primary);
+    background-color: black;
 }
 
 .container {

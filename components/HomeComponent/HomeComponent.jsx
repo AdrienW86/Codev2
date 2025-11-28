@@ -1,6 +1,7 @@
 'use client';
 
 import styles from './home.module.css';
+import Image from 'next/image';
 import { FaCheck } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -90,25 +91,27 @@ export default function HomeComponent() {
       <div className={styles.box}>
         <section className={styles.heroVideo}>
         <div className={styles.videoContainer}>
-          <video
-            src="/banner2.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className={styles.video}
-          />
+          <Image 
+          src="/test.png"
+          alt="Hero Image"
+          fill
+          style={{ objectFit: 'cover' }} 
+          priority
+          className={styles.img}
+        />
+          
           <div className={styles.overlay}></div>
         <div className={styles.heroContent}>
-            <h1 className={styles.h1}>Boostez votre présence en ligne</h1>
+            <h1 className={styles.h1}>Transformez vos <span className={styles.span}> visiteurs </span> en <span className={styles.span}> clients </span> </h1>
+            
             <p className={styles.p}>
-                Création de sites web sur-mesure, suivi mensuel et solutions marketing digitales adaptées : SEO, réseaux sociaux et campagnes publicitaires.
+                Attirez de nouveaux clients
             </p>
-            <p className={styles.p}>
-                Nous aidons les entreprises à attirer de nouveaux clients et développer leur chiffre d’affaires grâce à une présence optimisée sur le web.
-            </p>
-            <a href="#services" className={styles.button}>Découvrir nos offres</a>
-</div>
+           
+               <a href="#services" className={styles.button}>Prendre rendez-vous</a>
+            
+           
+      </div>
 
         </div>
       </section>

@@ -5,6 +5,8 @@ import { Roboto } from "next/font/google";
 import { Bebas_Neue } from "next/font/google";
 import { Chewy } from "next/font/google";
 import { Bungee_Spice } from "next/font/google";
+import { Inter } from "next/font/google";
+
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import "./globals.css";
@@ -33,6 +35,13 @@ const bebas = Bebas_Neue({
   variable: "--bebas",
 });
 
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--inter",
+});
+
+
 export default function RootLayout({ children }) {
   useEffect(() => {
     const favicon = document.querySelector("link[rel~='icon']");
@@ -60,7 +69,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr">
       <body
-        className={`${roboto.variable} ${bebas.variable} ${chewy.variable} ${spice.variable}`}
+        className={`${roboto.variable} ${bebas.variable} ${chewy.variable} ${spice.variable} ${roboto.variable} ${inter.variable}`}
       >
         <Header />
           {children}
