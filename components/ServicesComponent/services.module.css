@@ -1,21 +1,11 @@
 .container {
   background-color: #000000;
-  color: black;
+  color: rgb(255, 255, 255);
   font-family: var(--inter);
   padding-bottom: 20px;
 }
 
-.box {
- background-color: black;
-}
 
-.h1 {
-  font-size: 36px;
-  margin-top: 20px;
-  font-weight: bold;
-  font-family: var(--inter);
-  color: white
-}
 
 .span {
   color: orangered
@@ -30,7 +20,7 @@
   max-height: 400px;
   aspect-ratio: 24 / 9;
   margin: 0 auto;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 .img {
@@ -45,6 +35,7 @@
   left: 0;
   width: 100%;
   height: 100%;
+  background-color: #000000;
 }
 
 .overlay {
@@ -55,6 +46,7 @@
 .video {
   width: 100%;
   height: 100%;
+  
   object-fit: cover;
   display: block;
 }
@@ -68,10 +60,7 @@
   padding: 20px;
 }
 
-
-
 .button {
- 
   padding: 10px 24px;
   font-weight: bold;
   border-radius: 12px;
@@ -108,15 +97,16 @@
 /* Cards */
 .cards {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 24px;
   justify-content: center;
 }
 
 .card {
   background-color: #fff;
-  flex: 1 1 280px;
-  max-width: 320px;
+  margin: auto;
+  width: 100%;
+  max-width: 600px;
   border-radius: 16px;
   padding: 24px 16px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.1);
@@ -126,6 +116,29 @@
   justify-content: space-between;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ================================ */
+/* Overlay sur card avec background */
+/* ================================ */
+
+.card {
+  position: relative;
+  overflow: hidden; /* pour empêcher l’overlay de dépasser */
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65); /* voile noir → ajuste l’intensité ici */
+  z-index: 1;
+}
+
+/* Tous les éléments de la card passent AU-DESSUS de l’overlay */
+.card > * {
+  position: relative;
+  z-index: 2;
 }
 
 .card:hover {
@@ -145,15 +158,16 @@
   font-weight: bold;
 }
 
-.card h3 {
+.h3 {
   margin-bottom: 12px;
   font-size: 1.3rem;
+  color: orangered
 }
 
 .price {
   font-weight: bold;
-  font-size: 1.1rem;
-  margin-bottom: 16px;
+  font-size: 1rem;
+  margin: 16px 0;
 }
 
 .list {

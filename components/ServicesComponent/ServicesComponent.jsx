@@ -1,7 +1,6 @@
 'use client';
 
-import styles from './home.module.css';
-import Image from 'next/image';
+import styles from './services.module.css';
 import { FaCheck } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -12,14 +11,18 @@ function Card({ plan, index }) {
   return (
     <motion.div
       className={styles.card}
+      style={{
+        backgroundImage: `url(${plan.background})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
       initial={{ opacity: 0, x: slideDirection, rotateY: rotateDirection }}
       whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
       whileHover={{ scale: 1.05 }}
     >
-      {plan.popular && <div className={styles.badge}>Le plus populaire</div>}
-      <h3>{plan.name}</h3>
+      <h3 className={styles.h3}>{plan.name}</h3>
       <p className={styles.price}>{plan.price}</p>
       <ul className={styles.list}>
         {plan.features.map((f, i) => (
@@ -35,7 +38,7 @@ function Card({ plan, index }) {
         ))}
       </ul>
       <a href={plan.link} className={styles.button}>
-        {plan.name.includes('Suivi') || plan.name.includes('Pro') ? 'S’abonner' : 'Commander'}
+        {plan.name.includes('Suivi') || plan.name.includes('Pro') ? 'S’abonner' : 'En savoir plus'}
       </a>
     </motion.div>
   );
@@ -44,38 +47,41 @@ function Card({ plan, index }) {
 export default function HomeComponent() {
   const services = [
     {
-      name: 'Suivi & Entretien',
-      price: 'À partir de 49 €/ mois',
+      name: 'Référencement',
+      price: 'Diffuser vos produits ou services à un large publique et gagner de nouveaux clients',
       features: [
-        'Mises à jour et sécurité du site',
-        'Assistance rapide',
-        'Optimisation SEO mensuelle',
+        'Référencement Naturel (SEO)',
+        'Référencement Payant (SEA)',
+        'Annonces Local Services'
       ],
       color: 'green',
       link: 'TON_LIEN_STRIPE_ESSENTIEL',
       popular: true,
+      background: "/banner1.png",
     },
     {
       name: 'Création de site web',
-      price: 'À partir de 799 €',
+      price: "Convertissez vos prospects en valorisant vos services et produits",
       features: [
-        'Site vitrine ou boutique',
-        'Design responsive et moderne',
-        'Optimisation SEO initiale',
+        'Site vitrine',
+        'Site e-commerce',
+        'Applications web',        
       ],
       color: 'blue',
       link: '#',
+      background: "/development.png",
     },
     {
-      name: 'Marketing & Publicité',
-      price: 'À partir de 99 € / mois',
+      name: 'Campagnes publicitaires',
+      price: "Définissez votre stratégie de vente et faites décoller votre chiffre d'affaire",
       features: [
-        'Google My Business',
-        'Réseaux sociaux et posts',
-        'Campagnes Google Ads / Local Service',
+        'Google Ads',
+        'Local Services',
+        'Réseaux sociaux',
       ],
       color: 'orange',
       link: '#',
+      background: "/banner4.png",
     },
   ];
 
@@ -87,7 +93,8 @@ export default function HomeComponent() {
 
   return (
     <div className={styles.container}>
-      {/* Services */}
+      
+      
       <section id="services" className={styles.section}>
         <h2 className={styles.sectionTitle}>Nos services principaux</h2>
         <p className={styles.sectionDesc}>Des solutions complètes adaptées à votre activité.</p>

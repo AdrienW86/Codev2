@@ -3,9 +3,8 @@
   --second: orangered;
   --third: rgb(255, 255, 255);
   --transition: .4s ease-in-out;
-   --inter: 'Inter', sans-serif;
-
-    --primary2: rgb(44, 51, 64);
+  --inter: 'Inter', sans-serif;
+  --primary2: rgb(44, 51, 64);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -21,13 +20,9 @@ html {
 
 html,
 body {
-  margin: auto;
-  
+  margin: auto; 
   overflow-x: hidden;
-}
-
-body {
- background: var(--primary);
+  background: black;
 }
 
 * {
