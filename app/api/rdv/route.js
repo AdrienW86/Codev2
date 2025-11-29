@@ -4,16 +4,22 @@ import Rdv from "@/models/calendar";
 import nodemailer from "nodemailer";
 
 export async function GET(req) {
-  await dbConnect();
-  const { searchParams } = new URL(req.url);
-  const future = searchParams.get("future");
+  try {
+    await dbConnect();
+    const { searchParams } = new URL(req.url, `http://${req.headers.host}`);
+    const future = searchParams.get("future");
 
-  let query = {};
-  if (future === "true") query.date = { $gte: new Date() };
+    let query = {};
+    if (future === "true") query.date = { $gte: new Date() };
 
-  const rdvs = await Rdv.find(query).sort({ date: 1 });
-  return new Response(JSON.stringify(rdvs), { status: 200 });
+    const rdvs = await Rdv.find(query).sort({ date: 1 });
+    return new Response(JSON.stringify(rdvs), { status: 200 });
+  } catch (err) {
+    console.error("GET /api/rdv error:", err);
+    return new Response(JSON.stringify({ message: "Erreur serveur" }), { status: 500 });
+  }
 }
+
 
 export async function POST(req) {
   await dbConnect();
