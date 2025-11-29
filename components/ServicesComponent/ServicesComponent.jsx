@@ -55,8 +55,7 @@ export default function HomeComponent() {
         'Annonces Local Services'
       ],
       color: 'green',
-      link: 'TON_LIEN_STRIPE_ESSENTIEL',
-      popular: true,
+      link: '/referencement',
       background: "/banner1.png",
     },
     {

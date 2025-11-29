@@ -6,7 +6,7 @@
     z-index: 20000;
     flex-direction: column;
     border-bottom: 1px solid rgba(255, 255, 255, 0.39);
-    background-color: black;
+    background-color: #0b0b0b;
 }
 
 .container {

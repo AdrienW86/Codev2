@@ -21,11 +21,7 @@
 }
 
 .section.entretien {
-  background: linear-gradient(135deg, #fdfdfd, #f0f8ff);
-}
-
-.section.creation {
-  background: #0b0b0b;
+ background: #0b0b0b;
 }
 
 .sectionTitle {
@@ -177,3 +173,15 @@
     color: #ffffff;
   }
 }
+
+.green { border-color: #4caf50; }
+.green .button { background-color: #4caf50; }
+.green .button:hover { background-color: #45a049; }
+
+.orange { border-color: #ff9800; }
+.orange .button { background-color: #ff9800; }
+.orange .button:hover { background-color: #e68900; }
+
+.red { border-color: #f44336; }
+.red .button { background-color: #f44336; }
+.red .button:hover { background-color: #d7372a; }

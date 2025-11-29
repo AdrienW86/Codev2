@@ -1,6 +1,6 @@
 'use client';
 
-import styles from './web.module.css';
+import styles from './website.module.css';
 import { FaCheck } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -65,23 +65,16 @@ export default function WebComponent() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Nos offres de services</h1>
 
       <section id="entretien" className={`${styles.section} ${styles.entretien}`}>
-        <h2 className={styles.sectionTitle}>Entretien et suivi de site web</h2>
-        <p className={styles.sectionDesc}>Gardez votre site performant, à jour et sécurisé grâce à nos formules d’abonnement simples et efficaces.</p>
+        <h2 className={styles.sectionTitle}> Tarifs</h2>
+        <p className={styles.sectionDesc}>Générez de nopuvelles ventes grâce à nos formules d’abonnement simples et efficaces.</p>
         <div className={styles.cards}>
           {entretienPlans.map((plan, i) => <Card key={plan.name} plan={plan} index={i} />)}
         </div>
       </section>
 
-      <section id="creation" className={`${styles.section} ${styles.creation}`}>
-        <h2 className={styles.sectionTitle}>Création de site web</h2>
-        <p className={styles.sectionDesc}>Nous créons des sites web sur-mesure, modernes et optimisés pour vos besoins et votre activité.</p>
-        <div className={styles.cards}>
-          {creationPlans.map((plan, i) => <Card key={plan.name} plan={plan} index={i} />)}
-        </div>
-      </section>
+      
     </div>
   );
 }
