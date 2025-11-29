@@ -53,7 +53,7 @@ export default function Header() {
             <li className={styles.li}><Link href="/contact" onClick={toggleMenu}>Contact</Link></li>
             <li className={styles.li}><Link href="/referencement" onClick={toggleMenu}>Référencement</Link></li>
             <li className={styles.li}><Link href="/sites" onClick={toggleMenu}>Création de sites web</Link></li>
-            <li className={styles.li}><Link href="/packs" onClick={toggleMenu}>Campagnes publicitaires</Link></li>
+            <li className={styles.li}><Link href="/ads" onClick={toggleMenu}>Campagnes publicitaires</Link></li>
             <li className={styles.li}><Link href="/appli" onClick={toggleMenu}>Qui sommes-nous ?</Link></li>            
           </ul>
         </nav>

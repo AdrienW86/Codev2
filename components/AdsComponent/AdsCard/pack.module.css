@@ -7,50 +7,55 @@
 
 .title {
   text-align: center;
-  font-size: 3rem;
+  font-size: 2rem;
   margin-bottom: 80px;
   color: #ffffff;
 }
 
-/* Sections */
+/* Sections avec dégradé différencié */
 .section {
-  margin-bottom: 100px;
-  padding: 60px 20px;
+  margin-bottom: 10px;
+  padding: 20px;
   border-radius: 20px;
   color: #222;
-  background: linear-gradient(135deg, #fff6e8, #ffffff);
+}
+
+.section.entretien {
+ background: #0b0b0b;
 }
 
 .sectionTitle {
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   margin-bottom: 15px;
   text-align: center;
-  color: #111;
+  color: #ffffff;
 }
 
 .sectionDesc {
   text-align: center;
   margin-bottom: 50px;
-  color: #555;
+  color: #acacac;
   font-size: 1.1rem;
 }
 
-/* Cards Grid */
-.cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: center;
-}
-
+/* Zigzag row */
 .cardRow {
   display: flex;
-  width: 100%;
+  justify-content: flex-start;
+  margin-bottom: 40px;
 }
 
 .cardRow.right {
   justify-content: flex-end;
 }
+
+.cards {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 30px;
+  justify-content: center; 
+}
+
 
 .card {
   display: flex;
@@ -65,12 +70,16 @@
   border: 2px solid transparent;
 }
 
+.card .button {
+  margin-top: auto; 
+}
+
 .card:hover {
-  transform: translateY(-10px) scale(1.05);
+  transform: translateY(-10px);
   box-shadow: 0 20px 40px rgba(0,0,0,0.25);
 }
 
-/* Badge */
+/* Badge avec dégradé */
 .badge {
   position: absolute;
   top: -12px;
@@ -103,7 +112,7 @@
   color: #333;
 }
 
-/* List */
+/* List with icons */
 .list {
   list-style: none;
   padding-left: 0;
@@ -123,7 +132,7 @@
   margin-right: 10px;
 }
 
-/* Button */
+/* Buttons avec micro-animation */
 .button {
   display: block;
   text-align: center;
@@ -135,10 +144,36 @@
   font-size: 1rem;
   box-shadow: 0 5px 15px rgba(0,0,0,0.15);
   color: white;
-  margin-top: auto; /* pousse le bouton en bas */
+  transform: translateY(0);
 }
 
-/* Colors */
+.button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+}
+
+/* Colors by type */
+
+
+.blue { border-color: orangered; }
+.blue .button { background-color: orangered; }
+.blue .button:hover { background-color: orangered; }
+
+@media (max-width: 960px) {
+  .cardRow, .cardRow.right {
+    justify-content: center;
+  }
+  .section.entretien {
+  background: none;
+  }
+  .section.creation {
+    background: none;
+  }
+  .sectionTitle {
+    color: #ffffff;
+  }
+}
+
 .green { border-color: #4caf50; }
 .green .button { background-color: #4caf50; }
 .green .button:hover { background-color: #45a049; }
@@ -150,13 +185,3 @@
 .red { border-color: #f44336; }
 .red .button { background-color: #f44336; }
 .red .button:hover { background-color: #d7372a; }
-
-.blue { border-color: #2196f3; }
-.blue .button { background-color: #2196f3; }
-.blue .button:hover { background-color: #1976d2; }
-
-@media (max-width: 960px) {
-  .cardRow, .cardRow.right {
-    justify-content: center;
-  }
-}

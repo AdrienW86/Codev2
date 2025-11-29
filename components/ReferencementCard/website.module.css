@@ -12,7 +12,6 @@
   color: #ffffff;
 }
 
-/* Sections avec dégradé différencié */
 .section {
   margin-bottom: 10px;
   padding: 20px;
@@ -38,7 +37,6 @@
   font-size: 1.1rem;
 }
 
-/* Zigzag row */
 .cardRow {
   display: flex;
   justify-content: flex-start;
@@ -55,7 +53,6 @@
   gap: 30px;
   justify-content: center; 
 }
-
 
 .card {
   display: flex;
@@ -79,7 +76,6 @@
   box-shadow: 0 20px 40px rgba(0,0,0,0.25);
 }
 
-/* Badge avec dégradé */
 .badge {
   position: absolute;
   top: -12px;
@@ -98,7 +94,6 @@
   transform: scale(1.1);
 }
 
-/* Titles & Prices */
 .card h3 {
   font-size: 1.6rem;
   margin-bottom: 12px;
@@ -112,7 +107,6 @@
   color: #333;
 }
 
-/* List with icons */
 .list {
   list-style: none;
   padding-left: 0;
@@ -132,7 +126,6 @@
   margin-right: 10px;
 }
 
-/* Buttons avec micro-animation */
 .button {
   display: block;
   text-align: center;
@@ -151,9 +144,6 @@
   transform: translateY(-3px);
   box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
-
-/* Colors by type */
-
 
 .blue { border-color: orangered; }
 .blue .button { background-color: orangered; }

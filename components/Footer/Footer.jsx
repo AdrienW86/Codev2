@@ -8,19 +8,6 @@ export default function Footer() {
 
   return (
    <footer  className={styles.footer}>
-    <div className={styles.container}>
-        <Link href="/" className={styles.logoContainer}>
-          <Image 
-            src="/logo_white.png" 
-            alt="Logo Codev - Création de site web" 
-            width={90} 
-            height={90} />
-        </Link>
-
-        <span role="presentation" className={styles.title}>Solutions Numériques</span>
-
-       
-      </div>
         <nav 
             className={styles.menu}
             aria-label="Menu principal"
@@ -28,14 +15,14 @@ export default function Footer() {
           <ul className={styles.ul}>
             <li className={styles.li}><Link href="/">Accueil</Link></li>
             <li className={styles.li}><Link href="/contact">Contact</Link></li>
-            <li className={styles.li}><Link href="/web">Sites web</Link></li>
+            <li className={styles.li}><Link href="/sites">Sites web</Link></li>
             
-            <li className={styles.li}><Link href="/mobiles">Réseaux sociaux</Link></li>
-            <li className={styles.li}><Link href="/appli">Campagnes publicitaires</Link></li>
+            <li className={styles.li}><Link href="/mobiles">Référencement</Link></li>
+            <li className={styles.li}><Link href="/ads">Campagnes publicitaires</Link></li>
             <li className={styles.li}><Link href="/appli">Qui sommes-nous ?</Link></li>
             
           </ul>
-           <p className={styles.p}>Copyright © CODEV - {year}. Tous droits réservés.</p>
+           <p className={styles.p}>Copyright © CODEV 2022 - {year}. Tous droits réservés.</p>
         </nav>
    </footer>
   )

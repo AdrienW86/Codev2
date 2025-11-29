@@ -1,10 +1,10 @@
 import React from 'react'
-import PackComponent from '@/components/PackComponent/PackComponent'
+import AdsComponent from '@/components/AdsComponent/AdsComponent'
 
 export default function page() {
   return (
     <div>
-        <PackComponent />
+      <AdsComponent />    
     </div>
   )
 }
