@@ -59,6 +59,10 @@ export default function ContactForm() {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-xl shadow-md">
+      <p className={styles.p}> 
+        Une question ? N'hésitez pas à nous écrire pour toute dermande. 
+        Notre équipe se fera un plaisir de vous répondre dans les plus brefs délais.
+      </p>
       <h2 className={styles.title}>Contactez-nous</h2>
       <form onSubmit={handleSubmit} className={styles.form}>
         <input

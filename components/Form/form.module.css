@@ -2,7 +2,15 @@
     width: 100%;
     color: orangered;
     text-align: center;
-    margin-top: 60px;
+    margin: 60px 0;
+}
+
+.p {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: auto;
+    text-align: center;
+    margin-top: 150px;
 }
 
 .form {
@@ -16,6 +24,8 @@
     color: white;
     padding: 10px;
     font-family: var(--inter);
+    border: 1px solid rgb(122, 122, 122);
+    background-color: rgb(27, 27, 27);
 }
 
 .input::placeholder {
@@ -30,5 +40,11 @@
     padding: 10px;
     font-size: 1.1rem;
     border-radius: 10px;
+    transition: .4s ease-in-out;
     background-color: orangered;
+}
+
+.submit:hover {
+    cursor: pointer;
+    background-color: rgb(224, 61, 2);
 }

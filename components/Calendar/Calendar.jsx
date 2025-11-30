@@ -133,7 +133,7 @@ export default function RdvMonthCalendar() {
       {/* Créneaux disponibles */}
       {selectedDate && (
         <div style={{ marginTop: 20 }}>
-          <h4>Choisir un créneau horaire pour le {format(selectedDate, "EEEE dd/MM/yyyy", { locale: fr })}</h4>
+          <h4 className={styles.h4}>Choisir un créneau horaire pour le <span className={styles.span}>{format(selectedDate, "EEEE dd/MM/yyyy", { locale: fr })} </span></h4>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             {slots.map(slot => {
               const slotDate = new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${slot}`);
@@ -166,12 +166,14 @@ export default function RdvMonthCalendar() {
       {selectedDate && selectedSlot && (
         <form onSubmit={handleSubmit} style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 10 }}>
           <input
+            className={styles.input}
             placeholder="Nom"
             value={data.name}
             onChange={e => setData({ ...data, name: e.target.value })}
             required
           />
           <input
+            className={styles.input}
             type="email"
             placeholder="Email"
             value={data.email}
@@ -179,6 +181,7 @@ export default function RdvMonthCalendar() {
             required
           />
           <input
+            className={styles.input}
             type="tel"
             placeholder="Téléphone"
             value={data.phone}
@@ -186,6 +189,7 @@ export default function RdvMonthCalendar() {
             required
           />
           <select
+            className={styles.input}
             value={data.service}
             onChange={e => setData({ ...data, service: e.target.value })}
             required
@@ -196,7 +200,7 @@ export default function RdvMonthCalendar() {
 
           {error && <p style={{ color: "red" }}>{error}</p>}
 
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} className={styles.submit}>
             {loading ? "Réservation..." : "Confirmer le rendez-vous"}
           </button>
 
