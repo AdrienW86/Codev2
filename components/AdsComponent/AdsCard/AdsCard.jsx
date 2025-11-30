@@ -33,9 +33,9 @@ function Card({ plan, index }) {
 
 export default function WebComponent() {
   const creationPlans = [
-    { name: 'Réseaux sociaux', price: '199 €', features: ['Jusqu’à 5 pages', 'Design responsive', 'Formulaire de contact', 'Optimisation SEO basique'], color: 'blue', link: '#' },
-    { name: 'Local Services', price: '399 €', features: ['Jusqu’à 20 pages', 'Catalogue produits illimité', 'Paiement en ligne intégré', 'Optimisation SEO avancée', 'Formation & support'], color: 'blue', link: '#',popular: true },
-    { name: 'Google Ads', price: '599€', features: ['Jusqu’à 30 pages', 'Design personnalisé', 'Blog ou actualités', 'Optimisation SEO', 'Formation à l’admin'], color: 'blue', link: '#' }
+    { name: 'Réseaux sociaux', price: '199 € / mois', features: ['Facebook et Instagram', '3 publications par semaine', 'Facebook Ads', 'Visuel sur mesure'], color: 'blue', link: '#' },
+    { name: 'Local Services', price: '399 € / mois', features: ['Gestion des annonces', 'Réponses aux avis clients', 'Certification Google', 'Diffusion prioritaire', "Fiche d'établissement optimisé"], color: 'blue', link: '#',popular: true },
+    { name: 'Google Ads', price: '599€ / mois', features: ['Création de la campagne', 'Optimisation des mots clés', 'Suivi et ajustement des enchères', 'Rapport mensuel', "Fiche d'établissement optimisée"], color: 'blue', link: '#' }
   ];
 
   return (

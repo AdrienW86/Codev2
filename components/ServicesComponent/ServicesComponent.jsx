@@ -67,7 +67,7 @@ export default function HomeComponent() {
         'Applications web',        
       ],
       color: 'blue',
-      link: '#',
+      link: '/sites',
       background: "/development.png",
     },
     {
@@ -79,7 +79,7 @@ export default function HomeComponent() {
         'Réseaux sociaux',
       ],
       color: 'orange',
-      link: '#',
+      link: '/ads',
       background: "/banner4.png",
     },
   ];
@@ -91,33 +91,12 @@ export default function HomeComponent() {
   ];
 
   return (
-    <div className={styles.container}>
-      
-      
+    <div className={styles.container}>           
       <section id="services" className={styles.section}>
         <h2 className={styles.sectionTitle}>Nos services principaux</h2>
         <p className={styles.sectionDesc}>Des solutions complètes adaptées à votre activité.</p>
         <div className={styles.cards}>
           {services.map((plan, i) => <Card key={plan.name} plan={plan} index={i} />)}
-        </div>
-      </section>
-      {/* Testimonials */}
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Ils nous font confiance</h2>
-        <div className={styles.testimonials}>
-          {testimonials.map((t, i) => (
-            <motion.div
-              key={i}
-              className={styles.testimonial}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.2 }}
-            >
-              <p>"{t.text}"</p>
-              <span>- {t.author}</span>
-            </motion.div>
-          ))}
         </div>
       </section>
     </div>

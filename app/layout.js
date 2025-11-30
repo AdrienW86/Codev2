@@ -8,6 +8,7 @@ import { Bungee_Spice } from "next/font/google";
 import { Inter } from "next/font/google";
 
 import Header from "@/components/Header/Header";
+import Audit from "@/components/Audit/Audit";
 import Footer from "@/components/Footer/Footer";
 import "./globals.css";
 
@@ -73,6 +74,7 @@ export default function RootLayout({ children }) {
       >
         <Header />
           {children}
+        <Audit />
         <Footer />
       </body>
     </html>

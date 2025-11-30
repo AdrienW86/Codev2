@@ -32,8 +32,6 @@ function Card({ plan, index }) {
 }
 
 export default function WebComponent() {
-  
-
   const creationPlans = [
     { name: 'Site Vitrine', price: '799 €', features: ['Jusqu’à 5 pages', 'Design responsive', 'Formulaire de contact', 'Optimisation SEO basique'], color: 'blue', link: '#' },
     { name: 'Site E-commerce', price: '1499 €', features: ['Jusqu’à 20 pages', 'Catalogue produits illimité', 'Paiement en ligne intégré', 'Optimisation SEO avancée', 'Formation & support'], color: 'blue', link: '#',popular: true },

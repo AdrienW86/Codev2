@@ -23,10 +23,10 @@ export default function Referencement() {
           </p>
 
           <div className={styles.ctas}>
-            <Link href="/rdv" className={styles.primaryBtn}>
+            <Link href="/contact" className={styles.primaryBtn}>
               Prendre rendez-vous
             </Link>
-            <Link href="#audit" className={styles.ghostBtn}>
+            <Link href="/contact" className={styles.ghostBtn}>
               Demander un audit gratuit
             </Link>
           </div>
@@ -87,39 +87,7 @@ export default function Referencement() {
           <p className={styles.benefit}><strong>Avantage :</strong> prospects locaux hautement qualifiés.</p>
         </article>
       </section>
-
       <ReferencementCard />
-
-      <section id="audit" className={styles.audit}>
-        <div className={styles.auditInner}>
-          <h2>Audit gratuit & plan d’action</h2>
-          <p>
-            Nous réalisons un audit complet de votre site (technique, contenu, concurrence)
-            et vous proposons un plan d’action priorisé pour améliorer rapidement votre
-            visibilité et vos conversions.
-          </p>
-          <Link href="/rdv" className={styles.primaryBtn}>
-            Demander mon audit gratuit
-          </Link>
-        </div>
-      </section>
-
-      <section className={styles.why}>
-        <h2>Pourquoi nous choisir ?</h2>
-        <ul className={styles.bullets}>
-          <li>Experts certifiés Google & pratiques éprouvées</li>
-          <li>Stratégies personnalisées selon votre activité</li>
-          <li>Transparence et reporting clair</li>
-          <li>Accompagnement sur le long terme</li>
-        </ul>
-      </section>
-
-      <section className={styles.actions}>
-        <p>Prêt à améliorer votre visibilité sur Google ?</p>
-        <Link href="/rdv" className={styles.primaryBtnLarge}>
-          Réserver une consultation
-        </Link>
-      </section>    
     </main>
   );
 }

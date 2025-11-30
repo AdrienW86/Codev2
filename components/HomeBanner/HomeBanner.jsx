@@ -25,7 +25,7 @@ export default function HomeBanner() {
               <p className={styles.p}>
                   Attirez de nouveaux clients
               </p>        
-                <a href="#services" className={styles.button}>Prendre rendez-vous</a>                     
+                <a href="/contact" className={styles.button}>Prendre rendez-vous</a>                     
             </div>
           </div>
         </section>

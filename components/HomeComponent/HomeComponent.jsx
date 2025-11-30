@@ -1,7 +1,6 @@
 'use client';
 
 import styles from './home.module.css';
-import Image from 'next/image';
 import { FaCheck } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -35,7 +34,7 @@ function Card({ plan, index }) {
         ))}
       </ul>
       <a href={plan.link} className={styles.button}>
-        {plan.name.includes('Suivi') || plan.name.includes('Pro') ? 'S’abonner' : 'Commander'}
+        {plan.name.includes('Suivi') || plan.name.includes('Annonces') ? 'S’abonner' : 'Commander'}
       </a>
     </motion.div>
   );
@@ -44,52 +43,57 @@ function Card({ plan, index }) {
 export default function HomeComponent() {
   const services = [
     {
-      name: 'Suivi & Entretien',
-      price: 'À partir de 49 €/ mois',
+      name: 'Suivi Essentiel',
+      price: '49 €/ mois',
       features: [
-        'Mises à jour et sécurité du site',
-        'Assistance rapide',
-        'Optimisation SEO mensuelle',
+        'Corrections de bugs mineurs',
+        'Mises à jour simples',
+        'Surveillance du site',
+        'Assistance email (48h)'
+
       ],
       color: 'green',
       link: 'TON_LIEN_STRIPE_ESSENTIEL',
-      popular: true,
     },
     {
-      name: 'Création de site web',
-      price: 'À partir de 799 €',
+      name: 'Annonces Local Services',
+      price: '399 € / mois',
       features: [
-        'Site vitrine ou boutique',
-        'Design responsive et moderne',
-        'Optimisation SEO initiale',
-      ],
-      color: 'blue',
-      link: '#',
-    },
-    {
-      name: 'Marketing & Publicité',
-      price: 'À partir de 99 € / mois',
-      features: [
-        'Google My Business',
-        'Réseaux sociaux et posts',
-        'Campagnes Google Ads / Local Service',
+        'Gestion des annonces',
+        'Réponses aux avis clients',
+        'Certification Google',
+        'Diffusion prioritaire',
+        "Fiche d'établissement optimisé",
       ],
       color: 'orange',
       link: '#',
+      popular: true,
+    },
+    {
+      name: 'Site Vitrine',
+      price: '799 €',
+      features: [
+        'Jusqu’à 5 pages',
+        'Design responsive',
+        'Formulaire de contact',
+        'Optimisation SEO basique',
+      ],
+      color: 'blue',
+      link: '#',     
     },
   ];
 
   const testimonials = [
-    { text: "Super accompagnement, mon site est maintenant impeccable !", author: "Alice D." },
-    { text: "Les campagnes Ads ont vraiment boosté mon chiffre d'affaires.", author: "Marc L." },
-    { text: "Support réactif et site parfaitement optimisé.", author: "Sophie R." },
+    { text: "Super accompagnement, mon site est maintenant impeccable !", author: "Eco Couverture" },
+    { text: "Les annonces locale Services ont vraiment boosté mon chiffre d'affaires.", author: "Protection Nuisibles" },
+    { text: "Support réactif et site parfaitement optimisé.", author: "Diogène Nettoyage" },
   ];
 
   return (
     <div className={styles.container}>
       {/* Services */}
       <section id="services" className={styles.section}>
-        <h2 className={styles.sectionTitle}>Nos services principaux</h2>
+        <h2 className={styles.sectionTitle}>Nos services les plus appréciés</h2>
         <p className={styles.sectionDesc}>Des solutions complètes adaptées à votre activité.</p>
         <div className={styles.cards}>
           {services.map((plan, i) => <Card key={plan.name} plan={plan} index={i} />)}

@@ -22,10 +22,10 @@ export default function Website() {
           </p>
 
           <div className={styles.ctas}>
-            <Link href="/rdv" className={styles.primaryBtn}>
+            <Link href="/contact" className={styles.primaryBtn}>
               Prendre rendez-vous
             </Link>
-            <Link href="#audit" className={styles.ghostBtn}>
+            <Link href="/contact" className={styles.ghostBtn}>
               Demander un audit gratuit
             </Link>
           </div>
@@ -79,20 +79,7 @@ export default function Website() {
           <p className={styles.benefit}><strong>Avantage :</strong> solution personnalisée et performante pour votre activité.</p>
         </article>
       </section>
-
       <WebComponent />
-
-      <section id="audit" className={styles.audit}>
-        <div className={styles.auditInner}>
-          <h2>Audit gratuit & plan d’action</h2>
-          <p>
-            Nous analysons votre projet et vous proposons la solution la plus adaptée pour créer un site web efficace et performant.
-          </p>
-          <Link href="/rdv" className={styles.primaryBtn}>
-            Demander mon audit gratuit
-          </Link>
-        </div>
-      </section>
     </main>
   );
 }
