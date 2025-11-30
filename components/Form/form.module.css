@@ -1,0 +1,34 @@
+.title {
+    width: 100%;
+    color: orangered;
+    text-align: center;
+    margin-top: 60px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+.input {
+    color: white;
+    padding: 10px;
+    font-family: var(--inter);
+}
+
+.input::placeholder {
+    color: rgb(219, 219, 219);
+}
+
+.submit {
+    margin: 40px auto;
+    width: 200px;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    background-color: orangered;
+}

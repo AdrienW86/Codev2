@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isToday, addDays } from "date-fns";
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isToday } from "date-fns";
 import { fr } from "date-fns/locale";
+import styles from './calendar.module.css'
 
 export default function RdvMonthCalendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -10,12 +11,12 @@ export default function RdvMonthCalendar() {
   const [bookedSlots, setBookedSlots] = useState([]);
   const [data, setData] = useState({ name: "", email: "", phone: "", service: "" });
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const services = ["Audit SEO", "Google Ads", "Social Ads", "Local Services"];
   const slots = ["09:00", "10:00", "11:00", "14:00", "15:00", "16:00", "17:00"];
 
-  // Récupérer les rendez-vous futurs pour bloquer les créneaux
   useEffect(() => {
     async function fetchRdv() {
       const res = await fetch("/api/rdv?future=true");
@@ -25,32 +26,59 @@ export default function RdvMonthCalendar() {
     fetchRdv();
   }, []);
 
+  // Validation côté front pour sécuriser le formulaire
+  const validate = () => {
+    const { name, email, phone, service } = data;
+
+    const nameRegex = /^[A-Za-zÀ-ÿ\s'-]{2,50}$/;
+    if (!name || !nameRegex.test(name)) return "Nom invalide. Utilisez uniquement des lettres.";
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) return "Email invalide.";
+
+    const phoneRegex = /^[0-9+\s]{7,15}$/;
+    if (!phone || !phoneRegex.test(phone)) return "Numéro de téléphone invalide.";
+
+    if (!service) return "Veuillez choisir un service.";
+
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedDate || !selectedSlot || !data.service) return alert("Veuillez remplir tous les champs.");
+    setError("");
+    const validationError = validate();
+    if (validationError) return setError(validationError);
+
+    if (!selectedDate || !selectedSlot) return setError("Veuillez sélectionner une date et un créneau.");
+
     setLoading(true);
     const dateTime = new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${selectedSlot}`);
-    const res = await fetch("/api/rdv", {
-      method: "POST",
-      body: JSON.stringify({ ...data, date: dateTime }),
-      headers: { "Content-Type": "application/json" },
-    });
-    setLoading(false);
-    if (res.ok) {
-      setSuccess(true);
-      setSelectedDate(null);
-      setSelectedSlot("");
-      setData({ name: "", email: "", phone: "", service: "" });
-    } else {
-      const { message } = await res.json();
-      alert(message || "Erreur lors de la réservation.");
+    try {
+      const res = await fetch("/api/rdv", {
+        method: "POST",
+        body: JSON.stringify({ ...data, date: dateTime }),
+        headers: { "Content-Type": "application/json" },
+      });
+      setLoading(false);
+      const resData = await res.json();
+      if (res.ok) {
+        setSuccess(true);
+        setData({ name: "", email: "", phone: "", service: "" });
+        setSelectedDate(null);
+        setSelectedSlot("");
+      } else {
+        setError(resData.message || "Erreur lors de la réservation.");
+      }
+    } catch (err) {
+      setLoading(false);
+      setError("Erreur réseau, veuillez réessayer plus tard.");
     }
   };
 
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
-  // Générer toutes les dates visibles du mois (incluant les jours de début/fin de semaine)
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart, { locale: fr });
@@ -59,12 +87,12 @@ export default function RdvMonthCalendar() {
 
   return (
     <div style={{ maxWidth: 800, margin: "0 auto" }}>
-      <h2 style={{ textAlign: "center" }}>Réserver un rendez-vous</h2>
+      <h2 className={styles.title} style={{ textAlign: "center" }}>Réservez votre rendez-vous gratuit</h2>
 
       {/* Navigation mois */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
         <button onClick={prevMonth}>{"<"}</button>
-        <h3>{format(currentMonth, "MMMM yyyy", { locale: fr })}</h3>
+        <h3 className={styles.h3}>{format(currentMonth, "MMMM yyyy", { locale: fr })}</h3>
         <button onClick={nextMonth}>{">"}</button>
       </div>
 
@@ -77,9 +105,11 @@ export default function RdvMonthCalendar() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 5 }}>
         {days.map(day => {
           const isCurrentMonth = isSameMonth(day, currentMonth);
-          const isDisabled = !isCurrentMonth;
+          const isPast = day < new Date(new Date().setHours(0,0,0,0));
+          const isDisabled = !isCurrentMonth || isPast;
           const isSelected = selectedDate && day.toDateString() === selectedDate.toDateString();
           const isDayToday = isToday(day);
+
           return (
             <button
               key={day}
@@ -106,8 +136,10 @@ export default function RdvMonthCalendar() {
           <h4>Choisir un créneau horaire pour le {format(selectedDate, "EEEE dd/MM/yyyy", { locale: fr })}</h4>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             {slots.map(slot => {
-              const slotDate = `${format(selectedDate, 'yyyy-MM-dd')}T${slot}`;
-              const disabled = bookedSlots.includes(slotDate);
+              const slotDate = new Date(`${format(selectedDate, 'yyyy-MM-dd')}T${slot}`);
+              const isPastSlot = selectedDate.toDateString() === new Date().toDateString() && slotDate < new Date();
+              const disabled = bookedSlots.includes(slotDate.toISOString().slice(0,16)) || isPastSlot;
+
               return (
                 <button
                   key={slot}
@@ -161,6 +193,8 @@ export default function RdvMonthCalendar() {
             <option value="">Choisir un service</option>
             {services.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
 
           <button type="submit" disabled={loading}>
             {loading ? "Réservation..." : "Confirmer le rendez-vous"}
