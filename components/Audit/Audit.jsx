@@ -31,7 +31,7 @@ export default function Audit() {
       <section className={styles.actions}>
         <p>Prêt à lancer vos campagnes et booster vos ventes ?</p>
         <Link href="/contact" className={styles.primaryBtnLarge}>
-          Réserver une consultation
+          Réserver votre rendez-vous gratuit
         </Link>
       </section>    
     </>
