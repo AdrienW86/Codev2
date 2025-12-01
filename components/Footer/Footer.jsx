@@ -19,7 +19,11 @@ export default function Footer() {
             
             <li className={styles.li}><Link href="/mobiles">Référencement</Link></li>
             <li className={styles.li}><Link href="/ads">Campagnes publicitaires</Link></li>
-            <li className={styles.li}><Link href="/appli">Qui sommes-nous ?</Link></li>
+            <li className={styles.li}><Link href="/qui-sommes-nous">L'entreprise</Link></li>
+
+            <li className={styles.li}><Link href="/confidentialite">Confidentialité</Link></li>
+            <li className={styles.li}><Link href="/conditions-generales">Conditions générales</Link></li>
+            <li className={styles.li}><Link href="/mentions">Mentions légales</Link></li>
             
           </ul>
            <p className={styles.p}>Copyright © CODEV 2022 - {year}. Tous droits réservés.</p>
