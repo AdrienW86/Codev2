@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import styles from './home.module.css';
 import { FaCheck } from 'react-icons/fa';
 import { motion } from 'framer-motion';
@@ -34,7 +35,7 @@ function Card({ plan, index }) {
         ))}
       </ul>
       <a href={plan.link} className={styles.button}>
-        {plan.name.includes('Suivi') || plan.name.includes('Annonces') ? 'S’abonner' : 'Commander'}
+        {plan.name.includes('Suivi') || plan.name.includes('Annonces') ? 'Voir plus' : 'Voir plus'}
       </a>
     </motion.div>
   );
@@ -53,7 +54,7 @@ export default function HomeComponent() {
 
       ],
       color: 'green',
-      link: 'TON_LIEN_STRIPE_ESSENTIEL',
+      link: '/referencement#tarif',
     },
     {
       name: 'Annonces Local Services',
@@ -66,7 +67,7 @@ export default function HomeComponent() {
         "Fiche d'établissement optimisé",
       ],
       color: 'orange',
-      link: '#',
+      link: '/ads#tarif',     
       popular: true,
     },
     {
@@ -79,7 +80,7 @@ export default function HomeComponent() {
         'Optimisation SEO basique',
       ],
       color: 'blue',
-      link: '#',     
+      link: '/sites#tarif',   
     },
   ];
 

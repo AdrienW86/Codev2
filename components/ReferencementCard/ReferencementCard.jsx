@@ -66,15 +66,13 @@ export default function WebComponent() {
   return (
     <div className={styles.container}>
 
-      <section id="entretien" className={`${styles.section} ${styles.entretien}`}>
+      <section id="tarif" className={`${styles.section} ${styles.entretien}`}>
         <h2 className={styles.sectionTitle}> Tarifs</h2>
         <p className={styles.sectionDesc}>Générez de nopuvelles ventes grâce à nos formules d’abonnement simples et efficaces.</p>
         <div className={styles.cards}>
           {entretienPlans.map((plan, i) => <Card key={plan.name} plan={plan} index={i} />)}
         </div>
-      </section>
-
-      
+      </section>      
     </div>
   );
 }

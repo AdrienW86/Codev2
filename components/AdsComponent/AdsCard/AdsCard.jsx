@@ -40,7 +40,7 @@ export default function WebComponent() {
 
   return (
     <div className={styles.container}>
-      <section id="creation" className={`${styles.section} ${styles.creation}`}>
+      <section id="tarif" className={`${styles.section} ${styles.creation}`}>
         <h2 className={styles.sectionTitle}>Tarifs</h2>
         <p className={styles.sectionDesc}>Nous créons des sites web sur-mesure, modernes et optimisés pour vos besoins et votre activité.</p>
         <div className={styles.cards}>
