@@ -33,9 +33,9 @@ function Card({ plan, index }) {
 
 export default function WebComponent() {
   const creationPlans = [
-    { name: 'Réseaux sociaux', price: '199 € / mois', features: ['Facebook et Instagram', '3 publications par semaine', 'Facebook Ads', 'Visuel sur mesure'], color: 'blue', link: '#' },
-    { name: 'Local Services', price: '399 € / mois', features: ['Gestion des annonces', 'Réponses aux avis clients', 'Certification Google', 'Diffusion prioritaire', "Fiche d'établissement optimisé"], color: 'blue', link: '#',popular: true },
-    { name: 'Google Ads', price: '599€ / mois', features: ['Création de la campagne', 'Optimisation des mots clés', 'Suivi et ajustement des enchères', 'Rapport mensuel', "Fiche d'établissement optimisée"], color: 'blue', link: '#' }
+    { name: 'Réseaux sociaux', price: '199 € / mois', features: ['Facebook et Instagram', '3 publications par semaine', 'Facebook Ads', 'Visuel sur mesure'], color: 'blue', link: 'https://buy.stripe.com/6oUbJ10vNfgL8gcdFrbMQ09' },
+    { name: 'Local Services', price: '399 € / mois', features: ['Gestion des annonces', 'Réponses aux avis clients', 'Certification Google', 'Diffusion prioritaire', "Fiche d'établissement optimisé"], color: 'blue', link: 'https://buy.stripe.com/bJe28rcev6Kf684atfbMQ0a',popular: true },
+    { name: 'Google Ads', price: '599€ / mois', features: ['Création de la campagne', 'Optimisation des mots clés', 'Suivi et ajustement des enchères', 'Rapport mensuel', "Fiche d'établissement optimisée"], color: 'blue', link: 'https://buy.stripe.com/eVq6oHcev1pV8gcbxjbMQ0b' }
   ];
 
   return (

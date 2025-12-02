@@ -33,9 +33,9 @@ function Card({ plan, index }) {
 
 export default function WebComponent() {
   const creationPlans = [
-    { name: 'Site Vitrine', price: '799 €', features: ['Jusqu’à 5 pages', 'Design responsive', 'Formulaire de contact', 'Optimisation SEO basique'], color: 'blue', link: '#' },
-    { name: 'Site E-commerce', price: '1499 €', features: ['Jusqu’à 20 pages', 'Catalogue produits illimité', 'Paiement en ligne intégré', 'Optimisation SEO avancée', 'Formation & support'], color: 'blue', link: '#',popular: true },
-    { name: 'Application Web', price: 'à partir de 2499 €', features: ['Jusqu’à 30 pages', 'Design personnalisé', 'Blog ou actualités', 'Optimisation SEO', 'Formation à l’admin'], color: 'blue', link: '#' }
+    { name: 'Site Vitrine', price: '799 €', features: ['Jusqu’à 5 pages', 'Design responsive', 'Formulaire de contact', 'Optimisation SEO basique'], color: 'blue', link: 'https://buy.stripe.com/aFacN55Q72tZaokeJvbMQ06' },
+    { name: 'Site E-commerce', price: '1499 €', features: ['Jusqu’à 20 pages', 'Catalogue produits illimité', 'Paiement en ligne intégré', 'Optimisation SEO avancée', 'Formation & support'], color: 'blue', link: 'https://buy.stripe.com/eVqaEX6Ub0lR3ZWdFrbMQ07',popular: true },
+    { name: 'Application Web', price: 'à partir de 2499 €', features: ['Jusqu’à 30 pages', 'Design personnalisé', 'Blog ou actualités', 'Optimisation SEO', 'Formation à l’admin'], color: 'blue', link: 'https://buy.stripe.com/4gM6oH2DVb0v54030NbMQ08' }
   ];
 
   return (
