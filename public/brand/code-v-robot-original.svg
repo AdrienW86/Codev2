@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="875" height="660" viewBox="0 0 875 660">
+<rect width="875" height="660" fill="#07111F"/>
+
+<g id="robot">
+  <!-- Head -->
+  <rect x="282" y="38" width="312" height="234" rx="63" fill="#FFFFFF"/>
+  <rect x="234" y="127" width="27" height="67" rx="2" fill="#FFFFFF"/>
+  <rect x="614" y="127" width="28" height="65" rx="2" fill="#FFFFFF"/>
+  <!-- Eyes -->
+  <circle cx="367" cy="141" r="48" fill="#07111F"/>
+  <circle cx="510" cy="141" r="48" fill="#07111F"/>
+  <circle cx="367" cy="141" r="21" fill="#FFFFFF"/>
+  <circle cx="510" cy="141" r="21" fill="#FFFFFF"/>
+  <!-- Body -->
+  <path d="M296 355
+           C296 328 318 306 345 306
+           H528
+           C555 306 577 328 577 355
+           V458
+           C577 477 567 493 551 502
+           L493 620
+           H379
+           L323 502
+           C307 493 296 477 296 458
+           Z" fill="#FFFFFF"/>
+  <!-- Arms -->
+  <path d="M244 354 C228 354 216 368 216 385 V539 H273 V383 C273 367 260 354 244 354 Z" fill="#FFFFFF"/>
+  <path d="M630 354 C614 354 601 367 601 383 V539 H658 V385 C658 368 646 354 630 354 Z" fill="#FFFFFF"/>
+  <!-- Chest circle -->
+  <circle cx="437" cy="422" r="55" fill="#07111F"/>
+</g>
+
+</svg>

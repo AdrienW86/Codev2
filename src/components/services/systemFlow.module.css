@@ -1,0 +1,21 @@
+.flow { min-width:0; }
+.flow ol { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+.flow li { position:relative; min-width:0; border-top:1px solid rgba(80,227,194,.4); padding:28px 12px 8px 0; }
+.index { display:block; color:var(--cyan); font-size:12px; margin-bottom:18px; font-variant-numeric:tabular-nums; }
+.flow strong { font:500 23px/1.25 "Space Grotesk",sans-serif; letter-spacing:-.025em; }
+.flow p { font-size:15px; line-height:1.65; color:rgba(255,255,255,.78); margin:12px 0 0; }
+.human { display:inline-block; font-size:12px; color:var(--cyan); margin-top:16px; padding:6px 10px; border:1px solid rgba(80,227,194,.35); border-radius:999px; }
+.connector { position:absolute; top:-3px; left:0; height:5px; width:5px; border-radius:50%; background:var(--cyan); }
+.caption { display:block; margin-top:28px; color:rgba(255,255,255,.72); font-size:12px; line-height:1.6; }
+.compact ol { grid-template-columns:1fr; gap:0; }
+.compact li { display:grid; grid-template-columns:30px 1fr; gap:16px; padding:20px 0; }
+.compact .index { margin:4px 0 0; }
+.compact strong { font-size:21px; }.compact p { font-size:14px; margin-top:8px; }
+.flow li::after { content:""; position:absolute; left:0; top:-1px; height:1px; width:100%; background:var(--cyan); transform-origin:left;  }
+.flow[data-revealed="true"] li::after { animation:drawLine 900ms var(--ease-out) both; }
+.flow li:nth-child(2)::after { animation-delay:160ms; }.flow li:nth-child(3)::after { animation-delay:320ms; }
+@keyframes drawLine { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+@media(max-width:600px) { .flow ol { grid-template-columns:1fr; gap:0; }.flow li { display:grid; grid-template-columns:30px 1fr; gap:16px; padding:24px 0 24px 20px; border-top:0; border-left:1px solid rgba(80,227,194,.4); }.flow .index { margin:3px 0 0; }.flow .connector { left:-3px; top:28px; }.flow li::after { display:none; }.flow strong { font-size:21px; } }
+@media(prefers-reduced-motion:reduce) { .flow li::after { animation:none; } }
+
+@media (min-width:601px) and (max-width:900px) { .flow:not(.compact) ol { grid-template-columns:repeat(2,minmax(0,1fr)); } }

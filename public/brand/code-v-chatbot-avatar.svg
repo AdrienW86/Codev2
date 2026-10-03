@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+
+
+<defs>
+  <filter id="cg" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="10" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<circle cx="128" cy="128" r="116" fill="#07111F"/>
+<circle cx="128" cy="128" r="98" fill="#0E1C2E" stroke="#4F8CFF" stroke-width="3"/>
+<g transform="translate(30 45) scale(.98)" filter="url(#cg)">
+  <rect x="34" y="12" width="132" height="88" rx="28" fill="#07111F"/>
+  <rect x="12" y="44" width="12" height="26" rx="3" fill="#07111F"/>
+  <rect x="176" y="44" width="12" height="26" rx="3" fill="#07111F"/>
+  <circle cx="80" cy="56" r="19" fill="#FFFFFF"/>
+  <circle cx="120" cy="56" r="19" fill="#FFFFFF"/>
+  <circle cx="80" cy="56" r="8" fill="#50E3C2"/>
+  <circle cx="120" cy="56" r="8" fill="#50E3C2"/>
+</g>
+
+</svg>

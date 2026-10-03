@@ -1,24 +1,22 @@
 {
-  "name": "codev",
-  "version": "0.1.0",
+  "name": "codev-vitrine",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
-    "@sendinblue/client": "^3.3.1",
-    "date-fns": "^4.1.0",
-    "framer-motion": "^12.23.24",
-    "mongoose": "^9.0.0",
-    "next": "^16.0.7",
-    "nodemailer": "^7.0.11",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-icons": "^5.5.0",
-    "react-intersection-observer": "^9.16.0",
-    "swiper": "^11.2.10"
+    "next": "15.4.10",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "resend": "^6.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.21",
+    "@types/react": "19.1.2",
+    "@types/react-dom": "19.1.2",
+    "typescript": "5.8.3"
   }
 }

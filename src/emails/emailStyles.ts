@@ -1,0 +1,18 @@
+export type ContactEmailData = { name: string; email: string; message: string; service?: string; company?: string; phone?: string; source?: string; receivedAt: Date };
+export type EmailTemplate = { subject: string; html: string; text: string };
+export const origin = "https://www.code-v.fr";
+export const logoUrl = `${origin}/brand/code-v-logo-email.png`;
+export const escapeHtml = (value: string) => value.replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+export const subjectText = (value: string) => value.replace(/[\r\n\u0000-\u001f]/g, " ").trim();
+export function field(label: string, value?: string) {
+  return value ? `<tr><td style="padding:0 0 18px;font:16px/24px Arial,Helvetica,sans-serif;color:#07111f;word-break:break-word;overflow-wrap:anywhere;"><span style="font-size:12px;color:#64748b;">${escapeHtml(label)}</span><br>${escapeHtml(value).replace(/\r?\n/g,"<br>")}</td></tr>` : "";
+}
+export function panel(title: string, content: string) {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f7f9fc;border:1px solid #dfe7f1;"><tr><td style="padding:24px;"><h2 style="margin:0 0 20px;font:700 18px/26px Arial,Helvetica,sans-serif;color:#07111f;">${escapeHtml(title)}</h2><table role="presentation" width="100%" cellpadding="0" cellspacing="0">${content}</table></td></tr></table>`;
+}
+export function button(label: string, href: string) {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;"><tr><td bgcolor="#356ee0" style="border-radius:4px;mso-padding-alt:14px 22px;"><a href="${escapeHtml(href)}" style="display:inline-block;padding:14px 22px;font:700 16px/24px Arial,Helvetica,sans-serif;color:#ffffff;text-decoration:none;">${escapeHtml(label)}</a></td></tr></table>`;
+}
+export function layout(preheader: string, label: string, title: string, body: string) {
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"><title>${escapeHtml(label)} — CODE-V</title></head><body style="margin:0;padding:0;background:#f7f9fc;color:#07111f;"><div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${escapeHtml(preheader)}</div><table role="presentation" width="100%" cellpadding="0" cellspacing="0" bgcolor="#f7f9fc"><tr><td align="center" style="padding:24px 12px;"><!--[if mso]><table role="presentation" width="640"><tr><td><![endif]--><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background:#ffffff;"><tr><td bgcolor="#07111f" style="padding:24px 28px;"><img src="${logoUrl}" width="96" height="96" alt="CODE-V" style="display:block;width:96px;height:96px;border:0;"></td></tr><tr><td style="padding:32px 24px 16px;"><p style="margin:0 0 12px;font:700 12px/20px Arial,Helvetica,sans-serif;letter-spacing:1px;color:#356ee0;">${escapeHtml(label)}</p><h1 style="margin:0;font:700 30px/38px Arial,Helvetica,sans-serif;color:#07111f;word-break:break-word;">${escapeHtml(title)}</h1></td></tr><tr><td style="padding:8px 24px 32px;font:16px/26px Arial,Helvetica,sans-serif;color:#07111f;">${body}</td></tr><tr><td bgcolor="#0e1c2e" style="padding:28px 24px;font:14px/24px Arial,Helvetica,sans-serif;color:#ffffff;"><p style="margin:0 0 8px;color:#50e3c2;">Web · Acquisition · Automatisation</p><a href="${origin}/" style="color:#ffffff;text-decoration:none;">code-v.fr</a></td></tr></table><!--[if mso]></td></tr></table><![endif]--></td></tr></table></body></html>`;
+}

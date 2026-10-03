@@ -1,0 +1,9 @@
+.reveal { min-width:0; }
+.entered { animation:arrive var(--motion-reveal) var(--ease-out) both; }
+.stagger.entered { animation:none; }
+.stagger.entered > * { animation:arrive var(--motion-reveal) var(--ease-out) both; }
+.stagger.entered > :nth-child(2) { animation-delay:70ms; }
+.stagger.entered > :nth-child(3) { animation-delay:140ms; }
+.stagger.entered > :nth-child(n+4) { animation-delay:210ms; }
+@keyframes arrive { from { opacity:.7; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@media(prefers-reduced-motion:reduce) { .entered,.stagger.entered > * { animation:none; } }

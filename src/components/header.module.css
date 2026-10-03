@@ -1,0 +1,33 @@
+.header :is(a,button):focus-visible { outline:2px solid var(--cyan); outline-offset:5px; }
+.header { background:var(--dark); border-bottom:1px solid rgba(255,255,255,.12); }
+.header :global(.header-inner) { min-height:100px; gap:24px; }
+.header :global(.brand-logo) { width:80px; height:80px; object-fit:contain; }
+.header :global(.main-nav) { gap:24px; font-size:13px; color:#d5deeb; }
+.header :global(.nav-cta) { min-height:48px; font-size:13px; border-color:#62748b; }
+.solutions { position:static; }
+.mobileShortcuts{display:none}
+@media(max-width:900px){.header :global(.main-nav) .desktopSiteLink{display:none}}
+.menuFamilies{min-width:0}.primaryFamilies{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.primaryFamilies a{display:block;padding:18px;border-bottom:1px solid #33465e;transition:background .2s}.primaryFamilies a:hover,.otherFamilies a:hover{background:#ffffff0a}.needLabel{display:block;font-size:10px;letter-spacing:.1em;color:var(--cyan);margin-bottom:10px}.primaryFamilies strong{display:block;font-size:17px;line-height:1.4;font-weight:500}.primaryFamilies strong span{color:var(--cyan)}.primaryFamilies small{display:block;color:#bccbdf;font-size:12px;line-height:1.6;margin-top:8px}.otherFamilies{display:flex;flex-wrap:wrap;gap:4px 20px;padding-top:20px}.otherFamilies a{display:flex;gap:12px;align-items:center;min-height:44px;font-size:13px;line-height:1.5;padding:8px 4px}.otherFamilies a span{color:var(--cyan)}
+.solutionsToggle { display:flex; align-items:center; gap:8px; padding:14px 0; min-height:48px; border:0; background:none; color:inherit; }
+.solutionsToggle span { transition:transform .25s; }
+.solutionsToggle[aria-expanded=true] span { transform:rotate(180deg); }
+.dropdown { position:absolute; top:100%; left:50%; transform:translateX(-50%); width:min(1180px,calc(100vw - 48px)); padding:32px; background:var(--dark-soft); border:1px solid #33465e; box-shadow:0 30px 50px #07111f66; display:grid; grid-template-columns:220px 1fr; gap:32px; border-radius:0 0 24px 24px; animation:menuIn .35s ease both; }
+.dropdown[hidden] { display:none; }
+.menuIntro span { font-size:10px; letter-spacing:.12em; color:var(--cyan); }
+.menuIntro strong { display:block; margin:20px 0; font:500 32px/1.1 'Space Grotesk',sans-serif; }
+.menuIntro p { color:#bccbdf; font-size:13px; line-height:1.7; }
+.familyLinks { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.familyLinks a { padding:18px; border-radius:12px; transition:background .2s,transform .2s; }
+.familyLinks a:hover { background:#ffffff0a; transform:translateY(-2px); }
+.familyLinks strong { display:block; font-weight:500; font-size:14px; line-height:1.4; }
+.familyLinks strong span { color:var(--cyan); }
+.familyLinks small { display:block; color:#bccbdf; font-size:12px; line-height:1.5; margin-top:8px; }
+.familyLinks em { display:block; font-style:normal; font-size:10px; color:var(--cyan); margin-top:8px; }
+@keyframes menuIn { from { opacity:0; clip-path:inset(0 0 30%); } to { opacity:1; clip-path:inset(0); } }
+@media(max-width:1100px) and (min-width:901px) { .header :global(.main-nav) { gap:14px; }.header :global(.nav-cta) { padding:12px; }.dropdown { grid-template-columns:160px 1fr;gap:16px; } }
+@media(max-width:900px) { .header :global(.header-inner) { min-height:88px; }.header :global(.brand-logo) { width:68px;height:68px; }.header :global(.main-nav) { top:88px;left:12px;right:12px;padding:16px;background:var(--dark-soft);max-height:calc(100dvh - 100px);overflow:auto;gap:0; }.header :global(.main-nav a) { min-height:48px; }.solutionsToggle { width:100%;justify-content:space-between;padding:14px 10px; }.dropdown { position:static;transform:none;width:100%;padding:12px;display:block;border-radius:12px;box-shadow:none; }.menuIntro { display:none; }.familyLinks { grid-template-columns:1fr 1fr;gap:4px; }.header .familyLinks a { padding:12px; }.header :global(.nav-cta.mobile-only) { background:var(--blue-deep);border:0; } }
+@media(max-width:480px) { .familyLinks { grid-template-columns:1fr; }.familyLinks small { margin-top:4px; } }
+@media(prefers-reduced-motion:reduce) { .dropdown { animation:none; }.header :is(a,button,span) { transition:none; } }
+@media(max-width:900px){.mobileShortcuts{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #33465e;padding-bottom:12px;margin-bottom:8px;gap:4px 12px}.header .mobileShortcuts a{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;font-size:13px;line-height:1.5}.mobileShortcuts span{color:var(--cyan)}.primaryFamilies{gap:8px}.header .primaryFamilies a{padding:12px 8px}.primaryFamilies strong{font-size:14px}.primaryFamilies small{display:none}.otherFamilies{display:block;padding-top:12px}.header .otherFamilies a{display:flex;padding:12px 8px;justify-content:space-between}.needLabel{font-size:9px}.header :global(.nav-cta.mobile-only){justify-content:center;margin:12px 0}.dropdown{padding:8px}}
+.allSolutions { grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;min-height:48px;border-top:1px solid #33465e;padding:20px 12px 0;color:var(--cyan);font-size:14px; }
+@media(max-width:900px) { .header .allSolutions { margin-top:12px;padding:16px 12px; } }
