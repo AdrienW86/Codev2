@@ -1,3 +1,4 @@
 /* Reserve room below the absolute header, even when the breadcrumb wraps. */
 .hero:global(.page-hero) { padding-top:140px; }
 @media(max-width:900px) { .hero:global(.page-hero) { padding-top:120px; } }
+.hero :global(.eyebrow){color:var(--cyan)}

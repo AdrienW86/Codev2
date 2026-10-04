@@ -5,6 +5,8 @@ import PageHero from "@/components/PageHero";
 export const metadata = {
   title: "Qui sommes-nous — Codev",
   description: "Codev rend le digital plus clair et plus utile, avec un accompagnement simple, humain et personnalisé.",
+  alternates: { canonical: "https://www.code-v.fr/qui-sommes-nous" },
+  openGraph: { title: "À propos — CODE-V", description: "Un accompagnement digital simple, humain et personnalisé.", url: "https://www.code-v.fr/qui-sommes-nous", type: "website", locale: "fr_FR" },
 };
 
 export default function AboutPage() {

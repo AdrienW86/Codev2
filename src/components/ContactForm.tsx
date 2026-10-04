@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import styles from "./contactForm.module.css";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -48,7 +49,7 @@ export default function ContactForm() {
   return (
     <>
       {status === "success" ? (
-        <div className="form-success">
+        <div className="form-success" role="status" aria-live="polite">
           <h3>Message envoyé !</h3>
           <p>Merci pour votre message. Nous vous répondrons dans les plus brefs délais.</p>
           <button
@@ -60,13 +61,14 @@ export default function ContactForm() {
           </button>
         </div>
       ) : (
-        <form className="contact-form" onSubmit={handleSubmit}>
+        <form className={`contact-form ${styles.form}`} onSubmit={handleSubmit} aria-busy={status === "sending"}>
           <div className="form-row">
             <label>
               Nom
               <input
                 type="text"
                 name="name"
+                autoComplete="name"
                 placeholder="Votre nom"
                 required
               />
@@ -76,6 +78,7 @@ export default function ContactForm() {
               <input
                 type="text"
                 name="company"
+                autoComplete="organization"
                 placeholder="Le nom de votre entreprise"
               />
             </label>
@@ -86,6 +89,7 @@ export default function ContactForm() {
             <input
               type="email"
               name="email"
+              autoComplete="email"
               placeholder="vous@entreprise.fr"
               required
             />
@@ -122,7 +126,7 @@ export default function ContactForm() {
           </button>
 
           {status === "error" && (
-            <p className="form-error">{errorMessage}</p>
+            <p className="form-error" role="alert">{errorMessage}</p>
           )}
         </form>
       )}

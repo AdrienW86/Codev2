@@ -6,6 +6,8 @@ import ContactForm from "@/components/ContactForm";
 export const metadata = {
   title: "Contact — Codev",
   description: "Parlez-nous de votre projet digital et de vos objectifs.",
+  alternates: { canonical: "https://www.code-v.fr/contact" },
+  openGraph: { title: "Contact — CODE-V", description: "Parlez-nous de votre projet digital et de vos objectifs.", url: "https://www.code-v.fr/contact", type: "website", locale: "fr_FR" },
 };
 
 export default function ContactPage() {
@@ -38,11 +40,11 @@ export default function ContactPage() {
             <div className="contact-links">
               <Link href="mailto:contact@code-v.fr">
                 <small>Email</small>
-                contact@code-v.fr <span>↗</span>
+                contact@code-v.fr <span aria-hidden="true">↗</span>
               </Link>
               <Link href="tel:+33666672709">
                 <small>Téléphone</small>
-                06 66 67 27 09 <span>↗</span>
+                06 66 67 27 09 <span aria-hidden="true">↗</span>
               </Link>
             </div>
           </div>

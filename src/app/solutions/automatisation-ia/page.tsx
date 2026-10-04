@@ -1,3 +1,4 @@
+import ResourceReadings from "@/components/resources/ResourceReadings";
 ﻿import Breadcrumb from "@/components/Breadcrumb";
 import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import type { Metadata } from "next";
@@ -75,6 +76,7 @@ export default function AutomationPage() {
 
     <section className={styles.section}><div className={`container ${styles.safety}`}><Reveal><p className={styles.eyebrow}>Limites, sécurité & supervision</p><h2>Un système utile doit aussi<br /><span>être maîtrisable.</span></h2><p>La sécurité et le suivi ne sont pas des promesses absolues. Leur périmètre est défini avec vos contraintes, les accès disponibles et les responsabilités de chacun.</p><Link className="text-link" href="/contact?service=automation-supervision">Étudier la supervision de mon système <span aria-hidden="true">↗</span></Link></Reveal><dl><div><dt>Permissions proportionnées</dt><dd>Limiter les outils accessibles et les actions autorisées ; définir qui peut déclencher, modifier ou valider.</dd></div><div><dt>Données et sources</dt><dd>Identifier les données autorisées, leur qualité, les destinataires et les conditions de conservation à convenir.</dd></div><div><dt>Validation humaine</dt><dd>Garder un accord explicite pour les actions sensibles : messages engageants, changements importants ou décisions à enjeu.</dd></div><div><dt>Journalisation et reprise</dt><dd>Prévoir des traces utiles, des alertes, le traitement des exceptions et un chemin de reprise après erreur.</dd></div><div><dt>Supervision dans la durée</dt><dd>Définir fréquence, seuils et responsables. Maintenance, licences et consommations des outils et modèles sont à distinguer de la mise en place.</dd></div></dl></div></section>
 
+    <ResourceReadings services={["business-workflows","ai-agents"]} heading="Choisir votre premier usage" />
     <section className={`${styles.section} ${styles.final}`}><div className="container"><p className={styles.eyebrow}>Partons d’un processus</p><h2>Quelle tâche aimeriez-vous<br /><em>cesser de répéter ?</em></h2><p>Expliquez-nous comment elle fonctionne aujourd’hui. Nous pourrons cadrer le besoin, les outils concernés et les points de contrôle avant de proposer un périmètre sur devis.</p><div className={styles.actions}><ChatTrigger intent="automation" className="button button-primary">En parler à l’assistant CODE-V <span aria-hidden="true">↗</span></ChatTrigger><Link href="/contact?service=business-workflows" className="button button-ghost">Demander un échange</Link></div></div></section>
   </div>;
 }

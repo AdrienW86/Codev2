@@ -98,3 +98,19 @@ Fichiers modifiés : src/data/navigation.ts, src/data/breadcrumbs.ts, src/compon
 ## Hub Réalisations publié dans le code
 
 La navigation principale Réalisations pointe désormais vers /realisations. Son fil et son JSON-LD utilisent Accueil › Réalisations. La page expose les réalisations internes documentées dans src/data/projects.ts ; aucun lien /realisations/[slug] n’est fabriqué depuis les slugs. Pour un futur détail réellement publié, ajouter son libellé et sa hiérarchie Accueil › Réalisations › Projet. Voir docs/realisations-hub.md pour les critères de preuve, les sources et les contrôles.
+
+## Articles et navigation éditoriale
+
+Le Footer conserve ses autres colonnes. Sa colonne Ressources expose directement Ressources → /ressources, Articles → /articles et Publications Facebook → /facebook, sans sous-menu mobile. Le Header reste inchangé.
+
+/ressources est le hub global (formats, thématiques, vidéo et projets). /articles est la sélection du seul format article publié depuis src/data/resources.ts, sans second registre. Fil visible et JSON-LD : Accueil › Articles.
+
+Les détails restent exclusivement sous /ressources/[slug], avec Accueil › Ressources › Titre. Aucun /articles/[slug] ni doublon indexable. Le hub Articles possède sa propre canonical /articles. Sans article substantiel indexable, il reste noindex, follow ; la première publication article validée et indexable active son indexation automatiquement.
+
+## Livraison autonome — stratégie et motion
+
+/strategie-digitale et /motion-design sont des pages de services publiées, avec Accueil › Stratégie digitale et Accueil › Motion design, visibles et JSON-LD identiques. La destination strategy de navigation.ts pointe désormais vers /strategie-digitale (destinationType service). Le catalogue conserve 32 prestations ; leurs champs existingPage sont renseignés pour digital-strategy et video-motion. Motion design est accessible depuis le laboratoire de /realisations, sans transformer toute la famille Contenu en une seule prestation.
+
+Le Footer et la Home conservent leur composition. Aucun changement des URLs historiques, aucune redirection. Les ressources détaillées restent uniquement sous /ressources/[slug]. Les articles possèdent un sommaire natif à ancres stables dans le rendu, sans JS supplémentaire.
+
+Inventaire technique src/data/public-routes.ts ; sitemap.ts reprend les routes publiées et les ressources indexables du registre. Aucun brouillon, /articles/[slug] dupliqué ou date de modification artificielle. Mentions légales reste accessible et noindex, follow en attendant les informations légales validées. robots.txt autorise les pages publiques et référence le sitemap ; l’exclusion /api/ n’est pas une mesure de sécurité.

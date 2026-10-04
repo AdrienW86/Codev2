@@ -2338,7 +2338,7 @@ export const services: readonly Service[] = [
     complementaryServiceIds: ["editorial-social", "meta-ads", "content-production"],
     pricingModes: ["quote"], pricingNote: "Durée, complexité, formats et moyens de production à chiffrer.",
     provenance: { origin: "home-v2", sources: [homeSource], note: "Vidéo et motion design cités ; capacité de tournage et modalités non documentées." },
-    existingPage: null, commercialQuestions: ["Montage seul ou production complète ?", "Quels partenaires, licences et droits de cession ?"],
+    existingPage: "/motion-design", commercialQuestions: ["Montage seul ou production complète ?", "Quels partenaires, licences et droits de cession ?"],
   }),
   defineService({
     id: "business-workflows", slug: "automatisation-processus", name: "Automatisation des processus métier", category: "automation",
@@ -2521,7 +2521,7 @@ export const services: readonly Service[] = [
  ctaLabel: "étudier mon projet : Stratégie digitale & feuille de route", qualificationQuestions: ["Quel objectif métier guide votre transformation ?","Quels leviers utilisez-vous déjà et lesquels posent problème ?"],
  complementaryServiceIds: ["website","seo","google-ads","social-management","business-workflows","business-tool","digital-accompaniment"], pricingModes: ["quote","fixed","time-materials"], pricingNote: "Modes proposés sans prix validé ; devis et contrat précisent les coûts tiers.",
  provenance: { origin: "new-proposal", sources: ["Brief commercial utilisateur — octobre 2026"], note: "Capacité demandée dans le brief ; conditionnement et niveau de service à valider." },
- existingPage: null, commercialQuestions: ["Quels livrables, volumes et exclusions contractuels ?", "Quel engagement et quel niveau de support ?"]
+ existingPage: "/strategie-digitale", commercialQuestions: ["Quels livrables, volumes et exclusions contractuels ?", "Quel engagement et quel niveau de support ?"]
  }),
   defineService({
  id: "website-care", slug: "website-care", name: "Maintenance de sites", category: "maintenance", summary: "Maintenir un site et traiter ses petites évolutions dans un cadre convenu.",

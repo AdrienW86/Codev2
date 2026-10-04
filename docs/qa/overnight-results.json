@@ -1,0 +1,51 @@
+{
+  "pages": 29,
+  "responsiveCases": 145,
+  "links": 137,
+  "httpDestinations": 50,
+  "metrics": [
+    {
+      "route": "/",
+      "cls": 0.005102622303903839,
+      "lcpMs": 2600,
+      "mp4BeforePlay": 0,
+      "imagesWithoutAlt": 0
+    },
+    {
+      "route": "/solutions/automatisation-ia",
+      "cls": 0,
+      "lcpMs": 40,
+      "mp4BeforePlay": 0,
+      "imagesWithoutAlt": 0
+    },
+    {
+      "route": "/motion-design",
+      "cls": 0,
+      "lcpMs": 44,
+      "mp4BeforePlay": 0,
+      "imagesWithoutAlt": 0
+    },
+    {
+      "route": "/realisations",
+      "cls": 0,
+      "lcpMs": 36,
+      "mp4BeforePlay": 0,
+      "imagesWithoutAlt": 0
+    },
+    {
+      "route": "/ressources",
+      "cls": 0,
+      "lcpMs": 40,
+      "mp4BeforePlay": 0,
+      "imagesWithoutAlt": 0
+    },
+    {
+      "route": "/articles",
+      "cls": 0,
+      "lcpMs": 36,
+      "mp4BeforePlay": 0,
+      "imagesWithoutAlt": 0
+    }
+  ],
+  "errors": []
+}

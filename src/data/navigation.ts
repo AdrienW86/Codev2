@@ -9,7 +9,7 @@ const destinations = {
   content: ["/contact?service=content-production", "Des contenus qui donnent du relief à votre marque.", "Échanger sur ce besoin"],
   automation: ["/solutions/automatisation-ia", "Connecter les outils et alléger les tâches répétitives.", "Explorer cette solution"],
   software: ["/contact?service=business-tool", "Des outils qui suivent votre façon de travailler.", "Échanger sur ce besoin"],
-  strategy: ["/contact?service=digital-strategy", "Choisir une direction avant de multiplier les actions.", "Échanger sur ce besoin"],
+  strategy: ["/strategie-digitale", "Choisir une direction avant de multiplier les actions.", "Explorer cette solution"],
   maintenance: ["/contact?service=website-care", "Entretenir et faire évoluer votre environnement digital.", "Échanger sur ce besoin"],
 } as const;
 
@@ -17,7 +17,7 @@ export const solutionNavigation = serviceFamilies.map(family => ({
   id: family.id, name: family.name, intent: family.defaultChatIntent,
   href: destinations[family.id][0], description: destinations[family.id][1], cta: destinations[family.id][2],
   // Promote a family to "family" only once its dedicated route is published.
-  destinationType: (family.id === "web" || family.id === "automation" ? "family" : family.id === "acquisition" || family.id === "seo" ? "service" : "contact") as "family" | "service" | "contact",
+  destinationType: (family.id === "web" || family.id === "automation" ? "family" : family.id === "acquisition" || family.id === "seo" || family.id === "strategy" ? "service" : "contact") as "family" | "service" | "contact",
 }));
 export type SolutionNavigation = (typeof solutionNavigation)[number];
 // Shared, published entry points for the home, mobile menu and footer.

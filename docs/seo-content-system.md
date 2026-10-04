@@ -95,3 +95,37 @@ Références techniques : [métadonnées Next.js 15](https://nextjs.org/docs/15/
 La validation de livraison comprend TypeScript, build isolé, responsive 320/375/768/1024/1440, clavier, reduced motion, navigation Header desktop/mobile, breadcrumb et absence de liens internes cassés. Les vidéos utilisent MotionVideo existant en lecture volontaire, les captures Next Image avec dimensions connues et chargement différé. Aucun nouveau filtre client lourd.
 
 Résultats de la validation initiale : tous ces contrôles passent. Les 19 destinations internes du hub et leurs ancres sont valides ; les trois slugs de brouillons et un slug inconnu renvoient HTTP 404. Le hub ne produit ni Article, ni BlogPosting, ni VideoObject fictif. Le déclencheur de qualification ouvre l’assistant existant. Aucune requête MP4 n’est émise avant lecture. CLS local Chromium au chargement : environ 0,0083 ; cette mesure ne remplace pas des données terrain. Build : 19 pages statiques générées, hub de 3,6 ko et environ 112 ko de JS initial incluant les composants partagés. Aucun nouveau média ni dépendance ajouté.
+
+## Hub Articles — convention et publication
+
+/articles complète /ressources sans le remplacer : le premier sélectionne uniquement format: article, le second reste le hub de tous les formats. Source exclusive : src/data/resources.ts, helper getPublishedArticles(), tri par date décroissante. Le filtre partagé exige published, contenu non vide, auteur, sources et dates valides ; une date future est exclue. Draft, scheduled ou archived ne passent jamais le statut published.
+
+État actuel : zéro article publié. Aucun brief, faux compteur, date ou carte de remplissage sur /articles. La page affiche une introduction, une invitation sobre à explorer les ressources et réalisations, puis le contact. Aucun filtre client ajouté. À publication, la sélection featured (sinon le plus récent) ouvre le flux, avec compositions alternées, médias dimensionnés et différés, thème, date, lecture lorsqu’elle est renseignée, et solutions liées.
+
+Indexation : robots noindex, follow tant qu’aucun article publié validé n’a indexable: true. Une première publication substantielle remplissant ces conditions suffit à activer index, follow, sans modifier le composant. Revalidation 300 secondes, en complément du déploiement nécessaire pour modifier le registre TypeScript. Une publication future reste exclue avant sa date. Aucun seuil numérique artificiel.
+
+URLs : détails uniquement /ressources/[slug], canonical existante conservée. /articles est un hub de sélection, jamais une seconde copie des textes. Breadcrumb du hub Accueil › Articles ; détail Accueil › Ressources › Titre. Footer Ressources : /ressources, /articles, /facebook. Le hub Ressources propose un accès explicite à Articles.
+
+### Validation du hub Articles — 4 octobre 2026
+
+TypeScript sans émission, tests du registre et build production isolé réussis. /articles : 1,01 kB, JS initial partagé inclus 110 kB ; aucune dépendance ajoutée. Chromium : /articles et /ressources aux largeurs 320, 375, 768, 1024 et 1440, sans débordement. Trois liens Footer visibles et zones d’au moins 40 px ; focus clavier visible ; reduced motion sans animation dans main ; zéro erreur JavaScript. Vingt destinations internes et leurs ancres vérifiées, aucun lien cassé. Title, canonical, noindex/follow, H1 unique et BreadcrumbList Accueil › Articles contrôlés. Captures complètes 375 et 1440 inspectées. Aucun contenu fictif ajouté. Le flux avec articles et médias devra être revu lors de la première publication réelle, actuellement absente du registre.
+
+## Première publication — 4 octobre 2026
+
+Cinq articles complets sont maintenant publiés, indexables et visibles dans /articles et /ressources. Le précédent état sans article et ses résultats restent un historique. Auteur : organisation CODE-V ; horodatage réel de cette édition. Les détails conservent /ressources/[slug]. Voir docs/seo-articles-first-five.md pour les titles, descriptions, intentions, structures, liens, CTA, sources et longueurs.
+
+Le rendu de blocs accepte désormais H3, tableaux sémantiques et groupes de liens typés. Les tableaux disposent d’une région défilante au clavier sur petit écran ; les liens internes passent par Next Link. Aucun HTML libre, nouvelle base de contenus ou bibliothèque client ajoutée. Le filtre de publication vérifie aussi les cellules et les destinations de liens. Les trois briefs antérieurs restent draft et renvoient 404 ; ils ne sont pas transformés en articles de remplissage.
+
+Les repères de prix viennent du dossier France Num mis à jour en juin 2025 et sont explicitement distingués d’une grille tarifaire 2026 et des prix CODE-V. Les autres articles apportent des méthodes de décision et des exemples pédagogiques sans attribuer de performance à un client. Les recommandations Google sont reliées à leur documentation officielle. Pas de notes, avis, image fictive ni promesse de résultat dans les données structurées.
+
+## Deuxième salve — 4 octobre 2026
+
+Six articles supplémentaires publiés, total onze. Voir docs/seo-articles-second-wave.md pour métadonnées, intentions, liens, CTA et sources. Les cinq textes précédents restent conservés ; seules quelques lectures connexes ont été affinées pour intégrer les nouveaux sujets.
+
+Frontière éditoriale : visibilité-locale-google décrit une démarche locale globale ; optimiser-fiche-google-business-profile traite l’entretien de la fiche. refonte-site-internet-quand couvre l’ensemble des motifs de refonte ; refaire-site-ameliorer-seo se concentre sur le diagnostic SEO et la migration. Les contenus se renvoient sans dupliquer leurs parcours.
+
+Les pages Publicité, SEO local et Automatisation proposent ResourceReadings, un composant serveur limité à quatre lectures publiées liées aux IDs de prestations. Les sections existantes Création et SEO utilisent déjà le même registre. Pas de CMS ou de catalogue secondaire. Les sujets draft ne sont plus montrés sur le hub lorsque des ressources publiées sont disponibles.
+
+Les détails ajoutent un sommaire accessible et des ancres H2/H3 avec marge sous le Header. Le sitemap exclut les drafts et ne retient que les ressources indexables. Les contraintes d’éligibilité Local Services sont vérifiées auprès de Google ; aucun budget universel, volume ou résultat commercial ajouté.
+
+Accessibilité complémentaire : les petits textes colorés Articles et la légende vidéo ont été assombris ou passés en cyan selon leur fond. PageHero utilise le cyan pour son eyebrow sur fond sombre, sans toucher au hero Home. Les placeholders du formulaire sont plus contrastés ; statut de succès, erreur et envoi disposent d’annonces ARIA. L’API de contact reste inchangée.
