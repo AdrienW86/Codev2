@@ -1,0 +1,71 @@
+[
+  {
+    "intent": "acquisition",
+    "conversation": [
+      {
+        "message": "Je veux plus de clients",
+        "status": 200,
+        "reply": "Pour vous aider à obtenir plus de clients, nous devons d'abord comprendre votre activité et la zone géographique où vous souhaitez vous développer. Dans quel secteur travaillez-vous et dans quelle zone souhaitez-vous obtenir davantage de prospects ?",
+        "actionId": null
+      },
+      {
+        "message": "Je suis couvreur à Perpignan.",
+        "status": 200,
+        "reply": "D'où viennent vos clients aujourd'hui ?",
+        "actionId": null
+      },
+      {
+        "message": "J’ai un site mais tout vient du bouche-à-oreille. Je veux recevoir davantage de demandes de devis.",
+        "status": 200,
+        "reply": "Vous cherchez à recevoir davantage de demandes de devis au-delà du bouche-à-oreille. Le référencement local et l'optimisation de votre site pour faciliter les contacts sont deux pistes à explorer. Nous pouvons poursuivre avec CODE-V pour définir les priorités.",
+        "actionId": "contact-seo"
+      }
+    ]
+  },
+  {
+    "intent": "automation",
+    "conversation": [
+      {
+        "message": "Je perds du temps à recopier les mêmes infos",
+        "status": 200,
+        "reply": "Dans quels outils recopiez-vous ces informations ?",
+        "actionId": null
+      },
+      {
+        "message": "Je recopie les demandes de Gmail dans Google Sheets.",
+        "status": 200,
+        "reply": "À quelle fréquence faites-vous cette recopie ?",
+        "actionId": null
+      },
+      {
+        "message": "Environ 20 demandes par semaine. Je veux garder une vérification humaine avant d’envoyer les devis.",
+        "status": 200,
+        "reply": "Vous souhaitez automatiser la recopie des demandes de Gmail vers Google Sheets tout en conservant une vérification humaine avant l'envoi des devis. Nous pouvons explorer des solutions d'automatisation qui intègrent cette vérification. Pour aller plus loin, vous pouvez identifier ce que vous pouvez automatiser avec CODE-V.",
+        "actionId": "contact-automation"
+      }
+    ]
+  },
+  {
+    "intent": "website",
+    "conversation": [
+      {
+        "message": "Je veux refaire mon site",
+        "status": 200,
+        "reply": "Quel est le rôle principal de votre site dans votre activité ?",
+        "actionId": null
+      },
+      {
+        "message": "Je suis architecte à Paris. Je veux mieux montrer les réalisations et faciliter les demandes.",
+        "status": 200,
+        "reply": "Vous souhaitez mettre en avant vos réalisations et améliorer le processus de contact. Une refonte de votre site pour valoriser vos projets et optimiser le parcours utilisateur sont des pistes à explorer. Nous pouvons approfondir cela avec CODE-V pour définir vos priorités.",
+        "actionId": "contact-website"
+      },
+      {
+        "message": "Le site actuel est difficile à lire sur mobile et les réalisations sont peu visibles.",
+        "status": 200,
+        "reply": "Vous rencontrez des problèmes d'accessibilité sur mobile et de visibilité de vos réalisations. Une refonte axée sur l'optimisation mobile et la mise en avant de vos projets pourrait répondre à ces enjeux. Nous pouvons discuter de votre projet plus en détail avec CODE-V.",
+        "actionId": "contact-website"
+      }
+    ]
+  }
+]

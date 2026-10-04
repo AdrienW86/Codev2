@@ -4,7 +4,7 @@ import { ContactConfirmationEmail } from "@/emails/ContactConfirmationEmail";
 import { NewContactEmail } from "@/emails/NewContactEmail";
 import type { ContactEmailData } from "@/emails/emailStyles";
 
-const serviceLabels: Record<string,string> = { website:"Création ou refonte de site",seo:"Référencement",ads:"Publicité", "website-care":"Maintenance de site", "social-management":"Réseaux sociaux", automation:"Automatisation & IA", "digital-strategy":"Stratégie digitale" };
+const serviceLabels: Record<string,string> = { website:"Création ou refonte de site",seo:"Référencement", "local-seo":"SEO local & Google Business Profile", "business-workflows":"Automatisation & IA", "content-production":"Création de contenus", "business-tool":"Logiciels métier & interfaces sur mesure",ads:"Publicité", "website-care":"Maintenance de site", "social-management":"Réseaux sociaux", automation:"Automatisation & IA", "digital-strategy":"Stratégie digitale" };
 const mailbox = (value: string) => /^[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9-]+(?:\.[A-Z0-9-]+)+$/i.test(value) && value.length <= 254;
 const unavailable = () => NextResponse.json({ error: "L’envoi est momentanément indisponible. Merci de réessayer plus tard." }, { status: 503 });
 

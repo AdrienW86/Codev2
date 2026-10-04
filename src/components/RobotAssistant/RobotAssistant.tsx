@@ -2,11 +2,14 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import styles from "./robotAssistant.module.css";
-import { trackChatIntent, trackChatOpen } from "@/lib/analytics";
+import { trackChatIntent, trackChatOpen, trackContactCta } from "@/lib/analytics";
 import { chatIntents, chatOpenEvent, defaultWelcome, isChatIntent, type ChatIntent } from "./chat";
 
+import Link from "next/link";
+import { chatActions, isChatActionId, type ChatActionId } from "@/lib/chat-actions";
+
 type Expression = "happy" | "neutral" | "thinking" | "surprised" | "waving";
-type Message = { role: "user" | "assistant"; content: string };
+type Message = { role: "user" | "assistant"; content: string; actionId?: ChatActionId };
 type Thread = ChatIntent | "general";
 const welcome = (thread: Thread): Message => ({ role: "assistant", content: thread === "general" ? defaultWelcome : chatIntents[thread].welcome });
 
@@ -90,7 +93,7 @@ export default function RobotAssistant() {
       const data = await res.json();
       if (typeof data.reply !== "string") throw new Error("Réponse invalide");
       if (request.current !== controller) return;
-      setConversations(previous => ({ ...previous, [requestThread]: [...(previous[requestThread] ?? []), { role: "assistant", content: data.reply }] }));
+      setConversations(previous => ({ ...previous, [requestThread]: [...(previous[requestThread] ?? []), { role: "assistant", content: data.reply, ...(isChatActionId(data.actionId) ? { actionId: data.actionId } : {}) }] }));
       setExpression("happy");
     } catch {
       if (controller.signal.aborted || request.current !== controller) return;
@@ -116,7 +119,7 @@ export default function RobotAssistant() {
     {isOpen && <div id="codev-chat" role="dialog" aria-labelledby="codev-chat-title" className={styles["robot-chat"]} onKeyDown={event => { if (event.key === "Escape") { event.stopPropagation(); closeChat(); } }}>
       <div className={styles["robot-chat-header"]}><div><img src="/brand/code-v-robot.svg" width="40" height="40" alt="" /><strong id="codev-chat-title">Assistant CODE-V</strong><span>{thread === "general" ? "Assistant CODE-V" : chatIntents[thread].label}</span></div><button className={styles["close-button"]} onClick={closeChat} aria-label="Fermer le chat">×</button></div>
       <div ref={content} role="log" aria-live="polite" aria-label="Conversation avec CODE-V" className={styles["robot-chat-content"]}>
-        {messages.map((msg, i) => <div key={i} className={msg.role === "user" ? styles["robot-message-user"] : styles["robot-message"]}>{msg.content}</div>)}
+        {messages.map((msg, i) => <div key={i} className={msg.role === "user" ? styles["robot-message-user"] : styles["robot-message"]}>{msg.content}{msg.actionId && <Link href={chatActions[msg.actionId].href} className={styles["chat-action"]} onClick={() => { const action = chatActions[msg.actionId!]; if (action.href.startsWith('/contact?')) trackContactCta({ source_path: window.location.pathname, intent: thread, service: new URLSearchParams(action.href.split('?')[1]).get('service') ?? undefined, location: 'assistant', destination_path: '/contact' }); closeChat(); }}>{chatActions[msg.actionId].label}</Link>}</div>)}
         {isTyping && <div role="status" className={styles["robot-message"]}>Je réfléchis...</div>}
       </div>
       <form className={styles["robot-chat-form"]} onSubmit={sendMessage}>

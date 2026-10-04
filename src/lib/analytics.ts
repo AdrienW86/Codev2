@@ -17,7 +17,7 @@ let adapter: AnalyticsAdapter = (event, properties) => track(event, { ...propert
 let lastContactCta: ConversionProperties | undefined;
 const locations = ["header", "footer", "hero", "content", "final", "article", "form", "assistant"];
 const intents = ["website", "acquisition", "automation", "strategy", "general"];
-const aliases: Record<string, string> = { ads: "google-ads", "seo-local": "local-seo" };
+const aliases: Record<string, string> = { ads: "google-ads", automation: "business-workflows", "seo-local": "local-seo" };
 const ctaLabels = ["Parler de votre projet", "Parler de votre visibilité", "Parler de votre acquisition", "Étudier une campagne", "Faire le point sur votre site", "Identifier ce que vous pouvez automatiser", "Faire le point sur votre dispositif", "Trouver mon point d’entrée", "Préciser le périmètre de mon site", "Parler de votre visibilité locale", "Choisir votre stratégie d’acquisition", "Parler de votre fiche Google"];
 export function knownCtaLabel(text: string) {
   const label = text.replace(/\s+/g, " ").trim();

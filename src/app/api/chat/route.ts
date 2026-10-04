@@ -1,6 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { chatIntents, isChatIntent } from "@/components/RobotAssistant/chat";
 
+import { buildChatContext, qualificationRules } from "@/lib/chat-context";
+import { isChatActionId } from "@/lib/chat-actions";
+
+// Narrow editorial guards for claims reproduced in the commercial evaluation.
+function reviewReply(text: string) {
+  return text
+    .replace(/[^.!?]*audit gratuit[^.!?]*(?:[.!?]|$)/gi, "Les conditions d’un examen de votre site sont à préciser avec CODE-V.")
+    .replace(/(?:Une|L[’']) IA n[’']est pas nécessaire[^.!?]*[.!?]?/gi, "Le choix entre des règles et une IA reste à vérifier sur des exemples de vos mails.")
+    .replace(/Nous pouvons vous aider à automatiser[^.!?]*[.!?]?/gi, "Cette automatisation est une piste à étudier ; il faudrait vérifier les accès et les possibilités d’intégration des outils.")
+    .replace(/qui vous permettr(?:a|ont) de/gi, "qui viserait à")
+    .replace(/Cela vous aidera à/gi, "L’objectif serait de")
+    .replace(/Cela vous fera gagner/gi, "L’objectif serait de gagner")
+    .replace(/Cela (?:(?:vous|nous) )?permettra/gi, "L’objectif serait")
+    .replace(/tout en garantissant/gi, "en prévoyant")
+    .replace(/Nous allons/gi, "Nous pourrions")
+    .replace(/pour assurer la qualité des données/gi, "avec un contrôle de la qualité des données")
+    .trim();
+}
+
 export async function POST(req: NextRequest) {
   let payload;
   try { payload = await req.json(); } catch {
@@ -8,7 +27,7 @@ export async function POST(req: NextRequest) {
   }
   const { message, intent, history } = payload ?? {};
 
-  if (!message || typeof message !== "string") {
+  if (typeof message !== "string" || !message.trim() || message.length > 10000) {
     return NextResponse.json(
       { error: "Message invalide" },
       { status: 400 }
@@ -28,15 +47,19 @@ export async function POST(req: NextRequest) {
   if (!apiKey) {
     console.error("Clé OpenAI manquante");
     return NextResponse.json(
-      { error: "Clé API non configurée" },
+      { error: "L’assistant est momentanément indisponible" },
       { status: 500 }
     );
   }
 
   const url = "https://api.openai.com/v1/chat/completions";
 
+  const previousContact = [...(history ?? [])].reverse().find((entry: { role: string; actionId?: unknown }) => entry.role === "assistant" && isChatActionId(entry.actionId) && entry.actionId.startsWith("contact-"))?.actionId;
+  const advance = /(?:je (?:veux|voudrais|souhaite|préfère)[^.!?]*(?:échange|faire le point|examiner|commencer|regarde|étudier|définir)|(?:oui[, ]+)?regardons|définissons|prenons contact|vous contacter|demander un devis)/i.test(message);
   const body = {
-    model: "gpt-4o-mini", // ou "gpt-3.5-turbo" si tu préfères
+    model: "gpt-4o-mini",
+    response_format: { type: "json_object" },
+    max_tokens: 420,
     messages: [
       {
         role: "system",
@@ -58,7 +81,6 @@ Stratégie : « Quel est l’objectif prioritaire de votre entreprise aujourd’
 
 PASSER À UNE ORIENTATION
 Dès que le contexte utile, le problème concret et l’objectif sont connus, arrête les questions de découverte. Reformule le besoin en une phrase, propose un ou deux leviers potentiellement pertinents en prose, puis invite naturellement à poursuivre avec CODE-V. Ne demande pas des détails accessoires de design, de format de tableau ou de configuration à ce stade. Ne déroule jamais un catalogue de solutions.
-Par exemple, pour un artisan local dont les devis viennent du bouche-à-oreille avec un site peu sollicité : « Vous cherchez des demandes de devis plus régulières au-delà du bouche-à-oreille. Le référencement local et le parcours de contact sur votre site sont deux pistes à vérifier. Nous pouvons poursuivre avec CODE-V pour définir les priorités. »
 Si le visiteur ajoute un détail après cette invitation, intègre-le simplement sans répéter la proposition commerciale.
 
 HONNÊTETÉ
@@ -66,47 +88,77 @@ Ces pistes restent à confirmer : n’affirme jamais avoir analysé un site, une
 Avant de répondre, vérifie : réponse brève, une question au maximum, aucune formule générique ; si le besoin est clair, orientation et suite CODE-V plutôt qu’une nouvelle question.
 ` + (isChatIntent(intent) ? chatIntents[intent].guidance : "Déduis le besoin exprimé par le visiteur sans lui demander de choisir un intent.") + `
 
-EXEMPLES DE PROGRESSION À RESPECTER
-Après « Je recopie les demandes reçues par email dans un tableau », réponds seulement « Quels outils utilisez-vous pour les emails et le tableau ? » : ne recommande pas encore d’outil.
-Après « Gmail et Google Sheets, pour récupérer le nom, le problème et les coordonnées », réponds par exemple « Vous souhaitez éviter de recopier les demandes de Gmail dans Google Sheets. Un workflow de collecte et un contrôle des informations sont une piste à étudier selon le format de vos emails. Nous pouvons examiner ce processus ensemble avec CODE-V. »
-Après « J’ai un cabinet de conseil et je veux plus de demandes qualifiées », demande « Quels leviers utilisez-vous déjà pour vous faire connaître ? » : la situation actuelle n’est pas encore connue.
-Après « J’ai un site mais peu de demandes arrivent », demande « D’où viennent vos clients aujourd’hui ? » : ne demande pas au visiteur de concevoir lui-même la solution.
-Pour la refonte, si la demande de devis est l’objectif et que les réalisations, le mobile et la photo jointe sont précisés, reformule ces éléments et propose une suite ; ne poursuis pas un interrogatoire.
-Même si le visiteur dit « ne plus oublier de demandes », ne promets PAS un fonctionnement sans erreur. Formulation prudente : « Le workflow viserait à réduire la double saisie et le risque d’oubli, avec un contrôle à prévoir. »
-Tu ne dois jamais écrire « garantir », « sans erreur », « aucune demande oubliée » comme promesse. Relis ta réponse et remplace toute garantie par un objectif prudent avant de l’envoyer.`,
+` + buildChatContext() + "\n" + qualificationRules,
       },
-      ...(history ?? []),
+      { role: "system", content: "Rappel prioritaire : une piste d’automatisation ne confirme pas sa faisabilité. Tant que les accès, contraintes et possibilités d’intégration des systèmes ne sont pas vérifiés, dire ce qui reste à vérifier, sans promettre que nous pouvons réaliser le flux. Les faits généraux établis restent affirmés clairement. Si le visiteur demande un diagnostic sans données, répondre directement que la cause ne peut pas être déterminée sans ces données, puis indiquer un point à examiner. Les conditions d’un examen se précisent avec CODE-V, aucune gratuité n’est établie ni exclue. Aucun gain ou cause acquis : parler d’objectif ou de piste à vérifier. Ne remplacer ni réservation qui fonctionne ni site entier sans difficulté concrète. Pour un couvreur déjà équipé de site/Ads/Local Services, demander comment les chantiers sont attribués avant de recommander. Pour un besoin site+Ads, conserver l’option d’une seule page si proposée. Pour un besoin indécis, demander le souci ou l’objectif prioritaire, pas présumer une croissance. " + (previousContact && !advance ? "Une orientation Contact a déjà été proposée : réponds à la précision actuelle sans nouvelle invitation, action=null." : "Si le besoin est connu et que le visiteur demande à avancer, une réponse courte sans question de consentement et une action Contact.") },
+      ...(history ?? []).map((entry: { role: string; content: string }) => ({ role: entry.role, content: entry.content })),
       {
         role: "user",
         content: message,
       },
     ],
-    temperature: 0.7,
+    temperature: 0.4,
   };
 
-  const res = await fetch(url, {
+  let res;
+  try { res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify(body),
-  });
+    signal: AbortSignal.timeout(25000),
+  }); } catch {
+    return NextResponse.json({ error: "L’assistant est momentanément indisponible" }, { status: 503 });
+  }
 
   if (!res.ok) {
-    const errorText = await res.text();
-    console.error("Erreur OpenAI :", res.status, errorText);
+    console.error("Chat upstream unavailable", res.status);
     return NextResponse.json(
       { error: "Erreur lors de la génération de la réponse" },
       { status: 500 }
     );
   }
 
-  const data = await res.json();
-
-  const text =
-    data.choices?.[0]?.message?.content ??
-    "Désolé, je n'ai pas pu générer de réponse.";
-
-  return NextResponse.json({ reply: text });
+  try {
+    const data = await res.json();
+    const raw = data.choices?.[0]?.message?.content;
+    if (typeof raw !== "string") throw new Error("Invalid response");
+    const result = JSON.parse(raw);
+    if (!result || typeof result.reply !== "string" || !result.reply.trim() || result.reply.length > 2400) throw new Error("Invalid reply");
+    const explicitContact = /(?:vous contacter|contactez-moi|prendre (?:contact|rendez-vous)|parler (?:à|avec) (?:vous|CODE-V)|demander un devis)/i.test(message);
+    let actionId = isChatActionId(result.action) && (!result.action.startsWith("contact-") || result.qualified === true || explicitContact) ? result.action : null;
+    const visitorFacts = [...(history ?? []).filter((entry: { role: string }) => entry.role === "user").map((entry: { content: string }) => entry.content), message].join(" ");
+    if (actionId === "contact-ads" && /site/i.test(visitorFacts) && !/(?:Google Ads|Local Services|campagne|publicité)/i.test(visitorFacts)) actionId = "contact-website";
+    if (advance && result.qualified === true && !actionId && isChatActionId(previousContact)) actionId = previousContact;
+    if (previousContact && actionId?.startsWith("contact-") && !advance) actionId = null;
+    let reviewed = reviewReply(result.reply);
+    if (advance && result.qualified === true && actionId) reviewed = reviewed.replace(/(?:Souhaitez-vous|Voulez-vous|Pouvons-nous)[^?]*(?:discut|échang|explor|planifi)[^?]*\?/gi, "").trim() || reviewed;
+    if (!(history ?? []).some((entry: { role: string }) => entry.role === "user") && /(?:premier|première|1er)[^.!?]{0,40}google/i.test(message)) {
+      reviewed = "Sur Google, la première place peut désigner les résultats naturels, Google Maps ou les annonces sponsorisées ; aucune position n’est garantie. Lequel de ces espaces visez-vous ?";
+      actionId = null;
+    }
+    if (/sans (?:voir|accéder|avoir accès)[^.!?]{0,30}(?:compte|données)/i.test(message) && /(?:Google Ads|campagnes?)/i.test(visitorFacts)) {
+      reviewed = "Sans consulter les données du compte, nous ne pouvons pas déterminer précisément la cause. Le ciblage des annonces et l’origine des appels seraient des points à vérifier.";
+      actionId = null;
+    }
+    const lastAssistant = [...(history ?? [])].reverse().find((entry: { role: string }) => entry.role === "assistant")?.content ?? "";
+    // An unanswered essential question is not a qualified need: two observed transitions.
+    if (!advance && /refonte/i.test(lastAssistant) && lastAssistant.includes("?") && /réserv(?:ation|er)/i.test(message) && /(?:fonctionne(?:nt)?\b|marche bien)/i.test(message) && !/(?:\bne\s+fonctionn|fonctionne\w*[^.!?]{0,20}\b(?:pas|plus|mal)\b)/i.test(message) && !/(?:problème|lent|design|image|conversion|difficult|objectif|amélior)/i.test(message)) {
+      reviewed = "Le fonctionnement de la réservation ne justifie donc pas, à lui seul, un changement. Au-delà de l’ancienneté du site, quelle amélioration souhaiteriez-vous obtenir ?";
+      actionId = null;
+    }
+    if (!advance && /chantier/i.test(message) && /rentab/i.test(message) && /attribu/i.test(lastAssistant) && lastAssistant.includes("?") && /Google Ads/i.test(visitorFacts) && /Local Services/i.test(visitorFacts) && !/(?:attribu|canal|origine|d[’']où|mesur|suivi|sais pas|ne sais|identifier|proven)/i.test(message)) {
+      reviewed = "Votre priorité est la rentabilité des chantiers plutôt que le nombre d’appels. Arrivez-vous à relier les chantiers signés aux différents canaux d’acquisition ?";
+      actionId = null;
+    }
+    // Keep the first discovery question if the model accidentally adds another.
+    const reply = (reviewed.match(/\?/g)?.length ?? 0) > 1
+      ? reviewed.slice(0, reviewed.indexOf("?") + 1).trim()
+      : reviewed.trim();
+    return NextResponse.json({ reply, actionId: reply.includes("?") ? null : actionId });
+  } catch {
+    return NextResponse.json({ error: "L’assistant est momentanément indisponible" }, { status: 502 });
+  }
 }

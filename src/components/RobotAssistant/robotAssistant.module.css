@@ -31,3 +31,4 @@
 
 .robot-image { object-fit:contain; border-radius:0; }
 .robot-chat-header img,.show-cody-button img { width:40px; height:32px; object-fit:contain; border-radius:0; }
+.chat-action{display:block;margin-top:12px;font-weight:700;text-decoration:underline;text-underline-offset:3px;color:#285bbe}.chat-action:focus-visible{outline:2px solid #356ee0;outline-offset:4px}

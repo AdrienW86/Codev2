@@ -4,7 +4,7 @@ const exportsObject = {}, sent = [];
 const code = ts.transpileModule(fs.readFileSync('src/lib/analytics.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
 vm.runInNewContext(code, { exports: exportsObject, URL, window: { location: { pathname: '/contact' } }, require: name => name === '@vercel/analytics' ? { track: (event, props) => sent.push({ event, props }) } : { publicRoutes: ['/contact', '/creation-site', '/realisations'] } });
 const a = exportsObject;
-a.configureTracking({ serviceIds: ['website', 'google-ads'], moneyPages: { '/creation-site': 'website' }, articles: { '/ressources/prix': ['/creation-site'] }, projects: { 'https://example.test/': 'test-project' }, projectAnchors: { selection: 'test-project' } });
+a.configureTracking({ serviceIds: ['website', 'google-ads', 'business-workflows'], moneyPages: { '/creation-site': 'website' }, articles: { '/ressources/prix': ['/creation-site'] }, projects: { 'https://example.test/': 'test-project' }, projectAnchors: { selection: 'test-project' } });
 a.trackConversion('contact_cta_click', { source_path: '/creation-site?email=private@example.test#private', destination_path: '/contact?name=private', service: 'website', location: 'hero', email: 'private@example.test', message: 'PRIVATE' });
 assert.deepEqual(JSON.parse(JSON.stringify(sent[0])), { event: 'contact_cta_click', props: { source_path: '/creation-site', service: 'website', location: 'hero', destination_path: '/contact' } });
 a.trackConversion('phone_click', { source_path: '/contact', service: 'private@example.test', location: 'PRIVATE', intent: 'PRIVATE', destination_path: '/private@example.test' });
@@ -38,6 +38,8 @@ assert.equal(a.knownCtaLabel('Parler de votre projet PRIVATE'), 'Parler de votre
 assert.equal(a.knownCtaLabel('PRIVATE'), undefined);
 assert.equal(a.sanitizeAnalyticsEvent({ type: 'pageview', url: 'https://www.code-v.fr/contact?email=PRIVATE#PRIVATE' }).url, 'https://www.code-v.fr/contact');
 assert.equal(a.sanitizeAnalyticsEvent({ type: 'event', url: 'https://www.code-v.fr/PRIVATE' }), null);
+a.trackContactSuccess('automation');
+assert.equal(sent.at(-1).props.service,'business-workflows');
 a.setAnalyticsAdapter(() => { throw Error('provider offline'); });
 assert.doesNotThrow(() => a.trackContactSuccess('website'));
 assert(!JSON.stringify(sent).includes('PRIVATE'));
