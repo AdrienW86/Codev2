@@ -145,7 +145,28 @@ function observedClient(data: ClientObservation): Project {
   });
 }
 
+function acquisitionCase(slug: "protection-nuisibles" | "nuisibles-toulon"): Project {
+  const protection = slug === "protection-nuisibles";
+  const name = protection ? "Protection Nuisibles" : "Nuisibles Toulon";
+  const services: ServiceId[] = protection ? ["website", "local-seo", "local-services", "google-ads"] : ["website", "google-ads"];
+  const families: ServiceCategory[] = protection ? ["web", "seo", "acquisition"] : ["web", "acquisition"];
+  const visuals: ProjectImage[] = [
+    { src: `/projects/${slug}/home.webp`, alt: `Page d’accueil réelle de ${name} sur ordinateur.`, width: 1440, height: 1000, caption: "Capture du site public, 4 octobre 2026." },
+    { src: `/projects/${slug}/mobile.webp`, alt: `Page d’accueil réelle de ${name} sur mobile.`, width: 375, height: 812, caption: "Capture mobile du site public, 4 octobre 2026." },
+  ];
+  const proof: ProjectImage = protection
+    ? { src: '/projects/protection-nuisibles/google-local-pack.webp', alt: 'Recherche Google nuisibles perpignan : Protection Nuisibles troisième dans le pack local, note 5,0 sur 5 et 427 avis visibles.', width: 995, height: 837, caption: 'Recherche Google « nuisibles perpignan » — Protection Nuisibles visible dans le top 3 local au moment de la capture.' }
+    : { src: '/projects/nuisibles-toulon/google-ads-first-position.webp', alt: 'Capture mobile Google : nuisibles-toulon.fr premier résultat sponsorisé affiché.', width: 750, height: 1334, caption: 'Résultats sponsorisés Google — nuisibles-toulon.fr visible en première position sponsorisée au moment de la capture.' };
+  visuals.push(proof);
+  const verifiedResults: Project['verifiedResults'] = [{ label: protection ? 'Visibilité locale observée' : 'Visibilité sponsorisée observée', value: protection ? 'Protection Nuisibles apparaît dans le top 3 local Google sur la requête « nuisibles perpignan » au moment de la capture.' : 'Sur la recherche observée à Toulon, nuisibles-toulon.fr apparaît en première position sponsorisée au moment de la capture.', sourceRef: 'public' + proof.src, methodology: protection ? 'Capture fournie, troisième entrée du pack local ; 5,0/5 et 427 avis visibles. Classement variable selon localisation, appareil et moment. Date de capture non fournie.' : 'Capture mobile fournie, premier résultat sponsorisé affiché. Position variable selon requête, enchère, concurrence et contexte. Requête et date de capture non fournies.', publicationApprovalRef: 'docs/case-studies-local-acquisition.md' }];
+  const context = protection ? "Entreprise nouvellement créée à Perpignan et alentours, sans site, fiche Google Business Profile, campagne d’acquisition ni client au démarrage." : "Besoin d’acquisition locale à Toulon et environs, avec création du site et mise en place d’une campagne Google Ads.";
+  const workCompleted = protection ? ["Création complète du site", "Création de la fiche Google Business Profile", "Mise en place Google Local Services et création des annonces", "Mise en place Google Ads", "Gestion et suivi de la présence digitale dans la durée, depuis environ deux ans"] : ["Création du site", "Mise en place d’une campagne Google Ads pour l’acquisition locale"];
+  return completeProject({ id: slug, slug, title: name, kind: "client", status: "published", clientName: name, publicationApprovalRef: "docs/case-studies-local-acquisition.md", format: "website", families, context, intervention: workCompleted.join(" ; "), technologies: [], relatedServices: services, sourceRefs: ["docs/case-studies-local-acquisition.md", `https://www.${slug}.fr/`, "public" + proof.src], visuals, video: null, cta: { href: `/realisations/${slug}`, label: "Lire l’étude de cas" }, verifiedResults, testimonial: null }, { name, publicUrl: `https://www.${slug}.fr/`, sector: "pest-control", services, summary: protection ? "Du lancement de l’entreprise à une présence locale structurée : site, fiche Google, Local Services et Google Ads." : "Création du site et mise en place de Google Ads pour l’acquisition locale à Toulon.", objectives: ["Construire une présence web et une acquisition locale"], workCompleted, location: protection ? "Perpignan et alentours" : "Toulon et environs", caseStudyReady: true, seoTitle: protection ? "Protection Nuisibles : site, SEO local & acquisition | CODE-V" : "Nuisibles Toulon : site web & Google Ads local | CODE-V" });
+}
+
 export const projects: readonly Project[] = [
+  acquisitionCase("protection-nuisibles"),
+  acquisitionCase("nuisibles-toulon"),
   ...existingProjects.map(project => completeProject(project, {
     name: project.id === "code-v-site" ? "Site CODE-V" : "Film CODE-V — Automatisation & IA",
     featured: false,

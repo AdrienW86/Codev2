@@ -94,14 +94,16 @@ for (const slug of clients) {
   assert.equal(p.testimonial, null);
   assert.equal(p.caseStudyReady, false);
 }
-assert.equal(projects.length, 9);
+assert.equal(projects.length, 11);
 assert.equal(catalog.getProjectBySlug("les-delices-de-saleilles"), undefined);
 assert.equal(catalog.getProjectBySlug("buffalo-snack").publicUrl, "https://buffalo-snack.vercel.app/");
-assert.deepEqual(Array.from(catalog.getPublishedProjects(), p => p.id), ["code-v-site", "code-v-motion", ...clients], "Published selection incomplete");
+assert.deepEqual(Array.from(catalog.getPublishedProjects(), p => p.id), ["protection-nuisibles", "nuisibles-toulon", "code-v-site", "code-v-motion", ...clients], "Published selection incomplete");
 assert.deepEqual(Array.from(catalog.getFeaturedProjects(), p => p.id), ["chateau-de-projan"]);
 assert.equal(catalog.getProjectBySlug("missing"), undefined);
-assert.equal(catalog.getProjectsByServiceFamily("web").length, 8);
-assert.equal(catalog.getProjectsByServiceFamily("acquisition").length, 0);
+assert.equal(catalog.getProjectsByServiceFamily("web").length, 10);
+assert.equal(catalog.getProjectsByServiceFamily("acquisition").length, 2);
 assert.equal(catalog.getProjectsBySector("hospitality").length, 2);
 console.log(`Projects catalog: ${projects.length} projects validated; public selection preserved.`);
 
+
+for (const slug of ['protection-nuisibles','nuisibles-toulon']) { const p = catalog.getProjectBySlug(slug); assert(p.caseStudyReady); assert.equal(p.verifiedResults.length, 1); assert.equal(p.screenshots.length, 3); assert(p.sourceRefs.includes(p.verifiedResults[0].sourceRef)); assert(fs.existsSync('src/app/realisations/'+slug+'/page.tsx')); }

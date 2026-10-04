@@ -31,6 +31,7 @@ function ClientProject({ project, index }: { project: Project; index: number }) 
         <p>{project.summary}</p>
         {project.location && <p className={styles.location}>{project.location}</p>}
         <VisitSite project={project} />
+        {project.cta.href.startsWith("/realisations/") && <Link href={project.cta.href} className={styles.textLink}>{project.cta.label} <span aria-hidden="true">↗</span></Link>}
       </Reveal>
       <Reveal className={styles.clientMedia}>
         {image ? <figure><Image src={image.src} alt={image.alt} width={image.width} height={image.height} sizes="(max-width: 900px) calc(100vw - 36px), (max-width: 1260px) 56vw, 670px" /><figcaption>{image.caption}</figcaption></figure> : <div className={styles.projectDetails}><p className={styles.detailLabel}>À découvrir sur le site</p><ul>{project.features.map(feature => <li key={feature}>{feature}</li>)}</ul><p className={styles.observation}>Éléments visibles sur le site public. Aucun résultat commercial n’est revendiqué.</p></div>}
