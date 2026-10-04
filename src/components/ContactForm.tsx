@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import styles from "./contactForm.module.css";
+import { trackContactSuccess } from "@/lib/analytics";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -34,11 +35,12 @@ export default function ContactForm() {
 
       const data = await res.json();
 
-      if (!res.ok) {
+      if (!res.ok || data.success !== true) {
         throw new Error((data as { error?: string }).error || "Erreur lors de l'envoi.");
       }
 
       setStatus("success");
+      trackContactSuccess(payload.service);
       form.reset();
     } catch (err) {
       setStatus("error");

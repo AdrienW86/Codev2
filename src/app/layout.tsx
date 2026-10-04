@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Analytics } from "@vercel/analytics/next";
+import ConversionTracking from "@/components/ConversionTracking";
+import { getTrackingConfig } from "@/lib/conversion-config";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import RobotAssistant from "@/components/RobotAssistant/RobotAssistant";
 import "./globals.css";
@@ -25,7 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <main>{children}</main>
         <RobotAssistant />
         <Footer />
-         <Analytics />
+        <ConversionTracking config={getTrackingConfig()} />
         <SpeedInsights />
       </body>
     </html>

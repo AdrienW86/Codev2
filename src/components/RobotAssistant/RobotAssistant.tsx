@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import styles from "./robotAssistant.module.css";
+import { trackChatIntent, trackChatOpen } from "@/lib/analytics";
 import { chatIntents, chatOpenEvent, defaultWelcome, isChatIntent, type ChatIntent } from "./chat";
 
 type Expression = "happy" | "neutral" | "thinking" | "surprised" | "waving";
@@ -22,12 +23,14 @@ export default function RobotAssistant() {
   const input = useRef<HTMLInputElement>(null);
   const content = useRef<HTMLDivElement>(null);
   const opener = useRef<HTMLElement | null>(null);
+  const wasOpen = useRef(false);
   const messages = conversations[thread] ?? [welcome(thread)];
 
   useEffect(() => {
     const handleOpen = (event: Event) => {
       const intent = (event as CustomEvent<{ intent?: unknown }>).detail?.intent;
       if (intent !== undefined && !isChatIntent(intent)) return;
+      if (intent !== undefined) trackChatIntent(intent);
       const nextThread: Thread = intent ?? "general";
       opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       if (activeThread.current !== nextThread) {
@@ -51,6 +54,9 @@ export default function RobotAssistant() {
 
   useEffect(() => {
     if (isOpen && isVisible) input.current?.focus({ preventScroll: true });
+    const open = isOpen && isVisible;
+    if (open && !wasOpen.current) trackChatOpen(thread);
+    wasOpen.current = open;
   }, [isOpen, isVisible, thread]);
 
   useEffect(() => {
