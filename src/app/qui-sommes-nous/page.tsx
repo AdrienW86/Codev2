@@ -1,21 +1,37 @@
-﻿import { getPageBreadcrumb } from "@/data/breadcrumbs";
+﻿import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import PageHero from "@/components/PageHero";
-
-export const metadata = {
-  title: "Qui sommes-nous — Codev",
-  description: "Codev rend le digital plus clair et plus utile, avec un accompagnement simple, humain et personnalisé.",
-  alternates: { canonical: "https://www.code-v.fr/qui-sommes-nous" },
-  openGraph: { title: "À propos — CODE-V", description: "Un accompagnement digital simple, humain et personnalisé.", url: "https://www.code-v.fr/qui-sommes-nous", type: "website", locale: "fr_FR" },
-};
-
+import Breadcrumb from "@/components/Breadcrumb";
+import Reveal from "@/components/motion/Reveal";
+import { getReviewsByIds } from "@/data/reviews";
+import { getPublishedProjects } from "@/data/projects";
+import { getPageBreadcrumb } from "@/data/breadcrumbs";
+import styles from "./page.module.css";
+const title = "À propos de CODE-V | Studio digital";
+const description = "Découvrez l’approche CODE-V : relier design, technique, acquisition et automatisation aux besoins de votre activité, puis accompagner les évolutions.";
+export const metadata: Metadata = { title, description, alternates: { canonical: "https://www.code-v.fr/qui-sommes-nous" }, robots: { index: true, follow: true }, openGraph: { title, description, url: "https://www.code-v.fr/qui-sommes-nous", type: "website", locale: "fr_FR" } };
+const steps = [
+ ["Comprendre", "Clarifier votre activité, vos usages et la priorité qui doit guider les choix."],
+ ["Construire", "Un site ou un outil dont les contenus et les fonctions répondent à un usage réel."],
+ ["Attirer", "Des leviers de visibilité choisis selon votre offre et les recherches de vos clients."],
+ ["Convertir", "Un parcours lisible, de la découverte de votre activité à la prise de contact."],
+ ["Automatiser", "Des connexions entre vos outils pour limiter les tâches répétitives, avec des contrôles adaptés."],
+ ["Mesurer", "Des indicateurs qui distinguent une interaction d’une demande commerciale."],
+ ["Améliorer", "Des ajustements guidés par les usages observés et les priorités de l’entreprise."],
+];
+const universes = ["Web & Applications", "SEO & visibilité locale", "Acquisition", "Contenu", "Automatisation & IA", "Logiciels métier", "Accompagnement"];
+const selectedReviews = getReviewsByIds(["philippe-voisin", "rene-riviere"]);
 export default function AboutPage() {
-  return (
-    <>
-      <PageHero breadcrumb={getPageBreadcrumb("/qui-sommes-nous")} eyebrow="Le studio" title={<>Rendre le digital<br /><span>plus clair.</span></>} text="Codev est un studio digital indépendant qui accompagne les entreprises avec une approche simple, humaine et résolument tournée vers l’action." />
-      <section className="section about-statement"><div className="container"><span className="eyebrow"><i />Notre mission</span><h2>Le digital est un moyen.<br /><span>Pas une fin.</span></h2><div className="statement-bottom"><p>Nous croyons qu’une bonne stratégie digitale commence par une conversation. Comprendre avant de proposer, clarifier avant de créer, mesurer avant de promettre.</p><p>Parce que derrière chaque projet, il y a une activité, une équipe et une ambition qui mérite d’être bien racontée.</p></div></div></section>
-      <section className="values-section"><div className="container values-grid"><article><span className="value-icon">◒</span><h3>Simple</h3><p>Des explications claires et des choix qui ont du sens, sans complexité ajoutée.</p></article><article><span className="value-icon">✳</span><h3>Humain</h3><p>Une relation directe, attentive et construite autour de vos réalités.</p></article><article><span className="value-icon">↗</span><h3>Utile</h3><p>Des idées qui se transforment en résultats concrets pour votre activité.</p></article></div></section>
-      <section className="section about-cta"><div className="container centered-cta light-cta"><span className="eyebrow"><i />Une première conversation</span><h2>Parlons de ce qui<br /><span>vous fait avancer.</span></h2><Link className="button button-dark" href="/contact">Nous contacter <span>↗</span></Link></div></section>
-    </>
-  );
+ const project = getPublishedProjects().find(project => project.kind === "client" && project.featured && project.coverImage);
+ return <div className={styles.page}>
+ <header className={styles.hero}><div className="container"><Breadcrumb {...getPageBreadcrumb("/qui-sommes-nous")} /><div className={styles.heroGrid}><div><p className={styles.eyebrow}>L’APPROCHE CODE-V</p><h1>Relier le digital.<br /><em>À votre activité.</em></h1><p className={styles.lead}>Un site, une campagne et un outil métier prennent de la valeur quand ils travaillent dans le même sens. CODE-V conçoit ces liens à partir de ce que votre entreprise doit réellement accomplir.</p><Link href="/contact" className="button button-primary">Parler de votre projet <span aria-hidden="true">↗</span></Link></div><aside className={styles.manifesto}><span>UN POINT DE DÉPART</span><h2>Le besoin avant l’outil.</h2><p>Recevoir des demandes mieux orientées. Présenter clairement une offre. Simplifier le suivi d’un dossier. Nous partons de situations concrètes pour définir un périmètre utile.</p><p>Le design rend ce parcours compréhensible ; la technique le fait fonctionner ; la mesure aide à décider de la suite.</p></aside></div></div></header>
+ <section className={styles.intro}><Reveal className={`container ${styles.split}`}><div><p className={styles.eyebrow}>POURQUOI CODE-V</p><h2>Éviter les outils isolés.<br /><em>Construire une continuité.</em></h2></div><div><p>Une présence digitale ne s’arrête pas à sa mise en ligne. Le message, les canaux d’acquisition, la réponse commerciale et les outils internes doivent pouvoir se rejoindre.</p><p>C’est la logique de CODE-V : clarifier ce qui compte pour votre activité, concevoir le bon point de départ et prévoir ses évolutions. Vous comprenez ce qui est proposé et comment le travail sera suivi.</p></div></Reveal></section>
+ <section className={styles.process} aria-labelledby="process-title"><div className="container"><Reveal><p className={styles.eyebrow}>UNE LOGIQUE DE TRAVAIL</p><h2 id="process-title">Des leviers reliés.<br /><em>Des choix dans le bon ordre.</em></h2><p>Comprendre ouvre le parcours. Construire, attirer, convertir et automatiser relient vos usages ; mesurer permet d’optimiser. Chaque projet mobilise les étapes utiles à sa situation.</p></Reveal><ol>{steps.map(([name,text])=><li key={name}><div><h3>{name}</h3><p>{text}</p></div></li>)}</ol></div></section>
+ <section className={styles.intro}><Reveal className={`container ${styles.split}`}><div><p className={styles.eyebrow}>QUI PORTE CODE-V</p><h2>Un partenaire pour<br /><em>relier vos priorités.</em></h2></div><div><p>CODE-V est dirigé par Adrien Weissenbacher, entrepreneur individuel. Son activité associe développement web, acquisition, visibilité digitale, automatisation et solutions numériques.</p><p>Un site seul ne suffit pas toujours. Du trafic sans parcours de conversion laisse des demandes en chemin. Des outils non reliés multiplient les ressaisies. Notre travail consiste à identifier ces points de friction et à choisir les leviers qui peuvent fonctionner ensemble.</p></div></Reveal></section>
+ <section className={styles.expertise}><div className="container"><Reveal><p className={styles.eyebrow}>LES UNIVERS CODE-V</p><h2>Une offre qui se relie<br /><em>à votre besoin.</em></h2><ul>{universes.map(name=><li key={name}>{name}</li>)}</ul><Link href="/solutions" className={styles.textLink}>Découvrir toutes les solutions <span aria-hidden="true">↗</span></Link></Reveal></div></section>
+ <section className={styles.craft}><Reveal className={`container ${styles.split}`}><div><p className={styles.eyebrow}>DES FONDATIONS QUI COMPTENT</p><h2>Clair à l’écran.<br /><em>Solide derrière.</em></h2></div><div><h3>Design et technique se répondent.</h3><p>Hiérarchie des contenus, navigation, responsive et accessibilité font partie de la conception. Les performances et la maintenance influencent aussi les choix techniques.</p><p>Ce site utilise Next.js, React et TypeScript. Pour votre projet, la technologie se choisit selon les usages, les contraintes et les outils déjà en place.</p><h3>Un accompagnement qui prévoit la suite.</h3><p>Nous définissons les responsabilités, les livrables et les limites du périmètre. Maintenance, suivi des leviers et évolutions peuvent ensuite être organisés dans un cadre convenu.</p><Link href="/maintenance-site" className={styles.textLink}>Découvrir l’accompagnement dans le temps <span aria-hidden="true">↗</span></Link></div></Reveal></section>
+ {project?.coverImage && <section className={styles.proof}><div className={`container ${styles.proofGrid}`}><Reveal><Image src={project.coverImage.src} alt={project.coverImage.alt} width={project.coverImage.width} height={project.coverImage.height} sizes="(max-width: 800px) calc(100vw - 36px), 55vw" /></Reveal><Reveal><p className={styles.eyebrow}>LE TRAVAIL, EN CONTEXTE</p><h2>{project.name}</h2><p>{project.summary}</p><Link href="/realisations#selection" className={styles.textLink}>Voir nos réalisations <span aria-hidden="true">↗</span></Link></Reveal></div></section>}
+ <section className={styles.testimonials}><div className="container"><p className={styles.eyebrow}>AVIS GOOGLE</p><h2>L’écoute et le suivi,<br />dans leurs mots.</h2><div>{selectedReviews.map(review=><figure key={review.id}><blockquote><p>{review.text}</p></blockquote><figcaption>{review.author} <span>— Avis Google</span></figcaption></figure>)}</div></div></section>
+ <section className={styles.final}><Reveal className="container"><p className={styles.eyebrow}>COMMENÇONS PAR VOTRE SITUATION</p><h2>Parlons de ce que vous cherchez<br /><em>réellement à accomplir.</em></h2><p>Décrivez votre activité et votre priorité. Nous pourrons préciser ensemble les prochaines étapes.</p><div className={styles.actions}><Link href="/contact" className="button button-primary">Parler de votre projet <span aria-hidden="true">↗</span></Link><Link href="/realisations" className={styles.textLink}>Voir nos réalisations <span aria-hidden="true">↗</span></Link></div></Reveal></section>
+ </div>;
 }

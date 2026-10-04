@@ -18,6 +18,7 @@ const labels = {
   "/maintenance-site": "Maintenance de site",
   "/facebook": "Publications Facebook",
   "/mentions-legales": "Mentions légales",
+  "/politique-confidentialite": "Politique de confidentialité",
 } as const;
 
 export function getPageBreadcrumb(path: keyof typeof labels): BreadcrumbProps {
