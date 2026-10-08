@@ -74,6 +74,7 @@
 @media(prefers-reduced-motion:reduce) { .home *,.home *::before,.home *::after { animation:none!important;transition:none!important;scroll-behavior:auto!important; }.heroVisual:hover .graphSurface { transform:rotate(-4deg); }.universeContent { opacity:1; }.heroCopy h1>span { clip-path:none; }.trajectory { stroke-dashoffset:0; } }
 
 .cinema :global(figcaption) { padding:24px 28px 0; }.cinema :global(figcaption span) { color:var(--cyan); }
+.cinema :global(details) { margin:0;padding:20px 28px 28px;color:#bdcbe0;font-size:14px; }.cinema :global(details summary) { color:white;cursor:pointer;padding:10px 0; }
 @media(prefers-reduced-motion:reduce) { .graphSurface,.heroVisual:hover .graphSurface { transform:none; } }
 
 /* Small text on the pale surface needs slightly more contrast than the solid brand blue. */
