@@ -14,7 +14,7 @@
 .dropdown { position:absolute; top:100%; left:50%; transform:translateX(-50%); width:min(1180px,calc(100vw - 48px)); padding:32px; background:var(--dark-soft); border:1px solid #33465e; box-shadow:0 30px 50px #07111f66; display:grid; grid-template-columns:220px 1fr; gap:32px; border-radius:0 0 24px 24px; animation:menuIn .35s ease both; }
 .dropdown[hidden] { display:none; }
 .menuIntro span { font-size:10px; letter-spacing:.12em; color:var(--cyan); }
-.menuIntro strong { display:block; margin:20px 0; font:500 32px/1.1 'Space Grotesk',sans-serif; }
+.menuIntro strong { display:block; margin:20px 0; font:500 32px/1.1 var(--font-space-grotesk),sans-serif; }
 .menuIntro p { color:#bccbdf; font-size:13px; line-height:1.7; }
 .familyLinks { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
 .familyLinks a { padding:18px; border-radius:12px; transition:background .2s,transform .2s; }

@@ -2,12 +2,13 @@
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import ContactForm from "@/components/ContactForm";
+import { defaultShareImages } from "@/lib/seo";
 
 export const metadata = {
-  title: "Contact — Codev",
+  title: "Contact — CODE-V",
   description: "Parlez-nous de votre projet digital et de vos objectifs.",
   alternates: { canonical: "https://www.code-v.fr/contact" },
-  openGraph: { title: "Contact — CODE-V", description: "Parlez-nous de votre projet digital et de vos objectifs.", url: "https://www.code-v.fr/contact", type: "website", locale: "fr_FR" },
+  openGraph: { title: "Contact — CODE-V", description: "Parlez-nous de votre projet digital et de vos objectifs.", url: "https://www.code-v.fr/contact", type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 
 export default function ContactPage() {

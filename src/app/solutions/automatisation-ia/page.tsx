@@ -9,13 +9,14 @@ import MotionVideo from "@/components/media/MotionVideo";
 import SystemFlow from "@/components/services/SystemFlow";
 import { getServiceById } from "@/data/services";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 const url = "https://www.code-v.fr/solutions/automatisation-ia";
 export const metadata: Metadata = {
   title: "Automatisation & IA pour entreprise | CODE-V",
   description: "Connectez vos outils, automatisez vos processus et concevez des agents IA spécialisés avec CODE-V. Workflows, API, Airtable et supervision humaine.",
   alternates: { canonical: url },
-  openGraph: { title: "Automatisation & IA — CODE-V", description: "Des outils connectés, des processus lisibles et une IA encadrée pour votre activité.", url, type: "website", locale: "fr_FR" },
+  openGraph: { title: "Automatisation & IA — CODE-V", description: "Des outils connectés, des processus lisibles et une IA encadrée pour votre activité.", url, type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 
 const offers = ["business-workflows", "airtable-workspace", "api-integrations", "ai-agents", "automated-reporting", "automation-supervision"].map(id => {

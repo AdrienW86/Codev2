@@ -7,13 +7,14 @@ import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { solutionNavigation } from "@/data/navigation";
 import type { ServiceCategory } from "@/data/services";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 const canonical = "https://www.code-v.fr/solutions";
 export const metadata: Metadata = {
   title: "Solutions digitales : les expertises CODE-V",
   description: "Explorez les neuf familles CODE-V : web, acquisition, visibilité, contenu, automatisation et accompagnement. Trouvez le point d’entrée adapté à votre activité.",
   alternates: { canonical },
-  openGraph: { title: "Les solutions CODE-V", description: "Des expertises complémentaires, assemblées selon votre besoin.", url: canonical, type: "website", locale: "fr_FR" },
+  openGraph: { title: "Les solutions CODE-V", description: "Des expertises complémentaires, assemblées selon votre besoin.", url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 
 function Family({ id }: { id: ServiceCategory }) {

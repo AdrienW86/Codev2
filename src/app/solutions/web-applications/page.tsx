@@ -8,13 +8,14 @@ import ChatTrigger from "@/components/RobotAssistant/ChatTrigger";
 import ProductCanvas from "@/components/services/ProductCanvas";
 import { getServiceById, type ServiceId } from "@/data/services";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 const canonical = "https://www.code-v.fr/solutions/web-applications";
 export const metadata: Metadata = {
   title: "Web & Applications : vos produits digitaux | CODE-V",
   description: "Sites, e-commerce, applications web et outils métier : CODE-V conçoit des expériences utiles, performantes et évolutives, du parcours utilisateur à l’architecture.",
   alternates: { canonical },
-  openGraph: { title: "Web & Applications — CODE-V", description: "Du premier écran à l’architecture : des produits digitaux pensés pour vos usages.", url: canonical, type: "website", locale: "fr_FR" },
+  openGraph: { title: "Web & Applications — CODE-V", description: "Du premier écran à l’architecture : des produits digitaux pensés pour vos usages.", url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 const projectIds: readonly ServiceId[] = ["website", "ecommerce", "web-application", "mobile-app", "business-tool"];
 const projects = projectIds.map(id => { const service = getServiceById(id); if (!service) throw new Error(`Missing service: ${id}`); return service; });

@@ -1,4 +1,4 @@
-.breadcrumb { margin:0 0 24px; font:400 12px/1.6 "DM Sans",sans-serif; }
+.breadcrumb { margin:0 0 24px; font:400 12px/1.6 var(--font-dm-sans),sans-serif; }
 .dark { color:#c4cfdd; --breadcrumb-accent:var(--cyan); }
 .light { color:var(--muted); --breadcrumb-accent:var(--blue-deep); }
 .breadcrumb ol { display:flex;flex-wrap:wrap;gap:4px 14px;list-style:none;padding:0;margin:0; }

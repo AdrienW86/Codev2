@@ -7,13 +7,14 @@ import MotionVideo from "@/components/media/MotionVideo";
 import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { getPublishedProjects, type Project } from "@/data/projects";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 const canonical = "https://www.code-v.fr/realisations";
 export const metadata: Metadata = {
   title: "Réalisations web & motion design | CODE-V",
   description: "Découvrez les sites réalisés par CODE-V pour l’hébergement, la restauration, les antiquités et les services locaux, ainsi que son laboratoire interne.",
   alternates: { canonical },
-  openGraph: { title: "Réalisations CODE-V", description: "Des sites réels, des univers différents. Explorez une sélection de réalisations web CODE-V.", url: canonical, type: "website", locale: "fr_FR" },
+  openGraph: { title: "Réalisations CODE-V", description: "Des sites réels, des univers différents. Explorez une sélection de réalisations web CODE-V.", url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 
 function VisitSite({ project }: { project: Project }) {

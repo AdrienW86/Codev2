@@ -38,7 +38,7 @@ Responsable identifié : Adrien Weissenbacher, EI, CODE-V, à l’adresse publi�
 | Speed Insights | Web Vitals, route, navigateur, appareil et réseau ; ne pas confondre absence d’IP dans les statistiques avec absence de traitement technique réseau | Paramétrage compte non audité |
 | Facebook | Récupération serveur des posts publics, cache 300 s ; images directement chargées par le navigateur depuis fbcdn/fbsbx ; referrerPolicy no-referrer | Les serveurs médias reçoivent les informations réseau nécessaires. Aucun compte visiteur demandé, pas d’iframe |
 | Avis Google | Avis fournis dans reviews.ts, rendus localement, aucun widget Google embarqué | Texte public du registre ; ne pas prétendre avoir interrogé Google en direct |
-| Google Fonts | Import CSS fonts.googleapis.com / chargements polices tiers | Connexions navigateur tierces, IP techniquement transmise |
+| Polices | DM Sans et Space Grotesk auto-hébergées par `next/font` (téléchargées au build, servies par le site) | Plus de connexion navigateur vers fonts.googleapis.com / fonts.gstatic.com depuis l’audit performance du 2026-10-08 |
 | Hébergement | Requêtes servies par Vercel, données réseau et logs possibles | Durées/région des logs à vérifier dans le compte |
 
 Aucun GA4 ou pixel publicitaire identifié dans le code. Le fournisseur présente Analytics comme sans cookies tiers, avec statistiques agrégées et mécanisme de hash ; ne pas en déduire une absence de données sur l’ensemble du site, ni une exemption générale validée de consentement. Aucune bannière ajoutée comme demandé.

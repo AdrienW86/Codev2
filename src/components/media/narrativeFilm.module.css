@@ -5,7 +5,7 @@
 .film:not([data-phase="idle"]) .poster { opacity: 0; pointer-events: none; }
 .controls { position: absolute; z-index: 2; left: clamp(10px, 2vw, 22px); bottom: clamp(10px, 2vw, 22px); display: flex; gap: 8px; }
 .controlsTop { top: clamp(10px, 2vw, 22px); bottom: auto; }
-.control { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 0 16px 0 13px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; background: rgba(7,17,31,.72); color: #fff; font: 500 13px "DM Sans", Arial, sans-serif; letter-spacing: .01em; cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: background .2s ease, border-color .2s ease; }
+.control { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 0 16px 0 13px; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; background: rgba(7,17,31,.72); color: #fff; font: 500 13px var(--font-dm-sans), Arial, sans-serif; letter-spacing: .01em; cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: background .2s ease, border-color .2s ease; }
 .control:hover { background: rgba(7,17,31,.88); border-color: rgba(80,227,194,.55); }
 .control:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
 .icon { display: inline-flex; color: var(--cyan); }

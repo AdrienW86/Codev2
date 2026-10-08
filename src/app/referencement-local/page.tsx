@@ -7,11 +7,12 @@ import Reveal from "@/components/motion/Reveal";
 import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { getPublishedProjects } from "@/data/projects";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 const canonical = "https://www.code-v.fr/referencement-local";
 const title = "Référencement local & Google Business Profile | CODE-V";
 const description = "CODE-V accompagne votre visibilité locale : fiche Google Business Profile, cohérence des informations, site et suivi. Parlons de votre activité et de votre zone.";
-export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR" } };
+export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages } };
 const service = { "@context": "https://schema.org", "@type": "Service", name: "SEO local & Google Business Profile", serviceType: "Référencement local", description, url: canonical, provider: { "@type": "Organization", name: "CODE-V", url: "https://www.code-v.fr" } };
 const faq = [
   ["Qu’est-ce que le référencement local ?", "C’est le travail de votre présence sur les recherches liées à un lieu ou à une proximité. Il associe les informations de votre établissement, Google Business Profile, votre site et les éléments qui aident un client à choisir puis à vous contacter."],

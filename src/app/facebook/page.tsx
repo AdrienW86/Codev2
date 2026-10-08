@@ -6,12 +6,13 @@ import FacebookFeed from "@/components/Facebook";
 import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { getFacebookFeed } from "@/lib/facebook-feed";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 const canonical = "https://www.code-v.fr/facebook";
 export const metadata: Metadata = {
   title: "Publications Facebook & actualités | CODE-V",
   description: "Retrouvez les publications récentes de CODE-V : actualités du studio, projets et repères pour votre activité digitale.",
   alternates: { canonical },
-  openGraph: { title: "Les publications CODE-V", url: canonical, type: "website", locale: "fr_FR" },
+  openGraph: { title: "Les publications CODE-V", url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 export default async function FacebookPage() {
   await connection();

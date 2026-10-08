@@ -7,10 +7,11 @@ import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { projects } from "@/data/projects";
 import { getServiceById } from "@/data/services";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 const title = "Motion design & vidéos explicatives | CODE-V";
 const description = "Donnez une forme claire à votre message : motion design, vidéos explicatives et formats de communication adaptés aux supports de votre entreprise.";
 const canonical = "https://www.code-v.fr/motion-design";
-export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR" } };
+export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages } };
 export default function MotionDesignPage() {
   const film = projects.find(project => project.id === "code-v-motion" && project.status === "published")?.video;
   const service = getServiceById("video-motion")!;

@@ -8,11 +8,12 @@ import Reveal from "@/components/motion/Reveal";
 import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { getPublishedProjects } from "@/data/projects";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 const canonical = "https://www.code-v.fr/maintenance-site";
 const title = "Maintenance de site internet & support | CODE-V";
 const description = "Après la mise en ligne, CODE-V accompagne l’entretien de votre site : vérifications, mises à jour, corrections et petites évolutions, dans un périmètre convenu.";
-export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR" } };
+export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages } };
 const service = { "@context": "https://schema.org", "@type": "Service", name: "Maintenance de sites", serviceType: "Maintenance de site internet", description, url: canonical, provider: { "@type": "Organization", name: "CODE-V", url: "https://www.code-v.fr" } };
 const questions = [
   ["Pourquoi maintenir un site internet ?", "Le site continue de vivre après sa livraison : logiciels, contenus, services externes et usages évoluent. L’entretien permet de vérifier les fonctions utiles, de traiter les corrections et de préparer les changements plutôt que de laisser les petits problèmes s’accumuler."],

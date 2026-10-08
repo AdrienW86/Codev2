@@ -7,11 +7,12 @@ import Breadcrumb from "@/components/Breadcrumb";
 import Reveal from "@/components/motion/Reveal";
 import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 const canonical = "https://www.code-v.fr/publicite";
 const title = "Google Ads & acquisition payante | CODE-V";
 const description = "CODE-V accompagne vos campagnes Google Ads : ciblage Search, pages de destination, suivi des conversions et pilotage du budget. Parlons de votre acquisition.";
-export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR" } };
+export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages } };
 const service = { "@context": "https://schema.org", "@type": "Service", name: "Campagnes Google Ads & acquisition payante", serviceType: "Acquisition payante", description, url: canonical, provider: { "@type": "Organization", name: "CODE-V", url: "https://www.code-v.fr" } };
 const questions = [
   ["Google Ads ou SEO ?", "Google Ads permet de diffuser des annonces avec un budget média. Le SEO travaille la présence organique du site dans le temps. Le choix dépend de votre offre, de vos objectifs et de l’existant ; les deux leviers peuvent se compléter."],
