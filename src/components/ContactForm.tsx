@@ -1,12 +1,18 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useEffect, useRef, useState, FormEvent } from "react";
 import styles from "./contactForm.module.css";
 import { trackContactSuccess } from "@/lib/analytics";
+import { elapsedField, projectOptions, submitContact, trapField } from "@/lib/contact-form";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const shownAt = useRef(0);
+
+  useEffect(() => {
+    shownAt.current = Date.now();
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -24,23 +30,22 @@ export default function ContactForm() {
       message: formData.get("message") as string,
       service: new URLSearchParams(window.location.search).get("service") || "",
       source: window.location.pathname,
+      [trapField]: (formData.get(trapField) as string) || "",
+      [elapsedField]: Math.max(0, Date.now() - shownAt.current),
     };
 
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || data.success !== true) {
-        throw new Error((data as { error?: string }).error || "Erreur lors de l'envoi.");
-      }
+      await submitContact(
+        payload,
+        body => fetch("/api/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+        }),
+        trackContactSuccess,
+      );
 
       setStatus("success");
-      trackContactSuccess(payload.service);
       form.reset();
     } catch (err) {
       setStatus("error");
@@ -57,7 +62,10 @@ export default function ContactForm() {
           <button
             className="button button-dark"
             type="button"
-            onClick={() => setStatus("idle")}
+            onClick={() => {
+              shownAt.current = Date.now();
+              setStatus("idle");
+            }}
           >
             Envoyer un autre message
           </button>
@@ -101,10 +109,9 @@ export default function ContactForm() {
             Type de projet
             <select name="project">
               <option value="">Sélectionnez une option</option>
-              <option>Création ou refonte de site</option>
-              <option>Référencement naturel</option>
-              <option>Publicité en ligne</option>
-              <option>Autre sujet</option>
+              {projectOptions.map(option => (
+                <option key={option}>{option}</option>
+              ))}
             </select>
           </label>
 
@@ -117,6 +124,13 @@ export default function ContactForm() {
               required
             />
           </label>
+
+          <div className={styles.trap} aria-hidden="true">
+            <label>
+              Référence
+              <input type="text" name={trapField} tabIndex={-1} autoComplete="off" defaultValue="" />
+            </label>
+          </div>
 
           <button
             className="button button-dark"
