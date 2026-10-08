@@ -6,6 +6,7 @@ import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import Reveal from "@/components/motion/Reveal";
 import ChatTrigger from "@/components/RobotAssistant/ChatTrigger";
+import NarrativeFilm from "@/components/media/NarrativeFilm";
 import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { getPublishedProjects } from "@/data/projects";
 import { getResourcesByService } from "@/data/resources";
@@ -44,6 +45,10 @@ export default function CreationSitePage() {
     </div></section>
 
     <section className={styles.needs} aria-labelledby="needs-title"><div className={`container ${styles.split}`}><Reveal><p className={styles.eyebrow}>CE QUI DOIT CHANGER</p><h2 id="needs-title">Votre activité est claire.<br /><span>Votre site l’est-il aussi ?</span></h2><p>Un site peut exister sans expliquer votre offre, rassurer sur votre travail ou rendre le contact évident. La création comme la refonte commence par ce constat.</p></Reveal><Reveal className={styles.needList}><div><h3>On ne comprend pas ce que vous proposez.</h3><p>Nous hiérarchisons les services, les contenus et les preuves pour rendre votre proposition lisible.</p></div><div><h3>Le contact se perd dans la navigation.</h3><p>Les actions attendues deviennent visibles : appeler, expliquer un besoin ou envoyer une demande.</p></div><div><h3>Le site est difficile à utiliser sur mobile.</h3><p>La composition, la lecture et les formulaires sont pensés pour les petits écrans, puis vérifiés.</p></div></Reveal></div></section>
+
+    <section className={styles.film} aria-labelledby="film-title"><div className="container"><Reveal className={styles.filmHead}><p className={styles.eyebrow}>EN MOUVEMENT / 20 SECONDES</p><h2 id="film-title">Une présence en ligne.<br /><span>Ou un outil qui travaille.</span></h2></Reveal></div>
+      <div className={styles.filmStage}><NarrativeFilm src="/videos/creation-site.mp4" srcSmall="/videos/creation-site-720.mp4" poster="/videos/creation-site-poster.webp" width={1920} height={1080} title="Ce qu’un site professionnel doit faire" description="Des éléments dispersés se rangent dans une grille et forment un site clair : navigation, promesse, offre, preuve et bouton d’action. Le site passe en version mobile, ses contenus sont structurés et il remonte dans une recherche. Un visiteur parcourt la page, voit une preuve, touche le bouton et envoie une demande. La demande rejoint ensuite le contact, le CRM, le suivi et l’automatisation. Le film se termine sur le logo CODE-V : des sites pensés pour agir." /></div>
+    </section>
 
     <section className={styles.formats} aria-labelledby="formats-title"><div className="container"><Reveal className={styles.sectionHead}><p className={styles.eyebrow}>LE BON PÉRIMÈTRE</p><h2 id="formats-title">Créer une présence.<br /><span>Ou lui donner une nouvelle direction.</span></h2></Reveal><div className={styles.formatRows}>
       <Reveal><article><h3>Un site vitrine pour présenter votre entreprise.</h3><div><p>Vos services, votre manière de travailler et vos informations de contact. Une structure adaptée à un artisan, une entreprise de services ou un établissement.</p><p className={styles.note}>Pages et fonctionnalités précisées selon votre activité.</p></div></article></Reveal>
