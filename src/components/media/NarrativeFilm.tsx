@@ -14,6 +14,12 @@ export type NarrativeFilmProps = {
   description: string;
   width: number;
   height: number;
+  /** Faux pour un film sans piste audio : aucun bouton « Écouter ». */
+  audio?: boolean;
+  /** Boucle tant que le film est muet ; avec le son, il est joué une fois. */
+  loop?: boolean;
+  /** Coin des boutons sur la vidéo (desktop), selon la zone que le film laisse libre. */
+  controlsAt?: "bottom" | "top";
   className?: string;
 };
 
@@ -25,7 +31,7 @@ type NavigatorConnection = Navigator & { connection?: { saveData?: boolean } };
  * (sauf mouvement réduit ou économie de données), son à la demande depuis le début.
  * Aucune requête vidéo avant que le film approche de l'écran ou qu'on le lance.
  */
-export default function NarrativeFilm({ src, srcSmall, poster, title, description, width, height, className = "" }: NarrativeFilmProps) {
+export default function NarrativeFilm({ src, srcSmall, poster, title, description, width, height, audio = true, loop = false, controlsAt = "bottom", className = "" }: NarrativeFilmProps) {
   const frame = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const [source, setSource] = useState<string>();
@@ -133,6 +139,7 @@ export default function NarrativeFilm({ src, srcSmall, poster, title, descriptio
             width={width}
             height={height}
             muted={!sound}
+            loop={loop && !sound}
             playsInline
             preload={autoplay ? "auto" : "none"}
             aria-hidden="true"
@@ -145,15 +152,15 @@ export default function NarrativeFilm({ src, srcSmall, poster, title, descriptio
         )}
         <img className={styles.poster} src={poster} alt="" width={width} height={height} loading="lazy" decoding="async" />
       </div>
-      <div className={styles.controls}>
+      <div className={`${styles.controls} ${controlsAt === "top" ? styles.controlsTop : ""}`}>
         <button type="button" className={styles.control} onClick={togglePlay} aria-label={`${phase === "playing" ? "Mettre en pause" : phase === "ended" ? "Revoir" : "Lire"} le film : ${title}`}>
           <span className={styles.icon} aria-hidden="true">{phase === "playing" ? <PauseIcon /> : phase === "ended" ? <ReplayIcon /> : <PlayIcon />}</span>
           {label}
         </button>
-        <button type="button" className={styles.control} onClick={toggleSound} aria-pressed={sound} aria-label={sound ? "Couper le son du film" : "Écouter le film avec le son, depuis le début"}>
+        {audio && <button type="button" className={styles.control} onClick={toggleSound} aria-pressed={sound} aria-label={sound ? "Couper le son du film" : "Écouter le film avec le son, depuis le début"}>
           <span className={styles.icon} aria-hidden="true">{sound ? <SoundOnIcon /> : <SoundOffIcon />}</span>
           {sound ? "Couper le son" : "Écouter"}
-        </button>
+        </button>}
       </div>
       <figcaption className={styles.srOnly}>{title}. {description}</figcaption>
     </figure>

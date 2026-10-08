@@ -11,5 +11,5 @@
     "forceConsistentCasingInFileNames": true,
     "lib": ["dom", "esnext"]
   },
-  "include": ["src", "creation-site/src", "remotion.config.ts"]
+  "include": ["src", "creation-site/src", "referencement/src", "remotion.config.ts"]
 }

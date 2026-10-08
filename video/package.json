@@ -10,7 +10,10 @@
     "creation-site:stills": "node creation-site/scripts/stills.mjs",
     "creation-site:poster": "remotion still src/index.ts CreationSitePoster out/creation-site/creation-site-poster.png",
     "creation-site:audio": "python3 creation-site/audio/generate-ambiance.py out/creation-site",
-    "creation-site:export": "bash creation-site/scripts/export.sh"
+    "creation-site:export": "bash creation-site/scripts/export.sh",
+    "referencement:render": "remotion render src/index.ts Referencement out/referencement/seo-master.mp4",
+    "referencement:stills": "node referencement/scripts/stills.mjs",
+    "referencement:export": "bash referencement/scripts/export.sh"
   },
   "dependencies": {
     "@fontsource/dm-sans": "5.3.0",
