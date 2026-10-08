@@ -17,6 +17,7 @@ export default function MotionVideo({ src, poster, title, mode, autoplay = false
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [autoPending, setAutoPending] = useState(Boolean(src && autoplay && muted && mode === "loop"));
   const automatic = useRef(false);
   const userPaused = useRef(false);
   const systemPause = useRef(false);
@@ -27,10 +28,11 @@ export default function MotionVideo({ src, poster, title, mode, autoplay = false
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
     const element = frame.current;
-    if (!element || !window.IntersectionObserver) return;
+    if (!element || !window.IntersectionObserver) { setAutoPending(false); return; }
     let visible = false;
     const sync = () => {
       automatic.current = !reduced.matches && !connection?.saveData;
+      setAutoPending(automatic.current);
       mayPlay.current = visible && !document.hidden && automatic.current && !userPaused.current;
       if (visible && !document.hidden && automatic.current && !userPaused.current) {
         setLoaded(true);
@@ -68,7 +70,7 @@ export default function MotionVideo({ src, poster, title, mode, autoplay = false
           <span className={styles.mark} aria-hidden="true">↗</span>
           <span className={styles.placeholder}>{failed ? "Lecture indisponible" : src ? "Voir la démonstration" : "Séquence motion à venir"}</span></>}
       </div>}
-      {src && !loaded && !failed && <button className={styles.play} onClick={() => { automatic.current = false; mayPlay.current = true; userPaused.current = false; setLoaded(true); }} aria-label={`Lire : ${title}`}>Lire la vidéo <span aria-hidden="true">▷</span></button>}
+      {src && !loaded && !failed && !autoPending && <button className={styles.play} onClick={() => { automatic.current = false; mayPlay.current = true; userPaused.current = false; setLoaded(true); }} aria-label={`Lire : ${title}`}>Lire la vidéo <span aria-hidden="true">▷</span></button>}
       {src && loaded && !failed && !controls && <button className={styles.play} onClick={() => { userPaused.current = playing; if (playing) video.current?.pause(); else video.current?.play().catch(() => {}); }}>{playing ? "Pause" : "Lire"}</button>}
     </div>
     <figcaption><span>{mode === "feature" ? "CODE-V / Motion" : "CODE-V / Démonstration"}</span><strong>{title}</strong></figcaption>
