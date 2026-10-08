@@ -16,6 +16,8 @@ export type NarrativeFilmProps = {
   height: number;
   /** Faux pour un film sans piste audio : aucun bouton « Écouter ». */
   audio?: boolean;
+  /** Boucle tant que le film est muet ; avec le son, il est joué une fois. */
+  loop?: boolean;
   /** Coin des boutons sur la vidéo (desktop), selon la zone que le film laisse libre. */
   controlsAt?: "bottom" | "top";
   className?: string;
@@ -29,7 +31,7 @@ type NavigatorConnection = Navigator & { connection?: { saveData?: boolean } };
  * (sauf mouvement réduit ou économie de données), son à la demande depuis le début.
  * Aucune requête vidéo avant que le film approche de l'écran ou qu'on le lance.
  */
-export default function NarrativeFilm({ src, srcSmall, poster, title, description, width, height, audio = true, controlsAt = "bottom", className = "" }: NarrativeFilmProps) {
+export default function NarrativeFilm({ src, srcSmall, poster, title, description, width, height, audio = true, loop = false, controlsAt = "bottom", className = "" }: NarrativeFilmProps) {
   const frame = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const [source, setSource] = useState<string>();
@@ -137,6 +139,7 @@ export default function NarrativeFilm({ src, srcSmall, poster, title, descriptio
             width={width}
             height={height}
             muted={!sound}
+            loop={loop && !sound}
             playsInline
             preload={autoplay ? "auto" : "none"}
             aria-hidden="true"

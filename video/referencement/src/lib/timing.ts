@@ -37,8 +37,9 @@ export const T = {
   // 18–20 s : convergence vers CODE-V
   outro: 540,
   logo: 546,
-  tagline: 560,
-  url: 574,
+  tagline: 554,
+  url: 564,
+  loopFade: 588, // fondu au noir de fin : le film boucle sans coupure
 } as const;
 
 /** Mots de chapitre : chacun se pose au-dessus de son tronçon de la trajectoire. */

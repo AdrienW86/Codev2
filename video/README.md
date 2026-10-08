@@ -14,11 +14,12 @@ video/
     src/lib/layout.ts            états de mise en page 16:9 (désordre, desktop, mobile, système)
     audio/                       ambiance générée, emplacement de la voix off
     scripts/                     frames de contrôle, export web
-  referencement/                 film SEO de /referencement (muet)
+  referencement/                 film SEO de /referencement
     src/SeoFilm.tsx              index / arborescence / recherche / trajectoire
     src/components/              espace de recherche, pages, index et résultats, visite, trajectoire, outro
     src/lib/timing.ts            chronologie (frames à 30 i/s), étapes et exploration
     src/lib/layout.ts            mise en page 16:9 (objet Layout, à décliner en 9:16)
+    audio/                       ambiance et micro-effets synthétisés (generate-ambiance.py)
     scripts/                     frames de contrôle, export web
 ```
 
@@ -35,7 +36,7 @@ npm run studio                      # aperçu interactif
 npm run creation-site:stills 60 150 # frames de contrôle dans out/creation-site/stills/
 npm run creation-site:export        # master, mix audio, MP4 1080p/720p et poster dans public/videos/
 npm run referencement:stills 60 270 # frames de contrôle dans out/referencement/stills/
-npm run referencement:export        # MP4 muets 1080p/720p et poster (public/videos/seo*)
+npm run referencement:export        # ambiance, MP4 1080p/720p (AAC) et poster (public/videos/seo*)
 ```
 
 Dans un conteneur sans téléchargement de navigateur : `REMOTION_BROWSER=/chemin/vers/headless_shell npm run …`.
