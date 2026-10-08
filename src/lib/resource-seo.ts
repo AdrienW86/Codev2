@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { isPublishedResource, type Resource } from "../data/resources";
+import { defaultShareImages } from "./seo";
 
 export function getResourceMetadata(resource: Resource): Metadata {
   const publicContent = isPublishedResource(resource);
@@ -11,7 +12,7 @@ export function getResourceMetadata(resource: Resource): Metadata {
     openGraph: {
       title, description, url: resource.canonical, locale: "fr_FR",
       type: resource.format === "video" ? "website" : "article",
-      ...(resource.coverImage ? { images: [{ url: new URL(resource.coverImage.src, resource.canonical).href, width: resource.coverImage.width, height: resource.coverImage.height, alt: resource.coverImage.alt }] } : {}),
+      ...(resource.coverImage ? { images: [{ url: new URL(resource.coverImage.src, resource.canonical).href, width: resource.coverImage.width, height: resource.coverImage.height, alt: resource.coverImage.alt }] } : { images: defaultShareImages }),
       ...(publicContent && resource.format !== "video" ? { publishedTime: resource.publishedAt!, ...(resource.updatedAt ? { modifiedTime: resource.updatedAt } : {}) } : {}),
     },
   };

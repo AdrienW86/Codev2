@@ -7,11 +7,12 @@ import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { getReviewsByIds } from "@/data/reviews";
 import { getServiceById } from "@/data/services";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 const title = "Stratégie digitale : diagnostic & feuille de route | CODE-V";
 const description = "Clarifiez vos objectifs et vos priorités digitales avec CODE-V : diagnostic de l’existant, choix des leviers, feuille de route et mesure des actions.";
 const canonical = "https://www.code-v.fr/strategie-digitale";
-export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR" } };
+export const metadata: Metadata = { title, description, alternates: { canonical }, openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages } };
 const levers = [
   ["Construire", "Une offre difficile à comprendre ou un parcours qui n’aboutit pas.", "/creation-site", "Création & refonte"],
   ["Être trouvé", "Des services pertinents qui restent difficiles à découvrir.", "/referencement", "Référencement naturel"],

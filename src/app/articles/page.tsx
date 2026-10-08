@@ -7,6 +7,7 @@ import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { getPublishedArticles, getRelatedSolutions, type Resource } from "@/data/resources";
 import { serviceFamilies } from "@/data/services";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 const canonical = "https://www.code-v.fr/articles";
 export const revalidate = 300;
@@ -15,7 +16,7 @@ export function generateMetadata(): Metadata {
     title: "Articles web, SEO, publicité & IA | CODE-V",
     description: "Conseils, analyses et guides CODE-V sur le web, le SEO, la publicité, l’automatisation et les outils digitaux pour les entreprises.",
     alternates: { canonical },
-    openGraph: { title: "Articles web, SEO, publicité & IA | CODE-V", description: "Des lectures concrètes pour préparer vos décisions digitales.", url: canonical, type: "website", locale: "fr_FR" },
+    openGraph: { title: "Articles web, SEO, publicité & IA | CODE-V", description: "Des lectures concrètes pour préparer vos décisions digitales.", url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages },
     robots: { index: getPublishedArticles().some(article => article.indexable), follow: true },
   };
 }

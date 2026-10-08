@@ -10,13 +10,14 @@ import { solutionNavigation } from "@/data/navigation";
 import { getPublishedResources, resources, resourceHubProject, resourceHubVideo } from "@/data/resources";
 import type { ServiceCategory } from "@/data/services";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 const canonical = "https://www.code-v.fr/ressources";
 export const metadata: Metadata = {
   title: "Ressources : comprendre et choisir vos leviers digitaux | CODE-V",
   description: "Explorez les thématiques digitales CODE-V, un film explicatif et des réalisations concrètes. Des points de repère pour comprendre les solutions et préparer votre projet.",
   alternates: { canonical },
-  openGraph: { title: "Ressources CODE-V", description: "Comprendre les leviers. Observer le travail. Choisir la suite.", url: canonical, type: "website", locale: "fr_FR" },
+  openGraph: { title: "Ressources CODE-V", description: "Comprendre les leviers. Observer le travail. Choisir la suite.", url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 const chapters: { id: string; title: string; description: string; families: ServiceCategory[] }[] = [
   { id: "construire", title: "L’expérience et les outils.", description: "Du site public aux logiciels métier : ce que l’on construit, ce que l’on relie et ce que l’on fait évoluer.", families: ["web", "automation", "software"] },

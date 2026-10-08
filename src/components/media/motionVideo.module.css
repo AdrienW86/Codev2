@@ -8,10 +8,10 @@
 .poster { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--white); }
 .poster img { position: absolute; inset: 0; }
 .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(80,227,194,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(80,227,194,.05) 1px, transparent 1px); background-size: 48px 48px; mask-image: linear-gradient(transparent,black); }
-.mark { position: relative; font: 500 clamp(48px,7vw,96px) "Space Grotesk",sans-serif; color: var(--cyan); }
+.mark { position: relative; font: 500 clamp(48px,7vw,96px) var(--font-space-grotesk),sans-serif; color: var(--cyan); }
 .placeholder { position: relative; font-size: 14px; color: rgba(255,255,255,.8); }
 .play { position: absolute; bottom: 20px; left: 20px; border: 1px solid rgba(255,255,255,.5); border-radius: 999px; padding: 12px 20px; min-height: 44px; background: var(--dark); color: var(--white); }
 .figure figcaption { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
 .figure figcaption span { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--blue-deep); }
-.figure figcaption strong { font: 500 clamp(20px,2vw,28px) "Space Grotesk",sans-serif; letter-spacing: -.025em; }
+.figure figcaption strong { font: 500 clamp(20px,2vw,28px) var(--font-space-grotesk),sans-serif; letter-spacing: -.025em; }
 .transcript { margin-top: 20px; line-height: 1.7; }

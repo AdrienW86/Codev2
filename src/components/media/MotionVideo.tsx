@@ -5,16 +5,17 @@ import styles from "./motionVideo.module.css";
 
 type Mode = "feature" | "inline" | "explainer" | "case-study" | "loop";
 export type MotionVideoProps = {
-  src?: string; poster?: string; title: string; mode: Mode;
+  src?: string; /** Lighter version for screens up to 900px wide. */ srcSmall?: string; poster?: string; title: string; mode: Mode;
   autoplay?: boolean; muted?: boolean; loop?: boolean; controls?: boolean;
   className?: string; aspectRatio?: string; captions?: string; transcript?: string; transcriptLabel?: string;
 };
 
 /** No source request before user action, except opt-in muted loops near the viewport. */
-export default function MotionVideo({ src, poster, title, mode, autoplay = false, muted = true, loop = false, controls = true, className = "", aspectRatio = "16 / 9", captions, transcript, transcriptLabel = "Lire la transcription" }: MotionVideoProps) {
+export default function MotionVideo({ src, srcSmall, poster, title, mode, autoplay = false, muted = true, loop = false, controls = true, className = "", aspectRatio = "16 / 9", captions, transcript, transcriptLabel = "Lire la transcription" }: MotionVideoProps) {
   const video = useRef<HTMLVideoElement>(null);
   const frame = useRef<HTMLDivElement>(null);
   const [loaded, setLoaded] = useState(false);
+  const [source, setSource] = useState<string>();
   const [failed, setFailed] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [autoPending, setAutoPending] = useState(Boolean(src && autoplay && muted && mode === "loop"));
@@ -22,6 +23,11 @@ export default function MotionVideo({ src, poster, title, mode, autoplay = false
   const userPaused = useRef(false);
   const systemPause = useRef(false);
   const mayPlay = useRef(false);
+  // The source is chosen once, when the video is first mounted: small screens get the lighter file.
+  const load = () => {
+    setSource(current => current ?? (srcSmall && window.matchMedia("(max-width: 900px)").matches ? srcSmall : src));
+    setLoaded(true);
+  };
 
   useEffect(() => {
     if (!src || !autoplay || !muted || mode !== "loop") return;
@@ -35,7 +41,7 @@ export default function MotionVideo({ src, poster, title, mode, autoplay = false
       setAutoPending(automatic.current);
       mayPlay.current = visible && !document.hidden && automatic.current && !userPaused.current;
       if (visible && !document.hidden && automatic.current && !userPaused.current) {
-        setLoaded(true);
+        load();
         video.current?.play().catch(() => {});
       } else if (video.current && !video.current.paused) {
         systemPause.current = true;
@@ -58,7 +64,7 @@ export default function MotionVideo({ src, poster, title, mode, autoplay = false
 
   return <figure className={`${styles.figure} ${styles[mode] ?? ""} ${className}`}>
     <div ref={frame} className={styles.frame} style={{ aspectRatio }}>
-      {src && loaded && !failed ? <video ref={video} src={src} poster={poster} preload="none" playsInline muted={muted} loop={loop} controls={controls}
+      {src && loaded && !failed ? <video ref={video} src={source} poster={poster} preload="none" playsInline muted={muted} loop={loop} controls={controls}
         tabIndex={controls ? 0 : undefined}
         aria-label={title} onError={() => setFailed(true)} onPlay={() => setPlaying(true)}
         onPause={() => { setPlaying(false); if (systemPause.current) systemPause.current = false; else userPaused.current = true; }}
@@ -70,7 +76,7 @@ export default function MotionVideo({ src, poster, title, mode, autoplay = false
           <span className={styles.mark} aria-hidden="true">↗</span>
           <span className={styles.placeholder}>{failed ? "Lecture indisponible" : src ? "Voir la démonstration" : "Séquence motion à venir"}</span></>}
       </div>}
-      {src && !loaded && !failed && !autoPending && <button className={styles.play} onClick={() => { automatic.current = false; mayPlay.current = true; userPaused.current = false; setLoaded(true); }} aria-label={`Lire : ${title}`}>Lire la vidéo <span aria-hidden="true">▷</span></button>}
+      {src && !loaded && !failed && !autoPending && <button className={styles.play} onClick={() => { automatic.current = false; mayPlay.current = true; userPaused.current = false; load(); }} aria-label={`Lire : ${title}`}>Lire la vidéo <span aria-hidden="true">▷</span></button>}
       {src && loaded && !failed && !controls && <button className={styles.play} onClick={() => { userPaused.current = playing; if (playing) video.current?.pause(); else video.current?.play().catch(() => {}); }}>{playing ? "Pause" : "Lire"}</button>}
     </div>
     <figcaption><span>{mode === "feature" ? "CODE-V / Motion" : "CODE-V / Démonstration"}</span><strong>{title}</strong></figcaption>
