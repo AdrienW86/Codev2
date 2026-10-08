@@ -70,7 +70,7 @@ export default function ProjectsPage() {
         {film?.video && <Reveal><h3>Les connexions, rendues visibles.</h3><MotionVideo src={film.video.src} poster={film.video.poster} title={film.video.title} mode="case-study" controls muted={false} aspectRatio="16 / 9" transcript={film.video.description} transcriptLabel="Lire la description du film" /><p className={styles.observation}>Film de marque interne. Les compteurs sont des données de démonstration.</p><Link href="/motion-design" className={styles.textLink}>Explorer le motion design <span aria-hidden="true">↗</span></Link></Reveal>}
       </div>
     </div></section>
-    <section className={styles.final} aria-labelledby="next-project-title"><Reveal className="container"><p className={styles.eyebrow}>VOTRE PROCHAIN PROJET</p><h2 id="next-project-title">Un univers à vous.<br /><em>Une présence à construire.</em></h2><p>Parlons de votre activité, de votre public et du rôle que votre site doit jouer.</p><Link href="/contact" className="button button-primary">Parler de votre projet <span aria-hidden="true">↗</span></Link></Reveal></section>
+    <section className={styles.final} aria-labelledby="next-project-title"><Reveal className="container"><p className={styles.eyebrow}>VOTRE PROCHAIN PROJET</p><h2 id="next-project-title">Un univers à vous.<br /><em>Une présence à construire.</em></h2><p>Parlons de votre activité, de votre public et du rôle que votre site doit jouer.</p><Link href="/contact" className="button button-primary">Parler de votre projet <span aria-hidden="true">↗</span></Link><Link href="/creation-site" className={styles.jump}>Découvrir la création de site internet <span aria-hidden="true">↗</span></Link></Reveal></section>
   </div>;
 }
 

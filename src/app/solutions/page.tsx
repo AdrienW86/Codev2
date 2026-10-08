@@ -23,6 +23,7 @@ function Family({ id }: { id: ServiceCategory }) {
   return <article className={styles.family} data-family={id}>
     <div><span className={styles.availability}>{family.destinationType === "family" ? "PAGE FAMILLE" : family.destinationType === "service" ? "EXPERTISE DÉJÀ DISPONIBLE" : "ÉCHANGE DE CADRAGE"}</span><h3>{family.name}</h3><p>{family.description}</p></div>
     <Link href={family.href} className={styles.familyLink}>{action}<span aria-hidden="true">↗</span></Link>
+    {id === "web" && <Link href="/creation-site" className={styles.familyLink}>Découvrir la création de site<span aria-hidden="true">↗</span></Link>}
     {id === "seo" && <Link href="/referencement-local" className={styles.familyLink}>Découvrir le référencement local<span aria-hidden="true">↗</span></Link>}
   </article>;
 }
