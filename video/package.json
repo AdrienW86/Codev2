@@ -1,0 +1,27 @@
+{
+  "name": "codev-videos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Films motion design CODE-V (Remotion), isolés du site Next.js.",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "creation-site:render": "remotion render src/index.ts CreationSite out/creation-site/creation-site-master.mp4",
+    "creation-site:stills": "node creation-site/scripts/stills.mjs",
+    "creation-site:poster": "remotion still src/index.ts CreationSitePoster out/creation-site/creation-site-poster.png",
+    "creation-site:audio": "python3 creation-site/audio/generate-ambiance.py out/creation-site",
+    "creation-site:export": "bash creation-site/scripts/export.sh"
+  },
+  "dependencies": {
+    "@fontsource/dm-sans": "5.3.0",
+    "@fontsource/space-grotesk": "5.3.0",
+    "@remotion/cli": "4.0.534",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.534"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.2",
+    "typescript": "5.8.3"
+  }
+}
