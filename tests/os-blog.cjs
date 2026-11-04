@@ -30,7 +30,7 @@ assert.equal(blog.resourceFromOs({ ...article, image: { ...article.image, url: "
 assert.equal(blog.resourceFromOs({ ...article, markdown: undefined }).content, null, "list entries carry no body");
 
 (async () => {
-  assert.deepEqual(await blog.getOsArticles(), [], "API down: no remote article, no crash");
+  assert.equal((await blog.getOsArticles()).length, 0, "API down: no remote article, no crash");
   assert.equal(await blog.getOsArticle("x"), null);
   const ok = load("src/lib/os-blog.ts", { fetch: async (url) => ({ ok: true, json: async () => url.endsWith("/bien-choisir-son-site") ? { article } : { articles: [{ ...article, markdown: undefined }] } }), AbortSignal });
   assert.equal((await ok.getOsArticles())[0].slug, "bien-choisir-son-site");
