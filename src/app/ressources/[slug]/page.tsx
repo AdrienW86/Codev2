@@ -7,19 +7,23 @@ import ResourceAction from "@/components/resources/ResourceAction";
 import { getResourceBreadcrumb } from "@/data/breadcrumbs";
 import { getPublishedResourceBySlug, getPublishedResources, getRelatedResources, getRelatedSolutions, getRelatedProjects } from "@/data/resources";
 import { getResourceMetadata, getResourceStructuredData } from "@/lib/resource-seo";
+import { getOsArticle } from "@/lib/os-blog";
 import styles from "../page.module.css";
 
 type Props = { params: Promise<{ slug: string }> };
-function getResource(slug: string) {
-  const resource = getPublishedResourceBySlug(slug);
+// Articles de l'Agent Blog (CODE-V OS) : rendus à la demande puis mis en cache (ISR), après ceux du registre.
+export const revalidate = 300;
+export const dynamicParams = true;
+async function getResource(slug: string) {
+  const resource = getPublishedResourceBySlug(slug) ?? await getOsArticle(slug);
   if (!resource) notFound();
   return resource;
 }
 export function generateStaticParams() { return getPublishedResources().map(resource => ({ slug: resource.slug })); }
-export async function generateMetadata({ params }: Props) { return getResourceMetadata(getResource((await params).slug)); }
+export async function generateMetadata({ params }: Props) { return getResourceMetadata(await getResource((await params).slug)); }
 
 export default async function ResourcePage({ params }: Props) {
-  const resource = getResource((await params).slug);
+  const resource = await getResource((await params).slug);
   const structuredData = getResourceStructuredData(resource);
   const related = getRelatedResources(resource);
   const solutions = getRelatedSolutions(resource);
