@@ -8,16 +8,25 @@ import { getPublishedArticles, getRelatedSolutions, type Resource } from "@/data
 import { serviceFamilies } from "@/data/services";
 import styles from "./page.module.css";
 import { defaultShareImages } from "@/lib/seo";
+import { getOsArticles } from "@/lib/os-blog";
+
+/** Articles du registre et articles de l’Agent Blog (CODE-V OS), du plus récent au plus ancien, sans doublon de slug. */
+async function allArticles() {
+  const local = getPublishedArticles(), slugs = new Set(local.map(article => article.slug));
+  return [...local, ...(await getOsArticles()).filter(article => !slugs.has(article.slug))]
+    .sort((a, b) => Date.parse(b.publishedAt!) - Date.parse(a.publishedAt!));
+}
 
 const canonical = "https://www.code-v.fr/articles";
 export const revalidate = 300;
-export function generateMetadata(): Metadata {
+export async function generateMetadata(): Promise<Metadata> {
+  const articles = await allArticles();
   return {
     title: "Articles web, SEO, publicité & IA | CODE-V",
     description: "Conseils, analyses et guides CODE-V sur le web, le SEO, la publicité, l’automatisation et les outils digitaux pour les entreprises.",
     alternates: { canonical },
     openGraph: { title: "Articles web, SEO, publicité & IA | CODE-V", description: "Des lectures concrètes pour préparer vos décisions digitales.", url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages },
-    robots: { index: getPublishedArticles().some(article => article.indexable), follow: true },
+    robots: { index: articles.some(article => article.indexable), follow: true },
   };
 }
 
@@ -36,8 +45,8 @@ function ArticleEntry({ article, featured = false }: { article: Resource; featur
   </article>;
 }
 
-export default function ArticlesPage() {
-  const articles = getPublishedArticles();
+export default async function ArticlesPage() {
+  const articles = await allArticles();
   const featured = articles.find(article => article.featured) ?? articles[0];
   return <div className={styles.page}>
     <section className={styles.hero}><div className="container"><Breadcrumb {...getPageBreadcrumb("/articles")} /><div className={styles.heroLayout}><div><p className={styles.eyebrow}>LE REGARD CODE-V</p><h1>Le digital,<br /><em>avec du recul.</em></h1></div><div className={styles.intro}><p>Comprendre les choix derrière un site, une campagne ou une automatisation. Des lectures pour relier les outils aux besoins de votre entreprise.</p><Link href="/ressources" className={styles.link}>Explorer toutes les ressources <span aria-hidden="true">↗</span></Link></div></div></div></section>

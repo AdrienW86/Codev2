@@ -1,9 +1,13 @@
 import type { MetadataRoute } from "next";
 import { getPublishedResources } from "@/data/resources";
 import { publicRoutes, siteOrigin } from "@/data/public-routes";
+import { getOsArticles } from "@/lib/os-blog";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const resources = getPublishedResources().filter(resource => resource.indexable);
+export const revalidate = 300;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const local = getPublishedResources(), slugs = new Set(local.map(resource => resource.slug));
+  const resources = [...local, ...(await getOsArticles()).filter(resource => !slugs.has(resource.slug))].filter(resource => resource.indexable);
   const hasArticles = resources.some(resource => resource.format === "article");
   return [
     { url: `${siteOrigin}/realisations/protection-nuisibles` },
