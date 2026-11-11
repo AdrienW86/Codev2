@@ -16,16 +16,16 @@ for(const file of sources.filter(f=>f.endsWith('page.tsx'))){const text=fs.readF
 
 // Données structurées : uniquement des informations publiées, aucun avis ni recherche interne inventés.
 const org=seo.organizationSchema,site=seo.websiteSchema;assert.equal(org['@type'],'Organization');assert.equal(org.name,'CODE-V');assert.equal(org.url,'https://www.code-v.fr');assert(fs.existsSync('public'+new URL(org.logo).pathname),org.logo);
-const legal=fs.readFileSync('src/app/mentions-legales/page.tsx','utf8');assert(legal.includes(org.email));assert(legal.includes(org.address.streetAddress)&&legal.includes(org.address.postalCode));
-const all=JSON.stringify([org,site]);for(const banned of ['aggregateRating','review','potentialAction','SearchAction','sameAs','telephone'])assert(!all.includes(banned),banned);
+const legal=fs.readFileSync('src/app/mentions-legales/page.tsx','utf8');assert(legal.includes(org.email));assert(legal.includes(org.address.streetAddress)&&legal.includes(org.address.postalCode));assert.equal(org.telephone,'+33666672709');assert(legal.includes('06 66 67 27 09'));assert(org.areaServed.some(x=>x.name==='Perpignan'));assert(org.areaServed.some(x=>x.name==='Pyrénées-Orientales'));
+const all=JSON.stringify([org,site]);for(const banned of ['aggregateRating','review','potentialAction','SearchAction','sameAs'])assert(!all.includes(banned),banned);
 const home=fs.readFileSync('src/app/page.tsx','utf8');assert(home.includes('jsonLd(organizationSchema)')&&home.includes('jsonLd(websiteSchema)'));
 for(const [page,video] of [['src/app/creation-site/page.tsx','/videos/creation-site.mp4'],['src/app/referencement/page.tsx','/videos/seo.mp4']]){const text=fs.readFileSync(page,'utf8');assert(text.includes('jsonLd(filmSchema)'),page);assert(/uploadDate: "\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+0[12]:00"/.test(text),`${page} : uploadDate datée`);assert(text.includes('duration: "PT20S"'));assert(text.includes(`src: "${video}"`))}
 const film=seo.getFilmSchema({name:'n',description:'d',poster:'/videos/seo-poster.webp',src:'/videos/seo.mp4',uploadDate:'2026-10-08T14:57:25+02:00',duration:'PT20S'});assert.equal(film.contentUrl,'https://www.code-v.fr/videos/seo.mp4');assert.equal(film.thumbnailUrl,'https://www.code-v.fr/videos/seo-poster.webp');assert.equal(seo.jsonLd({a:'</script>'}),'{"a":"\\u003c/script>"}');
 
-// Vidéo Home : 1080p allégé + 720p mobile, H.264 faststart, choisis par MotionVideo.
+// Les anciens assets vidéo restent optimisés même si la Home CRO n'en dépend plus.
 const big=fs.statSync('public/videos/code-v-presentation.mp4').size,small=fs.statSync('public/videos/code-v-presentation-720.mp4').size;
 assert(big<3.5e6,`1080p : ${big} octets`);assert(small<big*0.6,`720p : ${small} octets`);
 for(const file of ['public/videos/code-v-presentation.mp4','public/videos/code-v-presentation-720.mp4']){const head=fs.readFileSync(file).subarray(0,64*1024);assert(head.includes('avc1'),`${file} : H.264`);assert(head.indexOf('moov')<head.indexOf('mdat')||head.indexOf('mdat')<0,`${file} : faststart`)}
-assert(fs.readFileSync('src/components/home/Home.tsx','utf8').includes('srcSmall="/videos/code-v-presentation-720.mp4"'));
+assert(!fs.readFileSync('src/components/home/Home.tsx','utf8').includes('MotionVideo'),'la Home CRO ne dépend pas d’une vidéo décorative');
 const motion=fs.readFileSync('src/components/media/MotionVideo.tsx','utf8');assert(motion.includes('matchMedia("(max-width: 900px)")'));assert(motion.includes('prefers-reduced-motion: reduce')&&motion.includes('saveData'),'reduced motion et Save-Data conservés');
-console.log('Performance/SEO: next/font, metadataBase, Open Graph, Organization/WebSite/VideoObject et vidéo Home 1080p/720p OK');
+console.log('Performance/SEO: next/font, metadataBase, Open Graph, données locales, Organization/WebSite/VideoObject et assets vidéo optimisés OK');
