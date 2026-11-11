@@ -3,18 +3,16 @@ import { getReviewsByIds } from "@/data/reviews";
 import Link from "next/link";
 import Reveal from "../motion/Reveal";
 import ChatTrigger from "../RobotAssistant/ChatTrigger";
-import SolutionExplorer from "./SolutionExplorer";
 import GrowthCard from "./GrowthCard";
 import MotionVideo from "@/components/media/MotionVideo";
 import { commercialOfferNavigation } from "@/data/navigation";
 import styles from "./home.module.css";
 
 const method = [
-  ["Comprendre", "Votre activité et les points de friction. Une direction partagée, avant les outils."],
-  ["Concevoir", "L’expérience et l’architecture. Des choix lisibles, un périmètre explicite."],
-  ["Construire", "Les interfaces, les campagnes et les connexions utiles. Tester avant de déployer."],
-  ["Mesurer", "Les indicateurs pertinents. Distinguer les impressions des faits observables."],
-  ["Faire évoluer", "Les retours du terrain. Améliorer le système, plutôt que tout recommencer."],
+  ["Comprendre", "Votre activité, vos clients et le problème à résoudre avant de choisir les outils."],
+  ["Construire", "Le site, la campagne, l’automatisation ou l’outil réellement utile au projet."],
+  ["Mesurer", "Les demandes, les usages et les signaux qui permettent de savoir ce qui fonctionne."],
+  ["Améliorer", "Faire évoluer ce qui existe à partir des retours du terrain, sans multiplier les outils inutilement."],
 ];
 
 export default function Home() {
@@ -22,30 +20,45 @@ export default function Home() {
     <section className={styles.hero} aria-labelledby="home-title">
       <div className={styles.heroAtmosphere} aria-hidden="true" />
       <div className={`container ${styles.heroInner}`}>
-        <div className={styles.heroCopy}><span className={styles.kicker}>CODE-V / PARTENAIRE DIGITAL & TECHNOLOGIE</span>
-          <h1 id="home-title"><span>Construire.</span><span>Attirer.</span><span><em>Automatiser.</em></span></h1>
-          <p>CODE-V conçoit vos sites et applications, développe votre acquisition et connecte les outils qui font tourner votre activité.</p>
-          <div className={styles.heroActions}><Link className="button button-primary" href="/contact">Parler de votre activité <span aria-hidden="true">↗</span></Link><Link className={styles.heroLink} href="/solutions">Voir les offres CODE-V <span aria-hidden="true">→</span></Link></div>
+        <div className={styles.heroCopy}><span className={styles.kicker}>CODE-V / PARTENAIRE DIGITAL POUR LES ENTREPRISES</span>
+          <h1 id="home-title"><span>Sites web.</span><span>Acquisition.</span><span><em>Automatisation.</em></span></h1>
+          <p>CODE-V crée votre site ou votre application, vous aide à générer des prospects et automatise les tâches qui ralentissent votre activité.</p>
+          <div className={styles.heroActions}><Link className="button button-primary" href="/contact">Parler de mon besoin <span aria-hidden="true">↗</span></Link><Link className={styles.heroLink} href="#offres">Voir les 3 offres <span aria-hidden="true">↓</span></Link></div>
         </div>
         <GrowthCard />
       </div>
-      <div className={`container ${styles.heroFoot}`}><span>Sites & applications / Acquisition / Automatisation / Pilotage</span><span>Un partenaire / Un système cohérent</span></div>
+      <div className={`container ${styles.heroFoot}`}><span>Sites & applications / Acquisition de clients / Automatisation & outils métier</span><span>Un seul partenaire</span></div>
     </section>
-    <section className={styles.quickAccess} aria-labelledby="quick-access-title"><div className="container"><div className={styles.quickHeading}><h2 id="quick-access-title">Quatre besoins. Un seul partenaire.</h2><Link href="/solutions">Comprendre notre approche <span aria-hidden="true">↗</span></Link></div><nav className={styles.quickRail} aria-label="Accès directs aux offres">{commercialOfferNavigation.map(offer => <Link key={offer.id} href={offer.href}>{offer.name}<span aria-hidden="true">↗</span></Link>)}</nav></div></section>
+
+    <section id="offres" className={styles.offers} aria-labelledby="offers-title"><div className="container">
+      <Reveal className={styles.offerHeading}><span className={styles.kicker}>L’OFFRE CODE-V</span><h2 id="offers-title">Trois besoins.<br /><span>Trois offres claires.</span></h2><p>Pas besoin de choisir parmi des dizaines de prestations. Commencez par ce que vous voulez obtenir.</p></Reveal>
+      <div className={styles.offerGrid}>{commercialOfferNavigation.map((offer, index) => <Reveal className={styles.offerCard} key={offer.id}>
+        <span className={styles.offerNumber}>0{index + 1}</span>
+        <span className={styles.offerLabel}>{offer.label}</span>
+        <h3>{offer.name}</h3>
+        <p>{offer.description}</p>
+        <ul>{offer.services.map(service => <li key={service}>{service}</li>)}</ul>
+        <Link href={offer.href}>{offer.cta} <span aria-hidden="true">↗</span></Link>
+      </Reveal>)}</div>
+      <div className={styles.complementary}><span>EN COMPLÉMENT</span><p>Hébergement, nom de domaine & maintenance · Motion design · Stratégie et accompagnement selon le projet.</p></div>
+    </div></section>
+
+    <section className={styles.proof} aria-labelledby="proof-title"><Reveal className={`container ${styles.proofInner}`}><div className={styles.proofType} aria-hidden="true">Du concret.<br /><span>Pas du décor.</span></div><div><span className={styles.kicker}>DES PROJETS, PAS JUSTE DES PRESTATIONS</span><h2 id="proof-title">Un besoin.<br />Un dispositif adapté.</h2><p>Site, visibilité, publicité ou automatisation : découvrez comment les solutions sont assemblées autour de l’activité réelle de chaque client.</p><Link className="text-link" href="/realisations">Voir nos réalisations <span aria-hidden="true">↗</span></Link></div></Reveal></section>
+
+    <section className={styles.system} aria-labelledby="system-title"><div className={`container ${styles.systemInner}`}>
+      <Reveal className={styles.systemCopy}><span className={styles.kicker}>QUAND LES BESOINS SE REJOIGNENT</span><h2 id="system-title">Un site attire.<br />Les outils <em>prennent le relais.</em></h2><p>Un client peut commencer par un site, ajouter de l’acquisition puis automatiser le traitement des demandes. Les trois offres peuvent fonctionner seules ou se compléter.</p><Link className="text-link" href="/solutions">Voir le détail des solutions <span aria-hidden="true">↗</span></Link></Reveal>
+      <Reveal className={styles.systemDiagram}><div className={styles.orbit} aria-hidden="true"><i /><i /></div><div className={styles.systemCore}>Votre<br /><strong>activité.</strong></div><span className={styles.systemTop}>Être visible</span><span className={styles.systemRight}>Recevoir des demandes</span><span className={styles.systemBottom}>Automatiser</span><span className={styles.systemLeft}>Convertir</span><small>Site → acquisition → traitement.</small></Reveal>
+    </div></section>
+
     <section className={styles.motionStage} aria-labelledby="presentation-title"><div className="container">
-      <Reveal className={styles.motionHeading}><span className={styles.kicker}>CODE-V / EN MOUVEMENT</span><h2 id="presentation-title">Construire. Attirer.<br /><em>Automatiser. Piloter.</em></h2><p>20 secondes pour voir comment un site, l’acquisition et les automatisations peuvent fonctionner comme un même système.</p></Reveal>
+      <Reveal className={styles.motionHeading}><span className={styles.kicker}>CODE-V / EN 20 SECONDES</span><h2 id="presentation-title">Du site au prospect.<br /><em>Du prospect au traitement.</em></h2><p>Une présentation courte de la manière dont présence, acquisition et automatisation peuvent fonctionner ensemble.</p></Reveal>
       <div className={styles.cinema}><div className={styles.cinemaBar} aria-hidden="true"><span>LE SYSTÈME CODE-V</span><span>Motion design / 16:9 / 20 s</span></div><MotionVideo src="/videos/code-v-presentation.mp4" srcSmall="/videos/code-v-presentation-720.mp4" poster="/videos/code-v-presentation-poster.webp" title="Présentation CODE-V" mode="loop" autoplay muted loop controls={false} aspectRatio="16 / 9" /></div>
     </div></section>
-    <section className={styles.manifesto} aria-labelledby="approach-title">
-      <Reveal className={`container ${styles.manifestoInner}`}><span className={styles.kicker}>LE PROBLÈME N’EST PAS TOUJOURS LE SITE.</span><h2 id="approach-title">Les outils s’accumulent.<br /><span>La cohérence se construit.</span></h2><div className={styles.manifestoBottom}><p>Un site sans demandes. Des campagnes sans suivi. Des informations ressaisies d’un outil à l’autre. Chaque pièce peut fonctionner, sans que l’ensemble vous aide vraiment.</p><p>Notre travail : comprendre les points de friction, choisir les bons leviers et leur donner une direction commune.</p></div><div className={styles.bridge} aria-hidden="true"><span /><i /><span /></div></Reveal>
-    </section>
-    <section className={styles.system} aria-labelledby="system-title"><div className={`container ${styles.systemInner}`}>
-      <Reveal className={styles.systemCopy}><span className={styles.kicker}>DE L’INTENTION À L’ACTION</span><h2 id="system-title">Une présence.<br />Puis un <em>système.</em></h2><p>La visibilité ouvre une porte. L’expérience facilite la prise de contact. Les outils permettent de traiter la demande. Les données éclairent la suite.</p><Link className="text-link" href="/solutions/automatisation-ia">Voir comment connecter les outils <span aria-hidden="true">↗</span></Link></Reveal>
-      <Reveal className={styles.systemDiagram}><div className={styles.orbit} aria-hidden="true"><i /><i /></div><div className={styles.systemCore}>Votre<br /><strong>activité.</strong></div><span className={styles.systemTop}>Être trouvé</span><span className={styles.systemRight}>Convaincre</span><span className={styles.systemBottom}>Traiter</span><span className={styles.systemLeft}>Apprendre</span><small>Visibilité, expérience et outils reliés.</small></Reveal>
-    </div></section>
-    <section className={styles.solutions} aria-labelledby="solutions-title"><div className="container"><Reveal className={styles.sectionHeading}><div><span className={styles.kicker}>QUATRE OFFRES / DES EXPERTISES RELIÉES</span><h2 id="solutions-title">Commencer par<br /><span>votre objectif.</span></h2></div><p>Vous n’avez pas à choisir parmi une liste de métiers. Commencez par le résultat recherché ; nous assemblons ensuite les expertises utiles.</p></Reveal><SolutionExplorer items={commercialOfferNavigation} /></div></section>
-    <section className={styles.proof} aria-labelledby="proof-title"><Reveal className={`container ${styles.proofInner}`}><div className={styles.proofType} aria-hidden="true">Du concret.<br /><span>Pas du décor.</span></div><div><span className={styles.kicker}>LES PREUVES COMPTENT</span><h2 id="proof-title">Un contexte.<br />Des choix. Des faits.</h2><p>Découvrez des projets CODE-V : sites et interfaces, visibilité, acquisition et outils conçus autour des besoins réels de chaque activité.</p><Link className="text-link" href="/realisations">Voir nos réalisations <span aria-hidden="true">↗</span></Link></div></Reveal></section>
-    <ReviewsSection reviews={getReviewsByIds(["gaston-barreau", "pierre-louis", "olivier-garnier"])} heading="Ce qu’ils retiennent de notre travail." variant="featured" maxItems={3} />    <section className={styles.method} aria-labelledby="method-title"><div className={`container ${styles.methodInner}`}><div className={styles.methodHeading}><span className={styles.kicker}>UNE MÉTHODE, PAS UNE RECETTE</span><h2 id="method-title">Une direction claire.<br /><em>À chaque décision.</em></h2><p>Le projet avance par étapes reliées. Ce que nous apprenons à l’une nourrit la suivante.</p></div><div className={styles.timeline}>{method.map(([title,text])=><Reveal className={styles.milestone} key={title}><span className={styles.milestoneDot} aria-hidden="true" /><h3>{title}</h3><p>{text}</p></Reveal>)}</div></div></section>
-    <section className={styles.project} aria-labelledby="project-title"><Reveal className={`container ${styles.projectInner}`}><span className={styles.kicker}>COMMENÇONS PAR VOTRE BESOIN</span><h2 id="project-title">La prochaine<br /><span>bonne question.</span></h2><div className={styles.projectChoices}><ChatTrigger intent="website">Construire ma présence <span aria-hidden="true">↗</span></ChatTrigger><ChatTrigger intent="acquisition">Générer plus de demandes <span aria-hidden="true">↗</span></ChatTrigger><ChatTrigger intent="automation">Automatiser mon activité <span aria-hidden="true">↗</span></ChatTrigger><ChatTrigger intent="strategy">Piloter l’ensemble <span aria-hidden="true">↗</span></ChatTrigger></div><Link className="button button-dark" href="/contact">Ou parlons directement de votre projet <span aria-hidden="true">↗</span></Link></Reveal></section>
+
+    <section className={styles.method} aria-labelledby="method-title"><div className={`container ${styles.methodInner}`}><div className={styles.methodHeading}><span className={styles.kicker}>NOTRE FAÇON DE TRAVAILLER</span><h2 id="method-title">Un problème concret.<br /><em>Une réponse cadrée.</em></h2><p>Nous ne cherchons pas à vendre tous les leviers. Nous partons de l’objectif et de l’existant.</p></div><div className={styles.timeline}>{method.map(([title,text])=><Reveal className={styles.milestone} key={title}><span className={styles.milestoneDot} aria-hidden="true" /><h3>{title}</h3><p>{text}</p></Reveal>)}</div></div></section>
+
+    <ReviewsSection reviews={getReviewsByIds(["gaston-barreau", "pierre-louis", "olivier-garnier"])} heading="Ce qu’ils retiennent de notre travail." variant="featured" maxItems={3} />
+
+    <section className={styles.project} aria-labelledby="project-title"><Reveal className={`container ${styles.projectInner}`}><span className={styles.kicker}>PAR QUOI COMMENCER ?</span><h2 id="project-title">Choisissez simplement<br /><span>votre objectif.</span></h2><div className={styles.projectChoices}><ChatTrigger intent="website">Créer un site ou une application <span aria-hidden="true">↗</span></ChatTrigger><ChatTrigger intent="acquisition">Obtenir plus de clients <span aria-hidden="true">↗</span></ChatTrigger><ChatTrigger intent="automation">Automatiser mon activité <span aria-hidden="true">↗</span></ChatTrigger></div><Link className="button button-dark" href="/contact">Parler directement de mon besoin <span aria-hidden="true">↗</span></Link></Reveal></section>
   </div>;
 }

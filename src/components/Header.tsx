@@ -39,7 +39,7 @@ export default function Header() {
           <div className={styles.solutions} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setSolutions(false); }}>
             <button ref={solutionsToggle} className={styles.solutionsToggle} type="button" aria-expanded={solutions} aria-controls="solutions-links" onClick={() => setSolutions(value => !value)}>Solutions <span aria-hidden="true">⌄</span></button>
             <div id="solutions-links" className={styles.dropdown} hidden={!solutions}>
-              <div className={styles.menuIntro}><span>LES OFFRES CODE-V</span><strong>Un partenaire.<br />Quatre façons d’avancer.</strong><p>Commencez par votre objectif. Les expertises viennent ensuite.</p></div>
+              <div className={styles.menuIntro}><span>LES OFFRES CODE-V</span><strong>Trois offres.<br />Un seul partenaire.</strong><p>Site, acquisition ou automatisation : choisissez d’abord ce que vous voulez obtenir.</p></div>
               <div className={styles.menuFamilies}>
                 <div className={styles.primaryFamilies}>{commercialOfferNavigation.map(offer => <Link key={offer.id} href={offer.href} onClick={close}><span className={styles.needLabel}>{offer.label}</span><strong>{offer.name} <span aria-hidden="true">↗</span></strong><small>{offer.description}</small></Link>)}</div>
                 <div className={styles.otherFamilies}>{solutionNavigation.map(family => <Link key={family.id} href={family.href} onClick={close}>{family.name}<span aria-hidden="true">↗</span></Link>)}</div>
