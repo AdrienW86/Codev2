@@ -109,6 +109,7 @@ export default function Home() {
           <Link href={offer.href}>Voir le détail <span aria-hidden="true">↗</span></Link>
         </Reveal>)}</div>
         <div className={styles.centerCta}><PrimaryCta /></div>
+        <div className={styles.pricingLink}><Link href="/tarifs">Voir tous les tarifs & le fonctionnement <span aria-hidden="true">↗</span></Link></div>
       </div>
     </section>
 
