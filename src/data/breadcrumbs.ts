@@ -9,6 +9,7 @@ const labels = {
   "/motion-design": "Motion design",
   "/solutions/automatisation-ia": "Automatisation & IA",
   "/solutions/web-applications": "Web & Applications",
+  "/tarifs": "Tarifs & fonctionnement",
   "/contact": "Contact",
   "/qui-sommes-nous": "À propos",
   "/referencement": "Référencement naturel",
