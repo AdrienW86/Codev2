@@ -154,7 +154,7 @@ export default function Home() {
     <section className={styles.processSection} aria-labelledby="process-title">
       <div className="container">
         <Reveal className={styles.croSectionHeading}><span className={styles.kicker}>COMMENT ÇA SE PASSE</span><h2 id="process-title">Trois étapes. <span>Vous savez où vous allez.</span></h2></Reveal>
-        <ol className={styles.processGrid}>{process.map(([number,title,text]) => <Reveal as="li" className={styles.processCard} key={number}><span>{number}</span><h3>{title}</h3><p>{text}</p></Reveal>)}</ol>
+        <ol className={styles.processGrid}>{process.map(([number,title,text]) => <li key={number}><Reveal className={styles.processCard}><span>{number}</span><h3>{title}</h3><p>{text}</p></Reveal></li>)}</ol>
       </div>
     </section>
 
