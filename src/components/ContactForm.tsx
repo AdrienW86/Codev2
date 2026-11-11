@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState, FormEvent } from "react";
 import Link from "next/link";
 import styles from "./contactForm.module.css";
-import { trackContactSuccess } from "@/lib/analytics";
+import { trackContactStart, trackContactSuccess } from "@/lib/analytics";
 import { elapsedField, projectOptions, submitContact, trapField } from "@/lib/contact-form";
 
 export default function ContactForm({ compact = false }: { compact?: boolean }) {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const shownAt = useRef(0);
+  const started = useRef(false);
 
   useEffect(() => {
     shownAt.current = Date.now();
@@ -61,13 +62,17 @@ export default function ContactForm({ compact = false }: { compact?: boolean }) 
     return <div className="form-success" role="status" aria-live="polite">
       <h3>Votre demande est bien partie.</h3>
       <p>Merci. CODE-V va prendre connaissance de votre besoin et revenir vers vous avec une réponse personnalisée.</p>
-      <button className="button button-dark" type="button" onClick={() => { shownAt.current = Date.now(); setStatus("idle"); }}>
+      <button className="button button-dark" type="button" onClick={() => { shownAt.current = Date.now(); started.current = false; setStatus("idle"); }}>
         Faire une autre demande
       </button>
     </div>;
   }
 
-  return <form className={`contact-form ${styles.form} ${compact ? styles.compact : ""}`} onSubmit={handleSubmit} aria-busy={status === "sending"}>
+  return <form className={`contact-form ${styles.form} ${compact ? styles.compact : ""}`} onSubmit={handleSubmit} onFocusCapture={() => {
+    if (started.current) return;
+    started.current = true;
+    trackContactStart(new URLSearchParams(window.location.search).get("service") || "");
+  }} aria-busy={status === "sending"}>
     <label>
       Nom
       <input type="text" name="name" autoComplete="name" placeholder="Votre nom" required />
