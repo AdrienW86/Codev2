@@ -9,7 +9,7 @@ function load(file){file=path.resolve(file);if(cache[file])return cache[file].ex
     return load(n.startsWith('@/')?'src/'+n.slice(2)+'.ts':path.join(path.dirname(file),n+'.ts'));
   },process:{env},URL,Intl,Date,TextEncoder,Headers,console:{warn:line=>logs.push(line)}});return m.exports}
 const route=load('src/app/api/contact/route.ts'),security=load('src/lib/contact-security.ts'),form=load('src/lib/contact-form.ts');
-const legit={name:'Camille Martin',company:'Boulangerie Martin',email:'camille@boulangerie-martin.fr',project:'Créer ou refaire un site / une application',message:'Bonjour, nous souhaitons refaire notre site vitrine avant le printemps.',service:'website',source:'/contact',reference:'',elapsed:24000};
+const legit={name:'Camille Martin',company:'Boulangerie Martin',email:'camille@boulangerie-martin.fr',project:'Créer ou refaire mon site',message:'Bonjour, nous souhaitons refaire notre site vitrine avant le printemps.',service:'website',source:'/contact',reference:'',elapsed:24000};
 let ip=0;
 const request=(body,headers={})=>({headers:new Headers({'content-type':'application/json','x-forwarded-for':'198.51.100.'+(++ip%250),host:'www.code-v.fr',origin:'https://www.code-v.fr',...headers}),text:async()=>typeof body==='string'?body:JSON.stringify(body)});
 async function post(body,headers){const before=resendCalls;logs.length=0;const res=await route.POST(request(body,headers));return {...res,resend:resendCalls-before,log:logs.join('|')};}
@@ -25,6 +25,7 @@ const silent=(r,code)=>{assert.equal(r.status,200);assert.equal(JSON.stringify(r
   fresh();assert(delivered(await post({...legit,message:'Depuis une preview.'},{origin:'https://codev2-git-x.vercel.app',host:'codev2-git-x.vercel.app'})));
   // Rare but valid addresses are not blocked.
   for(const email of ['jean.o\'neil+devis@sub.example.museum','a@b.co','contact@xn--bcher-kva.example']){fresh();assert(delivered(await post({...legit,email})),email);}
+  fresh();assert(delivered(await post({...legit,email:'',phone:'+33 6 12 34 56 78',message:''})),'Phone-only callback request accepted');
 
   // 2. Invalid e-mail.
   for(const email of ['camille@','camille.example.fr','camille@localhost','camille@exa_mple.fr','camille..m@example.fr','camille@example.f','camille@-example.fr','a@b@c.fr','camille@example.123']){fresh();r=await post({...legit,email});assert.equal(r.status,400,email);assert.equal(r.resend,0);assert.equal(r.log,'[contact] spam_invalid_email',email);}
@@ -49,7 +50,7 @@ const silent=(r,code)=>{assert.equal(r.status,200);assert.equal(JSON.stringify(r
   fresh();assert(delivered(await post({...legit,message:'Un long message détaillé. '.repeat(500)})),'Long but plausible message accepted');
 
   // 7. Unexpected payloads.
-  const bad=[[],'["a"]','not json',{...legit,name:''},{...legit,name:'   '},{...legit,message:' '},{...legit,name:{first:'x'}},{...legit,email:['a@b.fr']},{...legit,admin:true},{...legit,elapsed:'5000'},{...legit,elapsed:-1},{...legit,project:'Casino en ligne'},{...legit,phone:'call me now'},{...legit,name:'Camille\nBcc: x@y.z'},{...legit,name:'camille@example.fr'},{...legit,name:'12345'},{...legit,message:'Bonjour\u0000'},{...legit,service:42}];
+  const bad=[[],'["a"]','not json',{...legit,name:''},{...legit,name:'   '},{...legit,name:{first:'x'}},{...legit,email:['a@b.fr']},{...legit,admin:true},{...legit,elapsed:'5000'},{...legit,elapsed:-1},{...legit,project:'Casino en ligne'},{...legit,phone:'call me now'},{...legit,name:'Camille\nBcc: x@y.z'},{...legit,name:'camille@example.fr'},{...legit,name:'12345'},{...legit,message:'Bonjour\u0000'},{...legit,service:42}];
   for(const body of bad){fresh();r=await post(body);assert.equal(r.status,400,JSON.stringify(body).slice(0,80));assert.equal(r.resend,0);assert.equal(r.log,'[contact] spam_invalid_payload');}
   fresh();r=await post(legit,{'content-type':'text/plain'});assert.equal(r.status,415);assert.equal(r.resend,0);
   fresh();r=await post(legit,{origin:'https://evil.example'});assert.equal(r.status,403);assert.equal(r.log,'[contact] spam_origin');
