@@ -16,31 +16,31 @@ export const metadata: Metadata = {
 };
 
 const webServices = [
-  ["Site vitrine", "Un site professionnel clair pour présenter votre activité et faciliter la prise de contact.", "/creation-site"],
-  ["Site vitrine étendu / blog", "Un site plus riche pour développer vos contenus, vos services et votre référencement.", "/creation-site"],
-  ["Application web / espace métier", "Une interface ou un outil conçu autour de vos usages internes ou de vos clients.", "/solutions/web-applications"],
+  ["Site vitrine", "Un site professionnel clair pour présenter votre activité et faciliter la prise de contact.", "/creation-site", "À partir de 799 € HT"],
+  ["Site vitrine étendu / blog", "Un site plus riche pour développer vos contenus, vos services et votre référencement.", "/creation-site", "À partir de 1 499 € HT"],
+  ["Application web / espace métier", "Une interface ou un outil conçu autour de vos usages internes ou de vos clients.", "/solutions/web-applications", "À partir de 2 999 € HT"],
 ];
 
 const acquisitionServices = [
-  ["Acquisition locale / génération de prospects", "Structurer les leviers utiles pour obtenir des demandes dans votre zone.", "/referencement-local"],
-  ["Pilotage Google Ads", "Créer, suivre et ajuster des campagnes orientées vers des demandes pertinentes.", "/publicite"],
-  ["Google Local Services", "Mettre en place et piloter ce canal lorsqu’il est adapté et disponible pour votre activité.", "/publicite"],
-  ["Google Business Profile", "Optimiser votre présence locale et la cohérence de votre fiche Google.", "/referencement-local"],
-  ["Réseaux sociaux", "Créer et entretenir une présence cohérente sur les plateformes utiles à votre activité.", "/contact?service=social-management"],
+  ["Acquisition locale / génération de prospects", "Structurer les leviers utiles pour obtenir des demandes dans votre zone.", "/referencement-local", "300 € HT / mois"],
+  ["Pilotage Google Ads", "Créer, suivre et ajuster des campagnes orientées vers des demandes pertinentes.", "/publicite", "150 € HT / mois"],
+  ["Google Local Services", "Mettre en place et piloter ce canal lorsqu’il est adapté et disponible pour votre activité.", "/publicite", "99 € HT / mois"],
+  ["Google Business Profile", "Optimiser votre présence locale et la cohérence de votre fiche Google.", "/referencement-local", "150 € HT / mois"],
+  ["Réseaux sociaux", "Créer et entretenir une présence cohérente sur les plateformes utiles à votre activité.", "/contact?service=social-management", "99 € HT / mois"],
 ];
 
 const automationServices = [
-  ["Agent IA / site web", "Ajouter un assistant capable de répondre, orienter ou préparer une action dans un cadre défini.", "/solutions/automatisation-ia"],
-  ["Automatisation d’e-mails", "Déclencher, organiser ou préparer des e-mails sans ressaisie inutile.", "/solutions/automatisation-ia"],
-  ["Automatisation Google Ads", "Automatiser certaines tâches de suivi ou de traitement tout en conservant un contrôle humain.", "/solutions/automatisation-ia"],
-  ["Documents commerciaux", "Structurer la génération et la préparation de devis, factures ou documents récurrents.", "/contact?service=business-tool"],
-  ["Organisation des réponses clients", "Centraliser ou préparer les réponses pour réduire les tâches répétitives.", "/solutions/automatisation-ia"],
-  ["Vérifications administratives d’entreprise", "Automatiser la collecte et la vérification de certaines informations publiques utiles.", "/contact?service=business-tool"],
+  ["Assistant web pour répondre aux demandes simples", "Répondre, orienter ou préparer une action dans un cadre défini.", "/solutions/automatisation-ia", "À partir de 149 € HT / mois"],
+  ["Automatisation d’e-mails", "Déclencher, organiser ou préparer des e-mails sans ressaisie inutile.", "/solutions/automatisation-ia", "300 € HT / mois"],
+  ["Automatisation Google Ads", "Automatiser certaines tâches de suivi ou de traitement tout en conservant un contrôle humain.", "/solutions/automatisation-ia", "200 € HT / mois"],
+  ["Documents commerciaux", "Structurer la génération et la préparation de devis, factures ou documents récurrents.", "/contact?service=business-tool", "149 € HT / mois"],
+  ["Organisation des réponses clients", "Centraliser ou préparer les réponses pour réduire les tâches répétitives.", "/solutions/automatisation-ia", "29,90 € HT / mois"],
+  ["Vérifications administratives d’entreprise", "Automatiser la collecte et la vérification de certaines informations publiques utiles.", "/contact?service=business-tool", "29,90 € HT / mois"],
 ];
 
 function ServiceList({ items }: { items: string[][] }) {
-  return <div className={styles.serviceList}>{items.map(([name, description, href]) => <article className={styles.serviceItem} key={name}>
-    <div><h3>{name}</h3><p>{description}</p></div>
+  return <div className={styles.serviceList}>{items.map(([name, description, href, price]) => <article className={styles.serviceItem} key={name}>
+    <div><h3>{name}</h3><p>{description}</p>{price && <strong className={styles.price}>{price}</strong>}</div>
     <Link href={href}>En savoir plus <span aria-hidden="true">↗</span></Link>
   </article>)}</div>;
 }
@@ -48,7 +48,7 @@ function ServiceList({ items }: { items: string[][] }) {
 export default function SolutionsPage() {
   return <div className={styles.page}>
     <section className={styles.hero} aria-labelledby="solutions-title"><div className="container"><Breadcrumb {...getPageBreadcrumb("/solutions")} /><div className={styles.heroGrid}>
-      <div><p className={styles.eyebrow}>LES 3 OFFRES CODE-V</p><h1 id="solutions-title">Sites. Acquisition.<br /><em>Automatisation.</em></h1><p className={styles.lead}>Trois offres simples pour couvrir les besoins les plus fréquents des entreprises : construire leur présence, générer des clients et gagner du temps dans leur fonctionnement.</p><Link href="/contact" className="button button-primary">Parler de mon besoin <span aria-hidden="true">↗</span></Link></div>
+      <div><p className={styles.eyebrow}>LES 3 OFFRES CODE-V</p><h1 id="solutions-title">Sites. Acquisition.<br /><em>Automatisation.</em></h1><p className={styles.lead}>Trois offres simples pour couvrir les besoins les plus fréquents des entreprises : construire leur présence, générer des clients et gagner du temps dans leur fonctionnement.</p><Link href="/contact" className="button button-primary">Recevoir mon devis gratuit <span aria-hidden="true">↗</span></Link></div>
       <Reveal className={styles.heroAssembly}><span className={styles.diagramLabel}>UNE OFFRE LISIBLE</span><div className={styles.planeOne}><span>Sites & applications</span><strong>Être présent.<br />Être crédible.</strong><i /><i /></div><div className={styles.planeTwo}><span>Acquisition de clients</span><strong>Être trouvé.<br />Être contacté.</strong></div><div className={styles.planeThree}><span>Automatisation & outils métier</span><strong>Gagner du temps.</strong><i aria-hidden="true" /></div><small>Les prestations détaillées viennent ensuite.</small></Reveal>
     </div><nav className={styles.chapterNav} aria-label="Les trois offres CODE-V"><a href="#sites-applications">Sites & applications <span aria-hidden="true">↓</span></a><a href="#acquisition">Acquisition de clients <span aria-hidden="true">↓</span></a><a href="#automatisation">Automatisation & outils métier <span aria-hidden="true">↓</span></a></nav></div></section>
 
@@ -62,6 +62,8 @@ export default function SolutionsPage() {
 
     <section className={styles.complements} aria-labelledby="complements-title"><Reveal className="container"><p className={styles.eyebrow}>SERVICES COMPLÉMENTAIRES</p><h2 id="complements-title">Ce qui permet au dispositif<br /><span>de durer et de mieux se présenter.</span></h2><div className={styles.complementGrid}><article><h3>Hébergement, nom de domaine & maintenance</h3><p>Hébergement, suivi et maintenance du site selon le périmètre convenu.</p><Link href="/maintenance-site">Découvrir la maintenance <span aria-hidden="true">↗</span></Link></article><article><h3>Motion design</h3><p>Présenter une activité, une offre ou un fonctionnement dans un format animé.</p><Link href="/motion-design">Découvrir le motion design <span aria-hidden="true">↗</span></Link></article><article><h3>Stratégie & accompagnement</h3><p>Prioriser les actions lorsque plusieurs sujets doivent être coordonnés.</p><Link href="/strategie-digitale">Découvrir la stratégie <span aria-hidden="true">↗</span></Link></article></div></Reveal></section>
 
-    <section className={styles.guidance} aria-labelledby="guidance-title"><Reveal className={`container ${styles.guidanceGrid}`}><div><p className={styles.eyebrow}>VOUS HÉSITEZ ENTRE PLUSIEURS OFFRES ?</p><h2 id="guidance-title">Décrivez le problème.<br /><em>Nous cadrerons la suite.</em></h2></div><div><p>Un besoin concret suffit : un site à refaire, un manque de prospects, trop de tâches manuelles ou plusieurs sujets à relier.</p><ChatTrigger intent="strategy" className="button button-primary">Expliquer ma situation <span aria-hidden="true">↗</span></ChatTrigger><Link className={styles.contactLink} href="/contact">Préférer un échange direct <span aria-hidden="true">↗</span></Link></div></Reveal></section>
+    <section className={styles.pricingLink}><div className="container"><Reveal><p className={styles.eyebrow}>BESOIN DE VOIR LES PRIX AVANT ?</p><h2>Des tarifs de départ.<br /><span>Un périmètre clair ensuite.</span></h2><p>Les principaux prix sont publics. Le devis précise ensuite ce qui est réellement inclus dans votre projet.</p><Link href="/tarifs" className="button button-primary">Voir les tarifs & le fonctionnement <span aria-hidden="true">↗</span></Link></Reveal></div></section>
+
+    <section className={styles.guidance} aria-labelledby="guidance-title"><Reveal className={`container ${styles.guidanceGrid}`}><div><p className={styles.eyebrow}>VOUS HÉSITEZ ENTRE PLUSIEURS OFFRES ?</p><h2 id="guidance-title">Décrivez le problème.<br /><em>Nous cadrerons la suite.</em></h2></div><div><p>Un besoin concret suffit : un site à refaire, un manque de prospects, trop de tâches manuelles ou plusieurs sujets à relier.</p><ChatTrigger intent="strategy" className="button button-primary">Recevoir mon devis gratuit <span aria-hidden="true">↗</span></ChatTrigger><Link className={styles.contactLink} href="/contact">Préférer un échange direct <span aria-hidden="true">↗</span></Link></div></Reveal></section>
   </div>;
 }
