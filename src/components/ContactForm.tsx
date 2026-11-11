@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState, FormEvent } from "react";
+import Link from "next/link";
 import styles from "./contactForm.module.css";
-import { trackContactSuccess } from "@/lib/analytics";
+import { trackContactStart, trackContactSuccess } from "@/lib/analytics";
 import { elapsedField, projectOptions, submitContact, trapField } from "@/lib/contact-form";
 
-export default function ContactForm() {
+export default function ContactForm({ compact = false }: { compact?: boolean }) {
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState("");
   const shownAt = useRef(0);
+  const started = useRef(false);
 
   useEffect(() => {
     shownAt.current = Date.now();
@@ -21,16 +23,19 @@ export default function ContactForm() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const contact = String(formData.get("contact") ?? "").trim();
+    const isEmail = contact.includes("@");
 
     const payload = {
-      name: formData.get("name") as string,
-      company: (formData.get("company") as string) || "",
-      email: formData.get("email") as string,
-      project: (formData.get("project") as string) || "",
-      message: formData.get("message") as string,
+      name: String(formData.get("name") ?? ""),
+      company: "",
+      email: isEmail ? contact : "",
+      phone: isEmail ? "" : contact,
+      project: String(formData.get("project") ?? ""),
+      message: String(formData.get("message") ?? ""),
       service: new URLSearchParams(window.location.search).get("service") || "",
       source: window.location.pathname,
-      [trapField]: (formData.get(trapField) as string) || "",
+      [trapField]: String(formData.get(trapField) ?? ""),
       [elapsedField]: Math.max(0, Date.now() - shownAt.current),
     };
 
@@ -53,99 +58,58 @@ export default function ContactForm() {
     }
   }
 
-  return (
-    <>
-      {status === "success" ? (
-        <div className="form-success" role="status" aria-live="polite">
-          <h3>Message envoyé !</h3>
-          <p>Merci pour votre message. Nous vous répondrons dans les plus brefs délais.</p>
-          <button
-            className="button button-dark"
-            type="button"
-            onClick={() => {
-              shownAt.current = Date.now();
-              setStatus("idle");
-            }}
-          >
-            Envoyer un autre message
-          </button>
-        </div>
-      ) : (
-        <form className={`contact-form ${styles.form}`} onSubmit={handleSubmit} aria-busy={status === "sending"}>
-          <div className="form-row">
-            <label>
-              Nom
-              <input
-                type="text"
-                name="name"
-                autoComplete="name"
-                placeholder="Votre nom"
-                required
-              />
-            </label>
-            <label>
-              Entreprise
-              <input
-                type="text"
-                name="company"
-                autoComplete="organization"
-                placeholder="Le nom de votre entreprise"
-              />
-            </label>
-          </div>
+  if (status === "success") {
+    return <div className="form-success" role="status" aria-live="polite">
+      <h3>Votre demande est bien partie.</h3>
+      <p>Merci. CODE-V va prendre connaissance de votre besoin et revenir vers vous avec une réponse personnalisée.</p>
+      <button className="button button-dark" type="button" onClick={() => { shownAt.current = Date.now(); started.current = false; setStatus("idle"); }}>
+        Faire une autre demande
+      </button>
+    </div>;
+  }
 
-          <label>
-            Adresse e-mail
-            <input
-              type="email"
-              name="email"
-              autoComplete="email"
-              placeholder="vous@entreprise.fr"
-              required
-            />
-          </label>
+  return <form className={`contact-form ${styles.form} ${compact ? styles.compact : ""}`} onSubmit={handleSubmit} onFocusCapture={() => {
+    if (started.current) return;
+    started.current = true;
+    trackContactStart(new URLSearchParams(window.location.search).get("service") || "");
+  }} aria-busy={status === "sending"}>
+    <label>
+      Nom
+      <input type="text" name="name" autoComplete="name" placeholder="Votre nom" required />
+    </label>
 
-          <label>
-            Type de projet
-            <select name="project">
-              <option value="">Sélectionnez une option</option>
-              {projectOptions.map(option => (
-                <option key={option}>{option}</option>
-              ))}
-            </select>
-          </label>
+    <label>
+      Téléphone ou e-mail
+      <input type="text" name="contact" autoComplete="email" inputMode="text" placeholder="06 12 34 56 78 ou vous@entreprise.fr" required aria-describedby="contact-help" />
+      <small id="contact-help" className={styles.hint}>Choisissez simplement le moyen par lequel vous préférez être recontacté.</small>
+    </label>
 
-          <label>
-            Votre message
-            <textarea
-              name="message"
-              rows={5}
-              placeholder="Dites-nous quelques mots sur votre projet..."
-              required
-            />
-          </label>
+    <label>
+      Votre besoin
+      <select name="project" required defaultValue="">
+        <option value="" disabled>Sélectionnez votre besoin</option>
+        {projectOptions.map(option => <option key={option}>{option}</option>)}
+      </select>
+    </label>
 
-          <div className={styles.trap} aria-hidden="true">
-            <label>
-              Référence
-              <input type="text" name={trapField} tabIndex={-1} autoComplete="off" defaultValue="" />
-            </label>
-          </div>
+    <label>
+      Message <span className={styles.optional}>facultatif</span>
+      <textarea name="message" rows={compact ? 3 : 4} placeholder="Quelques mots sur votre activité ou votre projet..." />
+    </label>
 
-          <button
-            className="button button-dark"
-            type="submit"
-            disabled={status === "sending"}
-          >
-            {status === "sending" ? "Envoi en cours..." : "Préparer ma demande"}{" "}
-            <span aria-hidden="true">↗</span>
-          </button>
+    <div className={styles.trap} aria-hidden="true">
+      <label>
+        Référence
+        <input type="text" name={trapField} tabIndex={-1} autoComplete="off" defaultValue="" />
+      </label>
+    </div>
 
-          {status === "error" && (
-            <p className="form-error" role="alert">{errorMessage}</p>
-          )}
-        </form>
-      )}
-    </>
-  );
+    <button className="button button-primary" type="submit" disabled={status === "sending"}>
+      {status === "sending" ? "Envoi en cours..." : "Recevoir mon devis gratuit"} <span aria-hidden="true">↗</span>
+    </button>
+
+    <p className={styles.privacy}>Vos informations servent uniquement à répondre à votre demande. <Link href="/politique-confidentialite">Politique de confidentialité</Link>.</p>
+
+    {status === "error" && <p className="form-error" role="alert">{errorMessage}</p>}
+  </form>;
 }

@@ -14,7 +14,7 @@ import { defaultShareImages } from "@/lib/seo";
 const url = "https://www.code-v.fr/solutions/automatisation-ia";
 export const metadata: Metadata = {
   title: "Automatisation & IA pour entreprise | CODE-V",
-  description: "Connectez vos outils, automatisez vos processus et concevez des agents IA spécialisés avec CODE-V. Workflows, API, Airtable et supervision humaine.",
+  description: "Réduisez les tâches répétitives, organisez les demandes et connectez vos outils avec des automatisations adaptées à votre activité et supervisées humainement.",
   alternates: { canonical: url },
   openGraph: { title: "Automatisation & IA — CODE-V", description: "Des outils connectés, des processus lisibles et une IA encadrée pour votre activité.", url, type: "website", locale: "fr_FR", images: defaultShareImages },
 };
@@ -53,8 +53,8 @@ export default function AutomationPage() {
       <div><Breadcrumb {...getPageBreadcrumb("/solutions/automatisation-ia")} /><p className={styles.eyebrow}>Automatisation & IA</p>
         <h1 id="automation-title">Moins de tâches répétées.<br /><em>Des outils qui travaillent ensemble.</em></h1>
         <p className={styles.lead}>Connecter vos outils, faire circuler les données et construire une IA qui aide votre équipe : nous concevons des systèmes adaptés à vos processus, avec des limites claires.</p>
-        <div className={styles.actions}><ChatTrigger intent="automation" className="button button-primary">Expliquer mon processus <span aria-hidden="true">↗</span></ChatTrigger><a className="button button-ghost" href="#systeme">Comprendre le parcours <span aria-hidden="true">↓</span></a></div>
-        <p className={styles.heroNote}>Workflows · APIs · Airtable · Agents IA</p>
+        <div className={styles.actions}><Link href="/contact?service=business-workflows" className="button button-primary">Recevoir mon devis gratuit <span aria-hidden="true">↗</span></Link><a className="button button-ghost" href="#systeme">Voir comment ça fonctionne <span aria-hidden="true">↓</span></a></div>
+        <p className={styles.heroNote}>À partir de 149 € HT/mois · Périmètre et supervision définis avant mise en place.</p>
       </div>
       <div className={styles.heroVisual}><span className={styles.eyebrow}>D’une demande à une action</span><SystemFlow compact steps={[steps[0], steps[2], steps[3]]} /><div className={styles.visualFooter}><span>Connecter</span><span>Contrôler</span><span>Améliorer</span></div></div>
     </div></section>
@@ -78,7 +78,7 @@ export default function AutomationPage() {
     <section className={styles.section}><div className={`container ${styles.safety}`}><Reveal><p className={styles.eyebrow}>Limites, sécurité & supervision</p><h2>Un système utile doit aussi<br /><span>être maîtrisable.</span></h2><p>La sécurité et le suivi ne sont pas des promesses absolues. Leur périmètre est défini avec vos contraintes, les accès disponibles et les responsabilités de chacun.</p><Link className="text-link" href="/contact?service=automation-supervision">Étudier la supervision de mon système <span aria-hidden="true">↗</span></Link></Reveal><dl><div><dt>Permissions proportionnées</dt><dd>Limiter les outils accessibles et les actions autorisées ; définir qui peut déclencher, modifier ou valider.</dd></div><div><dt>Données et sources</dt><dd>Identifier les données autorisées, leur qualité, les destinataires et les conditions de conservation à convenir.</dd></div><div><dt>Validation humaine</dt><dd>Garder un accord explicite pour les actions sensibles : messages engageants, changements importants ou décisions à enjeu.</dd></div><div><dt>Journalisation et reprise</dt><dd>Prévoir des traces utiles, des alertes, le traitement des exceptions et un chemin de reprise après erreur.</dd></div><div><dt>Supervision dans la durée</dt><dd>Définir fréquence, seuils et responsables. Maintenance, licences et consommations des outils et modèles sont à distinguer de la mise en place.</dd></div></dl></div></section>
 
     <ResourceReadings services={["business-workflows","ai-agents"]} heading="Choisir votre premier usage" />
-    <section className={`${styles.section} ${styles.final}`}><div className="container"><p className={styles.eyebrow}>Partons d’un processus</p><h2>Quelle tâche aimeriez-vous<br /><em>cesser de répéter ?</em></h2><p>Expliquez-nous comment elle fonctionne aujourd’hui. Nous pourrons cadrer le besoin, les outils concernés et les points de contrôle avant de proposer un périmètre sur devis.</p><div className={styles.actions}><ChatTrigger intent="automation" className="button button-primary">En parler à l’assistant CODE-V <span aria-hidden="true">↗</span></ChatTrigger><Link href="/contact?service=business-workflows" className="button button-ghost">Demander un échange</Link></div></div></section>
+    <section className={`${styles.section} ${styles.final}`}><div className="container"><p className={styles.eyebrow}>Partons d’un processus</p><h2>Quelle tâche aimeriez-vous<br /><em>cesser de répéter ?</em></h2><p>Expliquez-nous comment elle fonctionne aujourd’hui. Nous pourrons cadrer le besoin, les outils concernés et les points de contrôle avant de proposer un périmètre sur devis.</p><div className={styles.actions}><Link href="/contact?service=business-workflows" className="button button-primary">Recevoir mon devis gratuit <span aria-hidden="true">↗</span></Link><ChatTrigger intent="automation" className="button button-ghost">Poser une question à l’assistant</ChatTrigger></div></div></section>
   </div>;
 }
 

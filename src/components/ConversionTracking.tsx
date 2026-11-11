@@ -19,6 +19,21 @@ export default function ConversionTracking({ config }: { config: TrackingConfig 
   useEffect(() => {
     configureTracking(config);
     setReady(true);
+    const seenDepths = new Set<string>();
+    const onScroll = () => {
+      const source_path = knownPath(window.location.pathname);
+      if (!source_path) return;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max <= 0) return;
+      const ratio = window.scrollY / max;
+      for (const [threshold, value] of [[.25,"25"],[.5,"50"],[.75,"75"],[.9,"90"]] as const) {
+        const key = `${source_path}:${value}`;
+        if (ratio >= threshold && !seenDepths.has(key)) {
+          seenDepths.add(key);
+          trackConversion("scroll_depth", { source_path, depth: value });
+        }
+      }
+    };
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0) return;
       const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
@@ -37,8 +52,10 @@ export default function ConversionTracking({ config }: { config: TrackingConfig 
         if (source_path === "/realisations" && project && link.closest("main")) trackConversion("external_project_click", { ...common, project_slug: project });
         return;
       }
-      if (url.pathname === "/contact" && link.closest("main")) {
+      if (url.pathname === "/contact") {
         trackContactCta({ ...common, cta_label: knownCtaLabel(link.textContent ?? ""), service: knownService(url.searchParams.get("service")) ?? sourceService, destination_path: "/contact" });
+      } else if (url.pathname === source_path && url.hash === "#devis") {
+        trackContactCta({ ...common, cta_label: knownCtaLabel(link.textContent ?? "") });
       } else if (url.pathname === "/realisations" && link.closest("main") && (sourceService || ["/", "/solutions", "/ressources"].includes(source_path) || Object.hasOwn(config.articles, source_path))) {
         trackConversion("realization_click", { ...common, project_slug: config.projectAnchors?.[url.hash.slice(1)], destination_path: "/realisations" });
       } else if (Object.hasOwn(config.articles, source_path)) {
@@ -48,7 +65,12 @@ export default function ConversionTracking({ config }: { config: TrackingConfig 
     };
     // Capture runs before Next Link changes route; no preventDefault, no delayed navigation.
     document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      document.removeEventListener("click", onClick, true);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [config]);
   return ready ? <Analytics beforeSend={sanitizeAnalyticsEvent} /> : null;
 }

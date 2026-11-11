@@ -34,11 +34,11 @@ export async function POST(req: NextRequest) {
   let parsed: unknown;
   try { parsed = JSON.parse(raw); } catch { return reject("spam_invalid_payload", invalid, 400); }
   const input = parseContactPayload(parsed);
-  if (!input) return reject("spam_invalid_payload", "Merci de renseigner votre nom, une adresse email valide et votre message.", 400);
+  if (!input) return reject("spam_invalid_payload", "Merci de renseigner votre nom, un téléphone ou un e-mail valide et votre besoin.", 400);
 
   if (input.trap) return silentlyDrop("spam_honeypot");
   if (isTooFast(input)) return reject("spam_too_fast", "Merci de patienter quelques secondes avant de renvoyer le formulaire.", 400);
-  if (!isValidEmail(input.email)) return reject("spam_invalid_email", "Merci de renseigner votre nom, une adresse email valide et votre message.", 400);
+  if (input.email && !isValidEmail(input.email)) return reject("spam_invalid_email", "Merci de renseigner un téléphone ou un e-mail valide.", 400);
   const content = detectSpamContent(input);
   if (content) return silentlyDrop(content);
   if (isDuplicate(input)) return silentlyDrop("spam_duplicate");
@@ -50,11 +50,12 @@ export async function POST(req: NextRequest) {
   try {if(input.source){const url=new URL(input.source,"https://www.code-v.fr");if(url.origin==="https://www.code-v.fr"&&!url.username&&!url.password)source=url.pathname;}}catch{}
   const data: ContactEmailData={name,email,message,company:input.company,phone:input.phone,service:serviceLabels[input.service ?? ""]||input.project,source,receivedAt:new Date()};
   try {
-    const internal=NewContactEmail(data),confirmation=ContactConfirmationEmail(data);
-    const result=await new Resend(apiKey).batch.send([
-      {from,to:[recipient],replyTo:email,...internal},
-      {from,to:[email],replyTo:recipient,...confirmation},
-    ]);
+    const internal=NewContactEmail(data);
+    const messages = [
+      {from,to:[recipient],replyTo:email ?? recipient,...internal},
+      ...(email ? [{from,to:[email],replyTo:recipient,...ContactConfirmationEmail(data)}] : []),
+    ];
+    const result=await new Resend(apiKey).batch.send(messages);
     if(result.error) return unavailable();
     rememberDelivery(input);
     return NextResponse.json({success:true,delivered:true});

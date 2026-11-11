@@ -1,9 +1,9 @@
 import { track, type BeforeSendEvent } from "@vercel/analytics";
 import { publicRoutes } from "@/data/public-routes";
 
-export const conversionEvents = ["contact_form_submit", "contact_cta_click", "phone_click", "email_click", "chatbot_open", "chatbot_intent_selected", "realization_click", "article_to_service_click", "external_project_click"] as const;
+export const conversionEvents = ["contact_form_start", "contact_form_submit", "contact_cta_click", "phone_click", "email_click", "scroll_depth", "chatbot_open", "chatbot_intent_selected", "realization_click", "article_to_service_click", "external_project_click"] as const;
 export type ConversionEvent = (typeof conversionEvents)[number];
-export type ConversionProperties = { source_path: string; service?: string; location?: string; intent?: string; destination_path?: string; cta_source_path?: string; cta_location?: string; cta_label?: string; article_slug?: string; project_slug?: string; destination_service?: string; form_variant?: string };
+export type ConversionProperties = { source_path: string; service?: string; location?: string; intent?: string; destination_path?: string; cta_source_path?: string; cta_location?: string; cta_label?: string; article_slug?: string; project_slug?: string; destination_service?: string; form_variant?: string; depth?: "25" | "50" | "75" | "90" };
 export type AnalyticsAdapter = (event: ConversionEvent, properties: ConversionProperties) => void;
 export type TrackingConfig = {
   serviceIds: string[];
@@ -18,7 +18,7 @@ let lastContactCta: ConversionProperties | undefined;
 const locations = ["header", "footer", "hero", "content", "final", "article", "form", "assistant"];
 const intents = ["website", "acquisition", "automation", "strategy", "general"];
 const aliases: Record<string, string> = { ads: "google-ads", automation: "business-workflows", "seo-local": "local-seo" };
-const ctaLabels = ["Parler de votre projet", "Parler de votre visibilité", "Parler de votre acquisition", "Étudier une campagne", "Faire le point sur votre site", "Identifier ce que vous pouvez automatiser", "Faire le point sur votre dispositif", "Trouver mon point d’entrée", "Préciser le périmètre de mon site", "Parler de votre visibilité locale", "Choisir votre stratégie d’acquisition", "Parler de votre fiche Google"];
+const ctaLabels = ["Recevoir mon devis gratuit", "Recevoir mon devis", "Parler de votre projet", "Parler de votre visibilité", "Parler de votre acquisition", "Étudier une campagne", "Faire le point sur votre site", "Identifier ce que vous pouvez automatiser", "Faire le point sur votre dispositif", "Trouver mon point d’entrée", "Préciser le périmètre de mon site", "Parler de votre visibilité locale", "Choisir votre stratégie d’acquisition", "Parler de votre fiche Google"];
 export function knownCtaLabel(text: string) {
   const label = text.replace(/\s+/g, " ").trim();
   return ctaLabels.find(value => label.startsWith(value));
@@ -54,7 +54,8 @@ export function trackConversion(event: ConversionEvent, input: ConversionPropert
   if (input.project_slug && [...Object.values(config.projects ?? {}), ...Object.values(config.projectAnchors ?? {})].includes(input.project_slug)) properties.project_slug = input.project_slug;
   const destinationService = knownService(input.destination_service);
   if (destinationService) properties.destination_service = destinationService;
-  if (event === "contact_form_submit") {
+  if (event === "scroll_depth" && input.depth && ["25","50","75","90"].includes(input.depth)) properties.depth = input.depth;
+  if (event === "contact_form_start" || event === "contact_form_submit") {
     if (input.form_variant === "contact_main") properties.form_variant = input.form_variant;
     const ctaSource = input.cta_source_path && knownPath(input.cta_source_path);
     if (ctaSource) properties.cta_source_path = ctaSource;
@@ -67,6 +68,9 @@ export function trackContactCta(input: ConversionProperties) {
   const source = knownPath(input.source_path);
   if (source) lastContactCta = { source_path: source, service: knownService(input.service), location: input.location && locations.includes(input.location) ? input.location : undefined };
   trackConversion("contact_cta_click", input);
+}
+export function trackContactStart(service: string) {
+  trackConversion("contact_form_start", { source_path: window.location.pathname, service, location: "form", form_variant: "contact_main" });
 }
 export function trackContactSuccess(service: string) {
   const cta = lastContactCta?.service === knownService(service) ? lastContactCta : undefined;

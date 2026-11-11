@@ -1,4 +1,4 @@
-export type ContactEmailData = { name: string; email: string; message: string; service?: string; company?: string; phone?: string; source?: string; receivedAt: Date };
+export type ContactEmailData = { name: string; email?: string; message: string; service?: string; company?: string; phone?: string; source?: string; receivedAt: Date };
 export type EmailTemplate = { subject: string; html: string; text: string };
 export const origin = "https://www.code-v.fr";
 export const logoUrl = `${origin}/brand/code-v-logo-email.png`;
