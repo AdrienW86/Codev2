@@ -170,7 +170,7 @@ export default function Home() {
 
     <section className={styles.founderSection} aria-labelledby="founder-title">
       <div className={`container ${styles.founderGrid}`}>
-        <Reveal className={styles.founderMark} aria-hidden="true"><span>CODE-V</span><strong>AW</strong><small>Perpignan · Pyrénées-Orientales</small></Reveal>
+        <Reveal className={styles.founderMark}><span>CODE-V</span><strong>AW</strong><small>Perpignan · Pyrénées-Orientales</small></Reveal>
         <Reveal className={styles.founderCopy}><span className={styles.kicker}>QUI PORTE CODE-V</span><h2 id="founder-title">Vous savez <span>à qui vous parlez.</span></h2><p>Je suis <strong>Adrien Weissenbacher</strong>, fondateur de CODE-V. J’accompagne des entreprises dans la création de leur site, leur visibilité sur Google et l’automatisation de certaines tâches.</p><p>Le but n’est pas de vous vendre davantage de technologie. Le but est de choisir ce qui peut réellement vous aider à obtenir plus de demandes et à travailler plus simplement.</p><Link href="/qui-sommes-nous" className={styles.secondaryLink}>Découvrir l’approche CODE-V <span aria-hidden="true">↗</span></Link></Reveal>
       </div>
     </section>
