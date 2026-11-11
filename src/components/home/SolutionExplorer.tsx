@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import type { SolutionNavigation } from "@/data/navigation";
+import type { CommercialOfferNavigation } from "@/data/navigation";
 import styles from "./home.module.css";
 
-export default function SolutionExplorer({ items }: { items: SolutionNavigation[] }) {
+export default function SolutionExplorer({ items }: { items: readonly CommercialOfferNavigation[] }) {
   const [active, setActive] = useState(items[0].id);
   const selected = items.find(item => item.id === active)!;
   return <div className={styles.explorer}>

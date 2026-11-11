@@ -9,7 +9,7 @@ function load(file){file=path.resolve(file);if(cache[file])return cache[file].ex
     return load(n.startsWith('@/')?'src/'+n.slice(2)+'.ts':path.join(path.dirname(file),n+'.ts'));
   },process:{env},URL,Intl,Date,TextEncoder,Headers,console:{warn:line=>logs.push(line)}});return m.exports}
 const route=load('src/app/api/contact/route.ts'),security=load('src/lib/contact-security.ts'),form=load('src/lib/contact-form.ts');
-const legit={name:'Camille Martin',company:'Boulangerie Martin',email:'camille@boulangerie-martin.fr',project:'Création ou refonte de site',message:'Bonjour, nous souhaitons refaire notre site vitrine avant le printemps.',service:'website',source:'/contact',reference:'',elapsed:24000};
+const legit={name:'Camille Martin',company:'Boulangerie Martin',email:'camille@boulangerie-martin.fr',project:'Construire un site ou une application',message:'Bonjour, nous souhaitons refaire notre site vitrine avant le printemps.',service:'website',source:'/contact',reference:'',elapsed:24000};
 let ip=0;
 const request=(body,headers={})=>({headers:new Headers({'content-type':'application/json','x-forwarded-for':'198.51.100.'+(++ip%250),host:'www.code-v.fr',origin:'https://www.code-v.fr',...headers}),text:async()=>typeof body==='string'?body:JSON.stringify(body)});
 async function post(body,headers){const before=resendCalls;logs.length=0;const res=await route.POST(request(body,headers));return {...res,resend:resendCalls-before,log:logs.join('|')};}

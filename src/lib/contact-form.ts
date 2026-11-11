@@ -1,6 +1,6 @@
 // Shared by the contact form (client) and /api/contact (server). No secrets here.
 
-export const projectOptions = ["Création ou refonte de site", "Référencement naturel", "Publicité en ligne", "Autre sujet"] as const;
+export const projectOptions = ["Construire un site ou une application", "Générer plus de demandes", "Automatiser des tâches ou des outils", "Piloter ou structurer mon digital", "Autre sujet"] as const;
 
 /** Invisible anti-bot field. Deliberately unremarkable name; a human never sees or fills it. */
 export const trapField = "reference";

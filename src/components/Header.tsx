@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "./header.module.css";
-import { siteNavigation, solutionNavigation, quickServiceNavigation, primarySolutionNeeds } from "@/data/navigation";
+import { commercialOfferNavigation, siteNavigation, solutionNavigation } from "@/data/navigation";
 
 const links = siteNavigation;
 
@@ -35,14 +35,14 @@ export default function Header() {
         </Link>
 
         <nav id="main-navigation" className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navigation principale">
-          <div className={styles.mobileShortcuts} aria-label="Accès directs aux services">{[...quickServiceNavigation.slice(0, 4), { href: "/realisations", label: "Réalisations" }, { href: "/contact", label: "Contact" }].map(link => <Link key={link.href} href={link.href} onClick={close}>{link.label}<span aria-hidden="true">↗</span></Link>)}</div>
+          <div className={styles.mobileShortcuts} aria-label="Accès directs aux offres">{[...commercialOfferNavigation.map(offer => ({ href: offer.href, label: offer.name })), { href: "/realisations", label: "Réalisations" }, { href: "/contact", label: "Contact" }].map(link => <Link key={link.href} href={link.href} onClick={close}>{link.label}<span aria-hidden="true">↗</span></Link>)}</div>
           <div className={styles.solutions} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setSolutions(false); }}>
             <button ref={solutionsToggle} className={styles.solutionsToggle} type="button" aria-expanded={solutions} aria-controls="solutions-links" onClick={() => setSolutions(value => !value)}>Solutions <span aria-hidden="true">⌄</span></button>
             <div id="solutions-links" className={styles.dropdown} hidden={!solutions}>
-              <div className={styles.menuIntro}><span>LES SOLUTIONS CODE-V</span><strong>Un objectif.<br />Les bons leviers.</strong><p>Explorez une expertise ou échangeons sur votre besoin.</p></div>
+              <div className={styles.menuIntro}><span>LES OFFRES CODE-V</span><strong>Un partenaire.<br />Quatre façons d’avancer.</strong><p>Commencez par votre objectif. Les expertises viennent ensuite.</p></div>
               <div className={styles.menuFamilies}>
-                <div className={styles.primaryFamilies}>{primarySolutionNeeds.map(need => { const family = solutionNavigation.find(item => item.id === need.id)!; return <Link key={family.id} href={family.href} onClick={close}><span className={styles.needLabel}>{need.label}</span><strong>{family.name} <span aria-hidden="true">↗</span></strong><small>{family.description}</small></Link>; })}</div>
-                <div className={styles.otherFamilies}>{solutionNavigation.filter(family => !primarySolutionNeeds.some(need => need.id === family.id)).map(family => <Link key={family.id} href={family.href} onClick={close}>{family.name}<span aria-hidden="true">↗</span></Link>)}</div>
+                <div className={styles.primaryFamilies}>{commercialOfferNavigation.map(offer => <Link key={offer.id} href={offer.href} onClick={close}><span className={styles.needLabel}>{offer.label}</span><strong>{offer.name} <span aria-hidden="true">↗</span></strong><small>{offer.description}</small></Link>)}</div>
+                <div className={styles.otherFamilies}>{solutionNavigation.map(family => <Link key={family.id} href={family.href} onClick={close}>{family.name}<span aria-hidden="true">↗</span></Link>)}</div>
               </div>
               <Link className={styles.allSolutions} href="/solutions" onClick={close}>Voir toutes les solutions <span aria-hidden="true">↗</span></Link>
             </div>

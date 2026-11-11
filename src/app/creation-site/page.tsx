@@ -14,8 +14,8 @@ import styles from "./page.module.css";
 import { defaultShareImages, getFilmSchema, jsonLd } from "@/lib/seo";
 
 const canonical = "https://www.code-v.fr/creation-site";
-const title = "Création de site internet professionnel & refonte | CODE-V";
-const description = "CODE-V conçoit et refond des sites professionnels : contenus clairs, parcours de contact, expérience mobile et bases SEO. Découvrez nos réalisations et parlons de votre projet.";
+const title = "Développeur web à Perpignan : création et refonte de site | CODE-V";
+const description = "CODE-V crée et refond des sites professionnels à Perpignan et dans les Pyrénées-Orientales : offre claire, contact simple, mobile, bases SEO. Voir nos réalisations.";
 export const metadata: Metadata = {
   title, description, alternates: { canonical },
   openGraph: { title, description, url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages },
@@ -68,7 +68,7 @@ export default function CreationSitePage() {
       <Reveal><div><h3>Un point de contact visible.</h3><p>Des CTA placés au bon moment et un formulaire compréhensible. Le suivi avancé des conversions et les tests A/B ne sont pas inclus automatiquement.</p></div></Reveal>
     </div></div></section>
 
-    <section id="realisations" className={styles.proof} aria-labelledby="proof-title"><div className="container"><Reveal className={styles.proofHeading}><div><p className={styles.eyebrow}>DES SITES RÉELS</p><h2 id="proof-title">Des métiers différents.<br /><span>Une présence à leur image.</span></h2></div><p>Le site d’un domaine, celui d’un artisan ou d’un service local n’ont pas les mêmes contenus. Découvrez des réalisations CODE-V à travers leurs sites et leurs captures publiques.</p></Reveal>
+    <section id="realisations" className={styles.proof} aria-labelledby="proof-title"><div className="container"><Reveal className={styles.proofHeading}><div><p className={styles.eyebrow}>DES SITES RÉELS</p><h2 id="proof-title">Des métiers différents.<br /><span>Une présence à leur image.</span></h2></div><p>Le site d’un domaine, celui d’un artisan ou d’un service local n’ont pas les mêmes contenus. Découvrez des réalisations CODE-V à travers leurs sites et leurs captures publiques, dont deux entreprises de Perpignan : Peinture Occitane et Express Nuisibles.</p></Reveal>
       <div className={styles.projectComposition}>{painter?.coverImage && <Reveal className={styles.painter}><figure><Image src={painter.coverImage.src} alt={painter.coverImage.alt} width={painter.coverImage.width} height={painter.coverImage.height} sizes="(max-width: 900px) calc(100vw - 36px), 650px" /><figcaption><h3>{painter.name}</h3><p>Présenter les prestations de peinture et de rénovation, et proposer un accès au devis.</p><Link href="/realisations#peinture-occitane" className={styles.textLink}>Voir cette réalisation <span aria-hidden="true">↗</span></Link></figcaption></figure></Reveal>}{pest?.coverImage && <Reveal className={styles.pest}><figure><Image src={pest.coverImage.src} alt={pest.coverImage.alt} width={pest.coverImage.width} height={pest.coverImage.height} sizes="(max-width: 900px) calc(100vw - 36px), 440px" /><figcaption><h3>{pest.name}</h3><p>Expliquer les traitements et les zones d’intervention, avec un formulaire de demande visible.</p><Link href="/realisations#express-nuisibles" className={styles.textLink}>Voir cette réalisation <span aria-hidden="true">↗</span></Link></figcaption></figure></Reveal>}</div>
       <Link href="/realisations" className={styles.textLink}>Voir les réalisations CODE-V <span aria-hidden="true">↗</span></Link>
     </div></section>
