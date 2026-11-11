@@ -4,7 +4,7 @@ import { siteOrigin } from "../data/public-routes";
  * Default share image: 1200×630 crop of the official CODE-V Home capture (public/projects/code-v-home.webp).
  * Next.js replaces a parent's openGraph object instead of merging it, so pages repeat it explicitly.
  */
-export const defaultShareImages = [{ url: "/og/code-v-share.jpg", width: 1200, height: 630, alt: "CODE-V — Le digital. Avec une direction." }];
+export const defaultShareImages = [{ url: "/og/code-v-share.jpg", width: 1200, height: 630, alt: "CODE-V — Sites web, visibilité Google et automatisation pour les entreprises" }];
 
 const organizationId = `${siteOrigin}/#organization`;
 
@@ -18,7 +18,12 @@ export const organizationSchema = {
   url: siteOrigin,
   logo: `${siteOrigin}/brand/code-v-icon-512.png`,
   email: "contact@code-v.fr",
+  telephone: "+33666672709",
   address: { "@type": "PostalAddress", streetAddress: "142 rue de Rivoli", postalCode: "75001", addressLocality: "Paris", addressCountry: "FR" },
+  areaServed: [
+    { "@type": "City", name: "Perpignan" },
+    { "@type": "AdministrativeArea", name: "Pyrénées-Orientales" },
+  ],
 };
 
 /** No SearchAction: the site has no internal search. */
