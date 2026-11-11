@@ -5,9 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./header.module.css";
 
 const links = [
-  { href: "/creation-site", label: "Sites web" },
-  { href: "/referencement-local", label: "Visibilité Google" },
-  { href: "/solutions/automatisation-ia", label: "Automatisation" },
+  { href: "/solutions", label: "Solutions" },
   { href: "/realisations", label: "Réalisations" },
   { href: "/qui-sommes-nous", label: "À propos" },
 ] as const;
@@ -44,19 +42,17 @@ export default function Header() {
         </Link>
 
         <nav id="main-navigation" className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navigation principale">
-          {links.map(link => (
-            <Link key={link.href} href={link.href} onClick={close}>{link.label}</Link>
-          ))}
+          {links.map(link => <Link key={link.href} href={link.href} onClick={close}>{link.label}</Link>)}
           <a className={styles.mobilePhone} href="tel:+33666672709" onClick={close}>Appeler le 06 66 67 27 09</a>
           <Link className="nav-cta mobile-only" href="/contact" onClick={close}>
-            Recevoir mon devis gratuit <span aria-hidden="true">↗</span>
+            Recevoir mon devis <span aria-hidden="true">↗</span>
           </Link>
         </nav>
 
         <div className={styles.headerActions}>
           <a className={styles.headerPhone} href="tel:+33666672709">06 66 67 27 09</a>
           <Link className="nav-cta desktop-only" href="/contact">
-            Recevoir mon devis gratuit <span aria-hidden="true">↗</span>
+            Recevoir mon devis <span aria-hidden="true">↗</span>
           </Link>
         </div>
 
