@@ -7,6 +7,7 @@ import styles from "./header.module.css";
 const links = [
   { href: "/solutions", label: "Solutions" },
   { href: "/realisations", label: "Réalisations" },
+  { href: "/tarifs", label: "Tarifs" },
   { href: "/qui-sommes-nous", label: "À propos" },
 ] as const;
 
