@@ -52,7 +52,7 @@ export default function ProjectsPage() {
   return <div className={styles.page}>
     <section className={styles.hero} aria-labelledby="projects-title"><div className="container">
       <Breadcrumb {...getPageBreadcrumb("/realisations")} />
-      <Reveal className={styles.heroGrid}><div><p className={styles.eyebrow}>RÉALISATIONS CODE-V</p><h1 id="projects-title">Des métiers.<br /><em>Des univers.</em></h1></div><div className={styles.heroContext}><p>Un domaine à découvrir, une table à réserver, un savoir-faire à présenter. Chaque site ouvre une porte sur une activité et lui donne une présence singulière.</p><a href="#selection" className={styles.jump}>Parcourir les réalisations <span aria-hidden="true">↓</span></a></div></Reveal>
+      <Reveal className={styles.heroGrid}><div><p className={styles.eyebrow}>RÉALISATIONS CODE-V</p><h1 id="projects-title">Des projets réels.<br /><em>Des objectifs concrets.</em></h1></div><div className={styles.heroContext}><p>Un site doit expliquer une activité, rassurer et faciliter l’action attendue. Découvrez comment CODE-V adapte le parcours, le contenu et les outils au contexte de chaque entreprise.</p><a href="#selection" className={styles.jump}>Voir les projets <span aria-hidden="true">↓</span></a></div></Reveal>
       <nav aria-label="Parcourir les secteurs" className={styles.chapterNav}><a href="#selection">Hébergement & tourisme</a><a href="#buffalo-snack">Restauration</a><a href="#antiquite-canetoise">Antiquités</a><a href="#peinture-occitane">Artisans & services locaux</a><a href="#laboratoire">Laboratoire CODE-V</a></nav>
     </div></section>
 
@@ -71,7 +71,7 @@ export default function ProjectsPage() {
         {film?.video && <Reveal><h3>Les connexions, rendues visibles.</h3><MotionVideo src={film.video.src} poster={film.video.poster} title={film.video.title} mode="case-study" controls muted={false} aspectRatio="16 / 9" transcript={film.video.description} transcriptLabel="Lire la description du film" /><p className={styles.observation}>Film de marque interne. Les compteurs sont des données de démonstration.</p><Link href="/motion-design" className={styles.textLink}>Explorer le motion design <span aria-hidden="true">↗</span></Link></Reveal>}
       </div>
     </div></section>
-    <section className={styles.final} aria-labelledby="next-project-title"><Reveal className="container"><p className={styles.eyebrow}>VOTRE PROCHAIN PROJET</p><h2 id="next-project-title">Un univers à vous.<br /><em>Une présence à construire.</em></h2><p>Parlons de votre activité, de votre public et du rôle que votre site doit jouer.</p><Link href="/contact" className="button button-primary">Parler de votre projet <span aria-hidden="true">↗</span></Link><Link href="/creation-site" className={styles.jump}>Découvrir la création de site internet <span aria-hidden="true">↗</span></Link></Reveal></section>
+    <section className={styles.final} aria-labelledby="next-project-title"><Reveal className="container"><p className={styles.eyebrow}>VOTRE PROCHAIN PROJET</p><h2 id="next-project-title">Votre activité.<br /><em>Un parcours à améliorer.</em></h2><p>Expliquez ce que vous voulez obtenir : plus de demandes, un site plus clair ou un fonctionnement plus simple.</p><Link href="/contact" className="button button-primary">Recevoir mon devis gratuit <span aria-hidden="true">↗</span></Link><Link href="/creation-site" className={styles.jump}>Découvrir la création de site internet <span aria-hidden="true">↗</span></Link></Reveal></section>
   </div>;
 }
 
