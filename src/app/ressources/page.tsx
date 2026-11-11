@@ -1,9 +1,9 @@
 ﻿import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import Breadcrumb from "@/components/Breadcrumb";
 import Reveal from "@/components/motion/Reveal";
 import MotionVideo from "@/components/media/MotionVideo";
+import FeaturedSitePreview from "@/app/realisations/FeaturedSitePreview";
 import ChatTrigger from "@/components/RobotAssistant/ChatTrigger";
 import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { solutionNavigation } from "@/data/navigation";
@@ -50,7 +50,7 @@ export default function ResourcesPage() {
       <div className={styles.briefs}>{briefs.map((resource, index) => <Reveal key={resource.id}><div className={styles.brief}><span className={styles.briefNumber}>0{index + 1}</span><div><p className={styles.eyebrow}>EN PRÉPARATION / {resource.format === "guide" ? "GUIDE" : resource.format === "comparison" ? "COMPARATIF" : "CHECKLIST"}</p><h3>{resource.title}</h3><p>{resource.description}</p></div></div></Reveal>)}</div>
     </div></section>
 
-    {project?.coverImage && <section id="terrain" className={styles.proof} aria-labelledby="proof-title"><div className={`container ${styles.proofGrid}`}><Reveal className={styles.proofMedia}><Image src={project.coverImage.src} alt={project.coverImage.alt} width={project.coverImage.width} height={project.coverImage.height} sizes="(max-width: 900px) calc(100vw - 36px), 660px" /><p className={styles.note}>Capture réelle du site {project.name}.</p></Reveal><Reveal><p className={styles.eyebrow}>LE TRAVAIL, CONCRÈTEMENT</p><h2 id="proof-title">Des repères.<br /><span>Et des formes réelles.</span></h2><p>Les réalisations permettent d’observer comment différents métiers prennent place à l’écran. Découvrez {project.name} et les autres sites du portfolio.</p><Link href="/realisations#selection" className={styles.textLink}>Parcourir les réalisations <span aria-hidden="true">↗</span></Link><Link href="/solutions/web-applications" className={styles.textLink}>Comprendre Web & Applications <span aria-hidden="true">↗</span></Link></Reveal></div></section>}
+    {project?.coverImage && <section id="terrain" className={styles.proof} aria-labelledby="proof-title"><div className={`container ${styles.proofGrid}`}><Reveal className={styles.proofMedia}>{project.publicUrl ? <FeaturedSitePreview image={project.coverImage} url={project.publicUrl} /> : null}</Reveal><Reveal><p className={styles.eyebrow}>LE TRAVAIL, CONCRÈTEMENT</p><h2 id="proof-title">Des repères.<br /><span>Et des formes réelles.</span></h2><p>Les réalisations permettent d’observer comment différents métiers prennent place à l’écran. Découvrez {project.name} et les autres sites du portfolio.</p><Link href="/realisations#selection" className={styles.textLink}>Parcourir les réalisations <span aria-hidden="true">↗</span></Link><Link href="/solutions/web-applications" className={styles.textLink}>Comprendre Web & Applications <span aria-hidden="true">↗</span></Link></Reveal></div></section>}
 
     <section className={styles.guidance} aria-labelledby="guidance-title"><Reveal className={`container ${styles.guidanceGrid}`}><div><p className={styles.eyebrow}>LA SUITE PART DE VOTRE SITUATION</p><h2 id="guidance-title">Une question.<br /><em>Un contexte à préciser.</em></h2></div><div><p>Expliquez votre besoin et ce qui existe déjà. Nous pourrons préciser les points à examiner et la solution à explorer.</p><ChatTrigger intent="strategy" className="button button-primary">Faire le point avec l’assistant</ChatTrigger><Link href="/contact" className={styles.textLink}>Expliquer mon projet à CODE-V <span aria-hidden="true">↗</span></Link></div></Reveal></section>
   </div>;
