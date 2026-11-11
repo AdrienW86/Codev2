@@ -1,12 +1,12 @@
 .footer{padding:64px 0 28px;background:#111827;color:#fff}
-.footer a:focus-visible{outline:3px solid #93C5FD;outline-offset:3px}
+.footer a:focus-visible{outline:3px solid #A9C4CA;outline-offset:3px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:32px;padding-bottom:40px}
 .logo{display:block;width:88px;height:88px;object-fit:contain}
 .top p{max-width:440px;margin:14px 0 0;color:#CBD5E1;font-size:15px;line-height:1.65}
 .contact{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 .contact a{display:flex;align-items:center;min-height:44px;color:#E5E7EB;font-size:14px}
-.contact .project{min-height:50px;padding:0 18px;margin-bottom:10px;border-radius:10px;background:#2563EB;color:#fff;font:700 14px/1 var(--font-dm-sans),sans-serif}
-.contact .project:hover{background:#1D4ED8}
+.contact .project{min-height:50px;padding:0 18px;margin-bottom:10px;border-radius:10px;background:#3D6873;color:#fff;font:700 14px/1 var(--font-dm-sans),sans-serif}
+.contact .project:hover{background:#315762}
 .contact .project span{margin-left:10px}
 .navigation{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;padding:40px 0;border-top:1px solid #334155}
 .navigation h2{margin:0 0 16px;color:#94A3B8;font:700 11px/1.5 var(--font-dm-sans),sans-serif;letter-spacing:.1em;text-transform:uppercase}
