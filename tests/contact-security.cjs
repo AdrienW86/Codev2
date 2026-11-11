@@ -25,6 +25,7 @@ const silent=(r,code)=>{assert.equal(r.status,200);assert.equal(JSON.stringify(r
   fresh();assert(delivered(await post({...legit,message:'Depuis une preview.'},{origin:'https://codev2-git-x.vercel.app',host:'codev2-git-x.vercel.app'})));
   // Rare but valid addresses are not blocked.
   for(const email of ['jean.o\'neil+devis@sub.example.museum','a@b.co','contact@xn--bcher-kva.example']){fresh();assert(delivered(await post({...legit,email})),email);}
+  fresh();assert(delivered(await post({...legit,email:'',phone:'+33 6 12 34 56 78',message:''})),'Phone-only callback request accepted');
 
   // 2. Invalid e-mail.
   for(const email of ['camille@','camille.example.fr','camille@localhost','camille@exa_mple.fr','camille..m@example.fr','camille@example.f','camille@-example.fr','a@b@c.fr','camille@example.123']){fresh();r=await post({...legit,email});assert.equal(r.status,400,email);assert.equal(r.resend,0);assert.equal(r.log,'[contact] spam_invalid_email',email);}
