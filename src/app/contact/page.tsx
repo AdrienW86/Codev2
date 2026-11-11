@@ -6,9 +6,9 @@ import { defaultShareImages } from "@/lib/seo";
 
 export const metadata = {
   title: "Contact — CODE-V",
-  description: "Parlez à CODE-V de votre besoin : construire votre présence, générer des demandes, automatiser votre activité ou mieux piloter votre digital.",
+  description: "Parlez à CODE-V de votre besoin : créer un site ou une application, obtenir plus de clients ou automatiser votre activité.",
   alternates: { canonical: "https://www.code-v.fr/contact" },
-  openGraph: { title: "Contact — CODE-V", description: "Un besoin concret : construire, attirer, automatiser ou piloter ? Parlons du bon point d’entrée.", url: "https://www.code-v.fr/contact", type: "website", locale: "fr_FR", images: defaultShareImages },
+  openGraph: { title: "Contact — CODE-V", description: "Site ou application, acquisition de clients, automatisation ou outils métier : parlons de votre besoin.", url: "https://www.code-v.fr/contact", type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 
 export default function ContactPage() {
@@ -22,7 +22,7 @@ export default function ContactPage() {
             <span>Trouvons le bon levier.</span>
           </>
         }
-        text="Créer ou refondre un site, obtenir plus de demandes, automatiser des tâches ou structurer votre digital : décrivez la situation, nous cadrerons la suite."
+        text="Créer ou refaire un site, obtenir plus de clients ou automatiser des tâches : décrivez la situation, nous cadrerons la suite."
       />
       <section className="section contact-section">
         <div className="container contact-layout">
