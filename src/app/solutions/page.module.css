@@ -88,3 +88,10 @@
 .experiences .eyebrow { color:color-mix(in srgb,var(--blue-deep) 96%,var(--dark)); }
 .familyLink+.familyLink { margin-left:28px; }
 @media(max-width:600px) { .familyLink+.familyLink { display:flex;width:fit-content;margin-left:0; } }
+
+.price{display:block;margin-top:12px;font:500 14px/1.4 var(--font-space-grotesk),sans-serif;color:var(--text)}
+.presence .price{color:var(--cyan)}
+.pricingLink{padding:90px 0;background:var(--background)}
+.pricingLink [data-revealed]{max-width:860px}
+.pricingLink p:not(.eyebrow){max-width:56ch;color:var(--muted)}
+.pricingLink :global(.button){margin-top:16px}
