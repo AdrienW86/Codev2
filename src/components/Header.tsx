@@ -3,64 +3,54 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import styles from "./header.module.css";
-import { commercialOfferNavigation, siteNavigation, solutionNavigation } from "@/data/navigation";
 
-const links = siteNavigation;
+const links = [
+  { href: "/solutions", label: "Solutions" },
+  { href: "/realisations", label: "Réalisations" },
+  { href: "/qui-sommes-nous", label: "À propos" },
+] as const;
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const [solutions, setSolutions] = useState(false);
   const header = useRef<HTMLElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
-  const solutionsToggle = useRef<HTMLButtonElement>(null);
-  const close = () => { setOpen(false); setSolutions(false); };
+  const close = () => setOpen(false);
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        if (solutions) { setSolutions(false); solutionsToggle.current?.focus(); }
-        else if (open) { setOpen(false); toggle.current?.focus(); }
+      if (event.key === "Escape" && open) {
+        setOpen(false);
+        toggle.current?.focus();
       }
     };
-    const onPointer = (event: PointerEvent) => { if (!header.current?.contains(event.target as Node)) close(); };
+    const onPointer = (event: PointerEvent) => {
+      if (!header.current?.contains(event.target as Node)) close();
+    };
     document.addEventListener("keydown", onKey);
     document.addEventListener("pointerdown", onPointer);
-    return () => { document.removeEventListener("keydown", onKey); document.removeEventListener("pointerdown", onPointer); };
-  }, [open, solutions]);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+    };
+  }, [open]);
 
   return (
     <header className={`site-header ${styles.header}`} ref={header}>
       <div className="container header-inner">
-        <Link className="brand" href="/" aria-label="Codev, accueil" onClick={close}>
+        <Link className="brand" href="/" aria-label="CODE-V, accueil" onClick={close}>
           <img src="/brand/code-v-logo-white.svg" width="875" height="875" className="brand-logo" alt="CODE-V" />
         </Link>
 
         <nav id="main-navigation" className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navigation principale">
-          <div className={styles.mobileShortcuts} aria-label="Accès directs aux offres">{[...commercialOfferNavigation.map(offer => ({ href: offer.href, label: offer.name })), { href: "/realisations", label: "Réalisations" }, { href: "/contact", label: "Contact" }].map(link => <Link key={link.href} href={link.href} onClick={close}>{link.label}<span aria-hidden="true">↗</span></Link>)}</div>
-          <div className={styles.solutions} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setSolutions(false); }}>
-            <button ref={solutionsToggle} className={styles.solutionsToggle} type="button" aria-expanded={solutions} aria-controls="solutions-links" onClick={() => setSolutions(value => !value)}>Solutions <span aria-hidden="true">⌄</span></button>
-            <div id="solutions-links" className={styles.dropdown} hidden={!solutions}>
-              <div className={styles.menuIntro}><span>LES OFFRES CODE-V</span><strong>Trois offres.<br />Un seul partenaire.</strong><p>Site, acquisition ou automatisation : choisissez d’abord ce que vous voulez obtenir.</p></div>
-              <div className={styles.menuFamilies}>
-                <div className={styles.primaryFamilies}>{commercialOfferNavigation.map(offer => <Link key={offer.id} href={offer.href} onClick={close}><span className={styles.needLabel}>{offer.label}</span><strong>{offer.name} <span aria-hidden="true">↗</span></strong><small>{offer.description}</small></Link>)}</div>
-                <div className={styles.otherFamilies}>{solutionNavigation.map(family => <Link key={family.id} href={family.href} onClick={close}>{family.name}<span aria-hidden="true">↗</span></Link>)}</div>
-              </div>
-              <Link className={styles.allSolutions} href="/solutions" onClick={close}>Voir toutes les solutions <span aria-hidden="true">↗</span></Link>
-            </div>
-          </div>
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} title={link.description} onClick={close} className={link.href === "/realisations" || link.href === "/contact" ? styles.desktopSiteLink : undefined}>
-              {link.label}
-            </Link>
-          ))}
-
-          <Link className="nav-cta mobile-only" href="/contact" onClick={close}>
-            Parler de votre projet <span aria-hidden="true">↗</span>
-          </Link>
+          {links.map(link => <Link key={link.href} href={link.href} onClick={close}>{link.label}</Link>)}
+          <a className={styles.mobilePhone} href="tel:+33666672709" onClick={close}>06 66 67 27 09</a>
+          <Link className="nav-cta mobile-only" href="/contact" onClick={close}>Recevoir mon devis <span aria-hidden="true">↗</span></Link>
         </nav>
 
-        <Link className="nav-cta desktop-only" href="/contact">
-          Parler de votre projet <span aria-hidden="true">↗</span>
-        </Link>
+        <div className={styles.headerActions}>
+          <a className={styles.headerPhone} href="tel:+33666672709">06 66 67 27 09</a>
+          <Link className="nav-cta desktop-only" href="/contact">Recevoir mon devis <span aria-hidden="true">↗</span></Link>
+        </div>
 
         <button
           ref={toggle}
@@ -69,7 +59,7 @@ export default function Header() {
           aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
           aria-expanded={open}
           aria-controls="main-navigation"
-          onClick={() => { setOpen((current) => !current); setSolutions(false); }}
+          onClick={() => setOpen(current => !current)}
         >
           <span />
           <span />
