@@ -41,14 +41,10 @@
 .featuredMedia{position:relative;margin-bottom:64px}.featuredMedia>figure:first-child{padding-right:80px}.featuredMedia .mobilePreview{position:absolute;right:24px;bottom:-24px;width:190px;border:6px solid var(--dark-soft);border-radius:20px;box-shadow:0 16px 48px #07111f33;overflow:hidden}.featuredMedia .mobilePreview img{border-radius:0;transform:none}.featuredDetails{margin-top:24px}
 @media(max-width:600px){.featuredMedia{margin-bottom:40px}.featuredMedia>figure:first-child{padding-right:0;padding-bottom:72px}.featuredMedia .mobilePreview{width:120px;right:18px;bottom:-12px;border-width:4px;border-radius:12px}.featuredMedia>figure:first-child figcaption{max-width:55%;min-height:30px}}
 
-/* Château de Projan: the real homepage runs inside the featured preview.
-   The captured screenshot remains behind the frame and animates softly as fallback. */
+/* Projan: the site's original animation appears in a live desktop iframe.
+   The high-quality fallback poster stays sharp, fully visible and static. */
 .featuredSiteFrame{position:relative;overflow:hidden;aspect-ratio:1440 / 1000;border-radius:10px;background:#e4e2dc;isolation:isolate}
-.featuredSiteFrame .featuredSitePoster{display:block;width:100%;height:100%;object-fit:cover;border-radius:0;animation:projanPosterDrift 16s ease-in-out infinite alternate}
-.featuredSiteLive,.featuredSiteLiveReady{position:absolute;inset:0;z-index:1;display:block;width:100%;height:100%;border:0;pointer-events:none;opacity:0;transition:opacity .45s ease}
+.featuredSiteFrame .featuredSitePoster{display:block;width:100%;height:100%;object-fit:contain;border-radius:0;animation:none;transform:none}
+.featuredSiteLive,.featuredSiteLiveReady{position:absolute;inset:0;z-index:1;display:block;width:100%;height:100%;border:0;pointer-events:none;opacity:0;transition:opacity .25s ease}
 .featuredSiteLiveReady{opacity:1}
-@keyframes projanPosterDrift{from{transform:scale(1) translateY(0)}to{transform:scale(1.045) translateY(-.5%)}}
-@media(prefers-reduced-motion:reduce){.featuredSiteFrame .featuredSitePoster{animation:none}.featuredSiteLive,.featuredSiteLiveReady{transition:none}}
-
-/* Embedded desktop previews must not zoom or crop the fallback screenshot. */
-.featuredSiteFrameDesktop .featuredSitePoster{animation:none;object-fit:contain}
+@media(prefers-reduced-motion:reduce){.featuredSiteLive,.featuredSiteLiveReady{transition:none}}
