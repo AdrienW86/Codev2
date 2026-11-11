@@ -61,7 +61,6 @@ export default function Home() {
     <section className={styles.hero} aria-labelledby="home-title">
       <div className={`container ${styles.heroGrid}`}>
         <div className={styles.heroCopy}>
-          <p className={styles.eyebrow}>SITES WEB · ACQUISITION · AUTOMATISATION</p>
           <h1 id="home-title">Plus de demandes clients, <em>sans vous compliquer avec le digital.</em></h1>
           <p className={styles.lead}>CODE-V vous aide à être trouvé, à convaincre et à gagner du temps avec un site efficace, une acquisition mieux pilotée et des outils utiles.</p>
           <div className={styles.heroActions}>
@@ -85,7 +84,7 @@ export default function Home() {
     </section>
 
     <section className={styles.proofBand} aria-label="Preuves CODE-V">
-      <div className="container">
+      <div className={`container ${styles.proofPanel}`}>
         <div><strong>2</strong><span>demandes de devis confirmées<br />Couverture Catalane</span></div>
         <div><strong>2</strong><span>demandes web confirmées<br />Jrenov</span></div>
         <div><strong>5★</strong><span>avis Google nominatifs<br />publiés sur le site</span></div>
@@ -102,7 +101,7 @@ export default function Home() {
 
     <section className={styles.offerSection} aria-labelledby="offers-title">
       <div className="container">
-        <Reveal className={styles.sectionHead}><p className={styles.eyebrow}>TROIS RÉSULTATS CONCRETS</p><h2 id="offers-title">Commencez par <em>ce que vous voulez obtenir.</em></h2><p>Les détails techniques viennent ensuite, seulement lorsqu’ils servent la décision.</p></Reveal>
+        <Reveal className={styles.sectionHead}><p className={styles.eyebrow}>CE QUE NOUS POUVONS AMÉLIORER</p><h2 id="offers-title">Commencez par <em>ce que vous voulez obtenir.</em></h2><p>Les détails techniques viennent ensuite, seulement lorsqu’ils servent la décision.</p></Reveal>
 
         <div className={styles.offerGrid}>
           {offers.map(offer => <Reveal className={styles.offerCard} key={offer.id}>
