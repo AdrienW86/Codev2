@@ -1,49 +1,42 @@
-.header :is(a,button):focus-visible { outline:2px solid var(--cyan); outline-offset:5px; }
-.header { background:var(--dark); border-bottom:1px solid rgba(255,255,255,.12); }
-.header :global(.header-inner) { min-height:100px; gap:24px; }
-.header :global(.brand-logo) { width:80px; height:80px; object-fit:contain; }
-.header :global(.main-nav) { gap:24px; font-size:13px; color:#d5deeb; }
-.header :global(.nav-cta) { min-height:48px; font-size:13px; border-color:#62748b; }
-.solutions { position:static; }
-.mobileShortcuts{display:none}
-@media(max-width:900px){.header :global(.main-nav) .desktopSiteLink{display:none}}
-.menuFamilies{min-width:0}.primaryFamilies{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.primaryFamilies a{display:block;padding:18px;border-bottom:1px solid #33465e;transition:background .2s}.primaryFamilies a:hover,.otherFamilies a:hover{background:#ffffff0a}.needLabel{display:block;font-size:10px;letter-spacing:.1em;color:var(--cyan);margin-bottom:10px}.primaryFamilies strong{display:block;font-size:17px;line-height:1.4;font-weight:500}.primaryFamilies strong span{color:var(--cyan)}.primaryFamilies small{display:block;color:#bccbdf;font-size:12px;line-height:1.6;margin-top:8px}.otherFamilies{display:flex;flex-wrap:wrap;gap:4px 20px;padding-top:20px}.otherFamilies a{display:flex;gap:12px;align-items:center;min-height:44px;font-size:13px;line-height:1.5;padding:8px 4px}.otherFamilies a span{color:var(--cyan)}
-.solutionsToggle { display:flex; align-items:center; gap:8px; padding:14px 0; min-height:48px; border:0; background:none; color:inherit; }
-.solutionsToggle span { transition:transform .25s; }
-.solutionsToggle[aria-expanded=true] span { transform:rotate(180deg); }
-.dropdown { position:absolute; top:100%; left:50%; transform:translateX(-50%); width:min(1180px,calc(100vw - 48px)); padding:32px; background:var(--dark-soft); border:1px solid #33465e; box-shadow:0 30px 50px #07111f66; display:grid; grid-template-columns:220px 1fr; gap:32px; border-radius:0 0 24px 24px; animation:menuIn .35s ease both; }
-.dropdown[hidden] { display:none; }
-.menuIntro span { font-size:10px; letter-spacing:.12em; color:var(--cyan); }
-.menuIntro strong { display:block; margin:20px 0; font:500 32px/1.1 var(--font-space-grotesk),sans-serif; }
-.menuIntro p { color:#bccbdf; font-size:13px; line-height:1.7; }
-.familyLinks { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
-.familyLinks a { padding:18px; border-radius:12px; transition:background .2s,transform .2s; }
-.familyLinks a:hover { background:#ffffff0a; transform:translateY(-2px); }
-.familyLinks strong { display:block; font-weight:500; font-size:14px; line-height:1.4; }
-.familyLinks strong span { color:var(--cyan); }
-.familyLinks small { display:block; color:#bccbdf; font-size:12px; line-height:1.5; margin-top:8px; }
-.familyLinks em { display:block; font-style:normal; font-size:10px; color:var(--cyan); margin-top:8px; }
-@keyframes menuIn { from { opacity:0; clip-path:inset(0 0 30%); } to { opacity:1; clip-path:inset(0); } }
-@media(max-width:1100px) and (min-width:901px) { .header :global(.main-nav) { gap:14px; }.header :global(.nav-cta) { padding:12px; }.dropdown { grid-template-columns:160px 1fr;gap:16px; } }
-@media(max-width:900px) { .header :global(.header-inner) { min-height:88px; }.header :global(.brand-logo) { width:68px;height:68px; }.header :global(.main-nav) { top:88px;left:12px;right:12px;padding:16px;background:var(--dark-soft);max-height:calc(100dvh - 100px);overflow:auto;gap:0; }.header :global(.main-nav a) { min-height:48px; }.solutionsToggle { width:100%;justify-content:space-between;padding:14px 10px; }.dropdown { position:static;transform:none;width:100%;padding:12px;display:block;border-radius:12px;box-shadow:none; }.menuIntro { display:none; }.familyLinks { grid-template-columns:1fr 1fr;gap:4px; }.header .familyLinks a { padding:12px; }.header :global(.nav-cta.mobile-only) { background:var(--blue-deep);border:0; } }
-@media(max-width:480px) { .familyLinks { grid-template-columns:1fr; }.familyLinks small { margin-top:4px; } }
-@media(prefers-reduced-motion:reduce) { .dropdown { animation:none; }.header :is(a,button,span) { transition:none; } }
-@media(max-width:900px){.mobileShortcuts{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #33465e;padding-bottom:12px;margin-bottom:8px;gap:4px 12px}.header .mobileShortcuts a{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;font-size:13px;line-height:1.5}.mobileShortcuts span{color:var(--cyan)}.primaryFamilies{gap:8px}.header .primaryFamilies a{padding:12px 8px}.primaryFamilies strong{font-size:14px}.primaryFamilies small{display:none}.otherFamilies{display:block;padding-top:12px}.header .otherFamilies a{display:flex;padding:12px 8px;justify-content:space-between}.needLabel{font-size:9px}.header :global(.nav-cta.mobile-only){justify-content:center;margin:12px 0}.dropdown{padding:8px}}
-.allSolutions { grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;min-height:48px;border-top:1px solid #33465e;padding:20px 12px 0;color:var(--cyan);font-size:14px; }
-@media(max-width:900px) { .header .allSolutions { margin-top:12px;padding:16px 12px; } }
+.header{
+  position:sticky!important;
+  top:0;
+  z-index:70!important;
+  width:100%;
+  background:rgba(255,255,255,.97);
+  color:#111827!important;
+  border-bottom:1px solid #E2E8F0;
+  backdrop-filter:saturate(140%) blur(10px);
+}
+.header :is(a,button):focus-visible{outline:3px solid #93C5FD;outline-offset:3px}
+.header :global(.header-inner){min-height:84px;gap:24px}
+.header :global(.brand-logo){width:62px;height:62px;object-fit:contain}
+.header :global(.main-nav){gap:24px;color:#374151!important;font-size:14px}
+.header :global(.main-nav)>a{color:#374151!important;min-height:48px;display:flex;align-items:center}
+.header :global(.main-nav)>a:hover{color:#111827!important}
+.headerActions{display:flex;align-items:center;gap:14px;flex:0 0 auto}
+.headerPhone{display:flex;align-items:center;min-height:48px;color:#374151;font-size:13px;font-weight:600;white-space:nowrap}
+.headerPhone:hover{color:#111827}
+.header :global(.nav-cta){min-height:50px;padding:0 20px;border:1px solid #2563EB!important;border-radius:10px;background:#2563EB!important;color:#fff!important;font-size:14px;font-weight:700;box-shadow:none}
+.header :global(.nav-cta:hover){background:#1D4ED8!important;border-color:#1D4ED8!important}
+.mobilePhone{display:none!important}
+.header :global(.menu-toggle){border:1px solid #CBD5E1!important;background:#fff!important}
+.header :global(.menu-toggle span){background:#111827!important}
 
-.headerActions{display:flex;align-items:center;gap:16px;flex:0 0 auto}
-.headerPhone{font-size:12px;color:#d5deeb;white-space:nowrap;min-height:44px;display:flex;align-items:center}
-.headerPhone:hover{color:var(--cyan)}
-.mobilePhone{display:none}
 @media(max-width:1180px) and (min-width:901px){
   .header :global(.main-nav){gap:14px}
-  .headerActions{gap:10px}
   .headerPhone{display:none}
   .header :global(.nav-cta){padding-inline:14px}
 }
 @media(max-width:900px){
+  .header :global(.header-inner){min-height:72px}
+  .header :global(.brand-logo){width:54px;height:54px}
+  .header :global(.main-nav){top:72px!important;left:12px!important;right:12px!important;padding:14px!important;border:1px solid #E2E8F0!important;border-radius:14px!important;background:#fff!important;box-shadow:0 18px 45px rgba(17,24,39,.14)!important}
+  .header :global(.main-nav)>a{padding:10px!important;color:#111827!important}
   .headerActions{display:none}
-  .mobilePhone{display:flex!important;color:var(--cyan)!important;border-top:1px solid #33465e;margin-top:8px;padding:14px 10px!important}
-  .header :global(.main-nav)>a:not(.mobilePhone){padding:12px 10px}
+  .mobilePhone{display:flex!important;border-top:1px solid #E2E8F0;margin-top:8px;padding:14px 10px!important;color:#111827!important}
+  .header :global(.nav-cta.mobile-only){display:flex!important;justify-content:center;margin-top:10px;background:#2563EB!important;color:#fff!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .header :is(a,button){transition:none!important}
 }
