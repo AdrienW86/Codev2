@@ -5,24 +5,24 @@ import ContactForm from "@/components/ContactForm";
 import { defaultShareImages } from "@/lib/seo";
 
 export const metadata = {
-  title: "Contact — CODE-V",
-  description: "Parlez à CODE-V de votre besoin : créer un site ou une application, obtenir plus de clients ou automatiser votre activité.",
+  title: "Demande de devis — CODE-V",
+  description: "Demandez un devis à CODE-V pour votre site web, votre visibilité Google ou l’automatisation de certaines tâches.",
   alternates: { canonical: "https://www.code-v.fr/contact" },
-  openGraph: { title: "Contact — CODE-V", description: "Site ou application, acquisition de clients, automatisation ou outils métier : parlons de votre besoin.", url: "https://www.code-v.fr/contact", type: "website", locale: "fr_FR", images: defaultShareImages },
+  openGraph: { title: "Demande de devis — CODE-V", description: "Site web, visibilité Google ou automatisation : expliquez votre besoin en quelques informations.", url: "https://www.code-v.fr/contact", type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 
 export default function ContactPage() {
   return (
     <>
       <PageHero breadcrumb={getPageBreadcrumb("/contact")}
-        eyebrow="Contact"
+        eyebrow="Demande de devis"
         title={
           <>
-            Un besoin concret ?<br />
-            <span>Trouvons le bon levier.</span>
+            Dites-nous ce que vous voulez<br />
+            <span>améliorer.</span>
           </>
         }
-        text="Créer ou refaire un site, obtenir plus de clients ou automatiser des tâches : décrivez la situation, nous cadrerons la suite."
+        text="Un site à refaire, plus de demandes grâce à Google ou trop de tâches manuelles : quelques informations suffisent pour commencer."
       />
       <section className="section contact-section">
         <div className="container contact-layout">
@@ -32,11 +32,11 @@ export default function ContactPage() {
               Restons en contact
             </span>
             <h2>
-              Partons du<br />
-              <span>problème à résoudre.</span>
+              Un échange simple.<br />
+              <span>Un devis clair.</span>
             </h2>
             <p>
-              Vous n’avez pas à connaître le nom de la prestation. Expliquez ce qui vous freine ou ce que vous voulez obtenir ; nous identifierons le bon point d’entrée.
+              Vous n’avez pas besoin de connaître la bonne solution technique. Expliquez simplement votre objectif ; nous vous répondrons avec un périmètre compréhensible.
             </p>
             <div className="contact-links">
               <Link href="mailto:contact@code-v.fr">
