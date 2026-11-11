@@ -8,7 +8,7 @@
   border-bottom:1px solid #E2E8F0;
   backdrop-filter:saturate(140%) blur(10px);
 }
-.header :is(a,button):focus-visible{outline:3px solid #93C5FD;outline-offset:3px}
+.header :is(a,button):focus-visible{outline:3px solid #A9C4CA;outline-offset:3px}
 .header :global(.header-inner){min-height:84px;gap:24px}
 .header :global(.brand-logo){width:62px;height:62px;object-fit:contain}
 .header :global(.main-nav){gap:24px;color:#374151!important;font-size:14px}
@@ -17,8 +17,8 @@
 .headerActions{display:flex;align-items:center;gap:14px;flex:0 0 auto}
 .headerPhone{display:flex;align-items:center;min-height:48px;color:#374151;font-size:13px;font-weight:600;white-space:nowrap}
 .headerPhone:hover{color:#111827}
-.header :global(.nav-cta){min-height:50px;padding:0 20px;border:1px solid #2563EB!important;border-radius:10px;background:#2563EB!important;color:#fff!important;font-size:14px;font-weight:700;box-shadow:none}
-.header :global(.nav-cta:hover){background:#1D4ED8!important;border-color:#1D4ED8!important}
+.header :global(.nav-cta){min-height:50px;padding:0 20px;border:1px solid #3D6873!important;border-radius:10px;background:#3D6873!important;color:#fff!important;font-size:14px;font-weight:700;box-shadow:none}
+.header :global(.nav-cta:hover){background:#315762!important;border-color:#315762!important}
 .mobilePhone{display:none!important}
 .header :global(.menu-toggle){border:1px solid #CBD5E1!important;background:#fff!important}
 .header :global(.menu-toggle span){background:#111827!important}
@@ -35,7 +35,7 @@
   .header :global(.main-nav)>a{padding:10px!important;color:#111827!important}
   .headerActions{display:none}
   .mobilePhone{display:flex!important;border-top:1px solid #E2E8F0;margin-top:8px;padding:14px 10px!important;color:#111827!important}
-  .header :global(.nav-cta.mobile-only){display:flex!important;justify-content:center;margin-top:10px;background:#2563EB!important;color:#fff!important}
+  .header :global(.nav-cta.mobile-only){display:flex!important;justify-content:center;margin-top:10px;background:#3D6873!important;color:#fff!important}
 }
 @media(prefers-reduced-motion:reduce){
   .header :is(a,button){transition:none!important}
