@@ -3,10 +3,10 @@ import Home from "@/components/home/Home";
 import { defaultShareImages, jsonLd, organizationSchema, websiteSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "CODE-V — Studio digital, acquisition & automatisation",
-  description: "Sites et applications, acquisition, contenu, automatisation et IA : CODE-V construit un système digital cohérent pour votre entreprise.",
+  title: "CODE-V — Sites, acquisition, automatisation & outils métier",
+  description: "CODE-V construit et relie les leviers digitaux de votre entreprise : sites et applications, acquisition, automatisation, IA et pilotage.",
   alternates: { canonical: "https://www.code-v.fr" },
-  openGraph: { title: "CODE-V — Les systèmes numériques qui font avancer votre entreprise", description: "Construire, attirer, convertir, automatiser et optimiser : une approche digitale cohérente.", url: "https://www.code-v.fr", type: "website", locale: "fr_FR", images: defaultShareImages },
+  openGraph: { title: "CODE-V — Construire, attirer, automatiser et piloter", description: "Sites et applications, acquisition, automatisation et pilotage : un même partenaire pour relier votre système digital.", url: "https://www.code-v.fr", type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 
 export default function HomePage() {

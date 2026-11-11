@@ -8,8 +8,8 @@ import { getPublishedProjects } from "@/data/projects";
 import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import styles from "./page.module.css";
 import { defaultShareImages } from "@/lib/seo";
-const title = "À propos de CODE-V | Studio digital";
-const description = "Découvrez l’approche CODE-V : relier design, technique, acquisition et automatisation aux besoins de votre activité, puis accompagner les évolutions.";
+const title = "À propos de CODE-V | Partenaire digital & technologie";
+const description = "Découvrez l’approche CODE-V : construire votre présence, développer l’acquisition, automatiser les tâches utiles et garder un système digital cohérent dans la durée.";
 export const metadata: Metadata = { title, description, alternates: { canonical: "https://www.code-v.fr/qui-sommes-nous" }, robots: { index: true, follow: true }, openGraph: { title, description, url: "https://www.code-v.fr/qui-sommes-nous", type: "website", locale: "fr_FR", images: defaultShareImages } };
 const steps = [
  ["Comprendre", "Clarifier votre activité, vos usages et la priorité qui doit guider les choix."],

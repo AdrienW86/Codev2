@@ -12,8 +12,8 @@ import { defaultShareImages } from "@/lib/seo";
 
 const canonical = "https://www.code-v.fr/solutions/web-applications";
 export const metadata: Metadata = {
-  title: "Web & Applications : vos produits digitaux | CODE-V",
-  description: "Sites, e-commerce, applications web et outils métier : CODE-V conçoit des expériences utiles, performantes et évolutives, du parcours utilisateur à l’architecture.",
+  title: "Applications web et mobiles, sites et outils métier | CODE-V",
+  description: "Applications web et mobiles (PWA ou natives), sites, e-commerce et outils métier : CODE-V conçoit des produits utiles et évolutifs, du parcours à l’architecture.",
   alternates: { canonical },
   openGraph: { title: "Web & Applications — CODE-V", description: "Du premier écran à l’architecture : des produits digitaux pensés pour vos usages.", url: canonical, type: "website", locale: "fr_FR", images: defaultShareImages },
 };
