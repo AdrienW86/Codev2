@@ -11,10 +11,33 @@ import styles from "./page.module.css";
  * The existing screenshot remains available on slow connections or when
  * the visitor requests reduced motion.
  */
-export default function FeaturedSitePreview({ image, url }: { image: ProjectImage; url: string }) {
+export default function FeaturedSitePreview({ image, url, fit = "responsive" }: { image: ProjectImage; url: string; fit?: "responsive" | "desktop" }) {
   const container = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [ready, setReady] = useState(false);
+
+  // In narrow cards, keep the original desktop viewport and scale the whole
+  // website down. Letting the iframe use the card width instead would switch
+  // the client's site into its mobile layout and crop the original composition.
+  useEffect(() => {
+    if (fit !== "desktop") return;
+    const element = container.current;
+    if (!element) return;
+    const updateScale = () => {
+      const width = element.getBoundingClientRect().width;
+      if (width > 0) {
+        element.style.setProperty("--featured-preview-scale", String(width / image.width));
+      }
+    };
+    updateScale();
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", updateScale);
+      return () => window.removeEventListener("resize", updateScale);
+    }
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [fit, image.width]);
 
   useEffect(() => {
     const element = container.current;
@@ -59,6 +82,13 @@ export default function FeaturedSitePreview({ image, url }: { image: ProjectImag
         aria-hidden="true"
         referrerPolicy="strict-origin-when-cross-origin"
         className={ready ? styles.featuredSiteLiveReady : styles.featuredSiteLive}
+        style={fit === "desktop" ? {
+          width: image.width,
+          height: image.height,
+          maxWidth: "none",
+          transform: "scale(var(--featured-preview-scale, 1))",
+          transformOrigin: "top left",
+        } : undefined}
         onLoad={() => setReady(true)}
         onError={() => { setVisible(false); setReady(false); }}
       />}
