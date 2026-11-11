@@ -40,7 +40,7 @@ export default function Header() {
     <header className={`site-header ${styles.header}`} ref={header}>
       <div className="container header-inner">
         <Link className="brand" href="/" aria-label="CODE-V, accueil" onClick={close}>
-          <img src="/brand/code-v-logo-white.svg" width="875" height="875" className="brand-logo" alt="CODE-V" />
+          <img src="/brand/code-v-logo-dark.svg" width="875" height="875" className="brand-logo" alt="CODE-V" />
         </Link>
 
         <nav id="main-navigation" className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navigation principale">
