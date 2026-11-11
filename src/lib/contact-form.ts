@@ -13,6 +13,7 @@ export type ContactPayload = {
   name: string;
   company: string;
   email: string;
+  phone: string;
   project: string;
   message: string;
   service: string;
