@@ -16,10 +16,12 @@ L’adaptateur utilise `track` de `@vercel/analytics` 2.0.1, présent dans le pa
 
 | Événement | Déclenchement | Propriétés |
 |---|---|---|
+| `contact_form_start` | Premier focus dans le formulaire | `source_path`, `location: form`, `service` si reconnu, `form_variant` |
 | `contact_form_submit` | Confirmation serveur du formulaire | `source_path`, `location: form`, `service` si reconnu ; `cta_source_path` et `cta_location` si le dernier CTA est connu |
 | `contact_cta_click` | Lien Contact dans le contenu principal | `source_path`, `destination_path: /contact`, `location`, `service` si reconnu, `cta_label` si libellé approuvé |
 | `phone_click` | Activation d’un lien tel | `source_path`, `location`, `service` si reconnu |
 | `email_click` | Activation d’un lien mailto | mêmes propriétés, sans adresse |
+| `scroll_depth` | Première atteinte des seuils 25 %, 50 %, 75 % et 90 % | `source_path`, `depth` parmi 25/50/75/90 |
 | `chatbot_open` | Assistant effectivement ouvert | `source_path`, `location: assistant`, `intent` (ou general) |
 | `chatbot_intent_selected` | CTA qui demande un intent valide à l’assistant | `source_path`, `location: assistant`, `intent` |
 | `realization_click` | Lien Réalisations depuis Home, Solutions, Ressources, un article ou une money page | `source_path`, `destination_path: /realisations`, `location`, `service` si connu, `project_slug` si identifié |
@@ -68,7 +70,7 @@ Le tracking est validé localement, pas encore déployé par cette tâche. L’a
 
 ## Complément du brief de suivi des conversions
 
-Neuf noms d’événements stables, sans migration des noms ou propriétés déjà définis. La convention snake_case correspond aux propriétés demandées : sourcePage → source_path, placement → location, ctaLabel → cta_label, articleSlug → article_slug, projectSlug → project_slug, destinationService → destination_service, formVariant → form_variant. Aucune valeur vide ajoutée.
+Onze noms d’événements stables, sans migration des noms ou propriétés déjà définis. La convention snake_case correspond aux propriétés demandées : sourcePage → source_path, placement → location, ctaLabel → cta_label, articleSlug → article_slug, projectSlug → project_slug, destinationService → destination_service, formVariant → form_variant. Aucune valeur vide ajoutée.
 
 Les intents restent les quatre existants : website, acquisition, automation, strategy. Les exemples seo/ads ne créent pas de nouveaux intents ; l’acquisition conserve sa qualification existante. Un CTA intent peut produire une sélection et une ouverture : ce sont deux actions distinctes. Un nouveau CTA avec intent alors que le dialogue est ouvert produit seulement la sélection, jamais une seconde ouverture.
 
@@ -76,7 +78,7 @@ Les projets et leurs destinations sont dérivés de projects.ts côté serveur. 
 
 La Home, Solutions, Ressources, Réalisations et Contact sont couverts sans conversion en Client Components ni changement de contenu. Un seul écouteur délégué observe les liens pertinents ; il ne capture pas tous les liens du Footer. Le service du formulaire conserve website, seo, website-care, digital-strategy, etc. ; ads est normalisé vers google-ads. La mesure ne modifie pas les paramètres envoyés à l’API Contact.
 
-Validation complémentaire : voir les tests des neuf événements dans tests/conversion-tracking.cjs et les contrôles navigateur décrits plus haut. Vercel, Contact et les sites externes doivent être interceptés pendant les tests pour éviter toute collecte ou envoi réel.
+Validation complémentaire : voir les tests des onze événements dans tests/conversion-tracking.cjs et les contrôles navigateur décrits plus haut. Vercel, Contact et les sites externes doivent être interceptés pendant les tests pour éviter toute collecte ou envoi réel.
 
 Résultats du complément : TypeScript et neuf suites Node réussis ; build isolé réussi, 37 sorties pré-rendues. Le serveur de développement utilisateur écrit dans .next : validation effectuée dans une copie temporaire sans .env, sans interrompre ce serveur. Chromium confirme neuf money pages, onze articles, cinq largeurs, clavier, absence de doublons d’ouverture et formulaire uniquement après confirmation. Cinq services testés par formulaire simulé : website, seo, ads → google-ads, website-care, digital-strategy. Les sept liens externes réels sont associés aux sept slugs du registre ; aucune URL externe transmise.
 
