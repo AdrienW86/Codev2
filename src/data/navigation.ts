@@ -69,15 +69,9 @@ export const quickServiceNavigation = [
   { href: "/solutions/automatisation-ia", label: "Automatisation & IA" },
   { href: "/contact?service=social-management", label: "Réseaux sociaux" },
 ];
-export const primarySolutionNeeds = [
-  { id: "web", label: "CRÉER" },
-  { id: "seo", label: "ÊTRE TROUVÉ" },
-  { id: "acquisition", label: "ACQUÉRIR" },
-  { id: "automation", label: "AUTOMATISER" },
-];
 export const siteNavigation = [
   { href: "/realisations", label: "Réalisations", description: "Découvrir les réalisations documentées de CODE-V" },
   { href: "/ressources", label: "Ressources", description: "Repères, guides et médias pour vos décisions digitales" },
-  { href: "/qui-sommes-nous", label: "À propos", description: "Découvrir le studio CODE-V" },
+  { href: "/qui-sommes-nous", label: "À propos", description: "Découvrir l’approche CODE-V" },
   { href: "/contact", label: "Contact", description: "Contacter CODE-V" },
 ];
