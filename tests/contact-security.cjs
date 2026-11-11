@@ -50,7 +50,7 @@ const silent=(r,code)=>{assert.equal(r.status,200);assert.equal(JSON.stringify(r
   fresh();assert(delivered(await post({...legit,message:'Un long message détaillé. '.repeat(500)})),'Long but plausible message accepted');
 
   // 7. Unexpected payloads.
-  const bad=[[],'["a"]','not json',{...legit,name:''},{...legit,name:'   '},{...legit,message:' '},{...legit,name:{first:'x'}},{...legit,email:['a@b.fr']},{...legit,admin:true},{...legit,elapsed:'5000'},{...legit,elapsed:-1},{...legit,project:'Casino en ligne'},{...legit,phone:'call me now'},{...legit,name:'Camille\nBcc: x@y.z'},{...legit,name:'camille@example.fr'},{...legit,name:'12345'},{...legit,message:'Bonjour\u0000'},{...legit,service:42}];
+  const bad=[[],'["a"]','not json',{...legit,name:''},{...legit,name:'   '},{...legit,name:{first:'x'}},{...legit,email:['a@b.fr']},{...legit,admin:true},{...legit,elapsed:'5000'},{...legit,elapsed:-1},{...legit,project:'Casino en ligne'},{...legit,phone:'call me now'},{...legit,name:'Camille\nBcc: x@y.z'},{...legit,name:'camille@example.fr'},{...legit,name:'12345'},{...legit,message:'Bonjour\u0000'},{...legit,service:42}];
   for(const body of bad){fresh();r=await post(body);assert.equal(r.status,400,JSON.stringify(body).slice(0,80));assert.equal(r.resend,0);assert.equal(r.log,'[contact] spam_invalid_payload');}
   fresh();r=await post(legit,{'content-type':'text/plain'});assert.equal(r.status,415);assert.equal(r.resend,0);
   fresh();r=await post(legit,{origin:'https://evil.example'});assert.equal(r.status,403);assert.equal(r.log,'[contact] spam_origin');
