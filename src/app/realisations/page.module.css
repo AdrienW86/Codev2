@@ -49,3 +49,6 @@
 .featuredSiteLiveReady{opacity:1}
 @keyframes projanPosterDrift{from{transform:scale(1) translateY(0)}to{transform:scale(1.045) translateY(-.5%)}}
 @media(prefers-reduced-motion:reduce){.featuredSiteFrame .featuredSitePoster{animation:none}.featuredSiteLive,.featuredSiteLiveReady{transition:none}}
+
+/* Embedded desktop previews must not zoom or crop the fallback screenshot. */
+.featuredSiteFrameDesktop .featuredSitePoster{animation:none;object-fit:contain}
