@@ -16,28 +16,35 @@ export default function FeaturedSitePreview({ image, url, fit = "responsive" }: 
   const [visible, setVisible] = useState(false);
   const [ready, setReady] = useState(false);
 
-  // In narrow cards, keep the original desktop viewport and scale the whole
-  // website down. Letting the iframe use the card width instead would switch
-  // the client's site into its mobile layout and crop the original composition.
+  // Preserve the full desktop layout without downscaling an unnecessarily
+  // large 1440px iframe in the smaller portfolio cards. The website is live;
+  // it is not a video file that can be re-encoded here.
   useEffect(() => {
     if (fit !== "desktop") return;
     const element = container.current;
     if (!element) return;
-    const updateScale = () => {
+
+    const updateViewport = () => {
       const width = element.getBoundingClientRect().width;
-      if (width > 0) {
-        element.style.setProperty("--featured-preview-scale", String(width / image.width));
-      }
+      if (!width) return;
+      // Keep the original desktop navigation (> 1024px) but use the smallest
+      // possible iframe to preserve legibility and avoid excessive scaling.
+      const viewportWidth = Math.max(1120, Math.ceil(width));
+      const viewportHeight = Math.round(viewportWidth * image.height / image.width);
+      element.style.setProperty("--featured-preview-width", `${viewportWidth}px`);
+      element.style.setProperty("--featured-preview-height", `${viewportHeight}px`);
+      element.style.setProperty("--featured-preview-scale", String(width / viewportWidth));
     };
-    updateScale();
+
+    updateViewport();
     if (typeof ResizeObserver === "undefined") {
-      window.addEventListener("resize", updateScale);
-      return () => window.removeEventListener("resize", updateScale);
+      window.addEventListener("resize", updateViewport);
+      return () => window.removeEventListener("resize", updateViewport);
     }
-    const observer = new ResizeObserver(updateScale);
+    const observer = new ResizeObserver(updateViewport);
     observer.observe(element);
     return () => observer.disconnect();
-  }, [fit, image.width]);
+  }, [fit, image.width, image.height]);
 
   useEffect(() => {
     const element = container.current;
@@ -69,7 +76,8 @@ export default function FeaturedSitePreview({ image, url, fit = "responsive" }: 
         alt={image.alt}
         width={image.width}
         height={image.height}
-        sizes="(max-width: 1260px) calc(100vw - 40px), 1122px"
+        quality={90}
+        sizes={fit === "desktop" ? "(max-width: 900px) calc(100vw - 36px), (max-width: 1260px) 56vw, 670px" : "(max-width: 1260px) calc(100vw - 40px), 1122px"}
         className={styles.featuredSitePoster}
       />
       {visible && url && <iframe
@@ -83,8 +91,8 @@ export default function FeaturedSitePreview({ image, url, fit = "responsive" }: 
         referrerPolicy="strict-origin-when-cross-origin"
         className={ready ? styles.featuredSiteLiveReady : styles.featuredSiteLive}
         style={fit === "desktop" ? {
-          width: image.width,
-          height: image.height,
+          width: "var(--featured-preview-width, 1120px)",
+          height: "var(--featured-preview-height, 778px)",
           maxWidth: "none",
           transform: "scale(var(--featured-preview-scale, 1))",
           transformOrigin: "top left",
