@@ -22,7 +22,7 @@ const allowedHosts = ["www.code-v.fr", "code-v.fr"];
 
 export type ContactInput = {
   name: string;
-  email: string;
+  email?: string;
   message: string;
   company?: string;
   phone?: string;
@@ -55,16 +55,17 @@ export function parseContactPayload(value: unknown): ContactInput | undefined {
   const name = text("name"), email = text("email"), message = text("message");
   // Name: one line, at least one letter, not an e-mail or a link.
   if (!name || /[\r\n]/.test(name) || !/[a-z\u00c0-\u024f\u0370-\uffff]/i.test(name) || name.includes("@") || hasLink(name)) return undefined;
-  if (!email || /\s/.test(email)) return undefined;
-  if (message.length < 2) return undefined;
   const project = text("project");
   if (project && !(projectOptions as readonly string[]).includes(project)) return undefined;
   const phone = text("phone");
+  if (!email && !phone) return undefined;
+  if (email && /\s/.test(email)) return undefined;
+  if (message && message.length < 2) return undefined;
   if (phone && (!/^[+0-9 ().-]+$/.test(phone) || phone.replace(/\D/g, "").length < 6 || phone.replace(/\D/g, "").length > 15)) return undefined;
   const company = text("company");
   if (/[\r\n]/.test(company)) return undefined;
   return {
-    name, email, message,
+    name, email: email || undefined, message,
     company: company || undefined,
     phone: phone || undefined,
     project: project || undefined,
@@ -104,7 +105,7 @@ export function detectSpamContent(input: ContactInput): SpamCode | undefined {
   // Forum spam markup, never typed in a contact form.
   if (/\[url=|\[\/url\]|<a\s+href=/i.test(all)) return "spam_content";
   // A message made of links and nothing else.
-  if (input.message.replace(/(?:https?:\/\/|www\.)\S+/gi, "").replace(/[\s.,;:!?'"()\[\]{}<>\/\\_*-]/g, "").length < 2) return "spam_content";
+  if (input.message && input.message.replace(/(?:https?:\/\/|www\.)\S+/gi, "").replace(/[\s.,;:!?'"()\[\]{}<>\/\\_*-]/g, "").length < 2) return "spam_content";
   return undefined;
 }
 
@@ -171,7 +172,8 @@ export function isRateLimited(key: string, now = Date.now()) {
 }
 
 function fingerprint(input: ContactInput) {
-  const text = `${input.email.toLowerCase()}\n${input.message.toLowerCase().replace(/\s+/g, " ")}`;
+  const sender = (input.email ?? input.phone ?? "").toLowerCase();
+  const text = `${sender}\n${input.project ?? ""}\n${input.message.toLowerCase().replace(/\s+/g, " ")}`;
   let hash = 0x811c9dc5;
   for (let i = 0; i < text.length; i++) hash = Math.imul(hash ^ text.charCodeAt(i), 0x01000193);
   return (hash >>> 0).toString(36) + ":" + text.length;
