@@ -37,8 +37,10 @@ export default function ConversionTracking({ config }: { config: TrackingConfig 
         if (source_path === "/realisations" && project && link.closest("main")) trackConversion("external_project_click", { ...common, project_slug: project });
         return;
       }
-      if (url.pathname === "/contact" && link.closest("main")) {
+      if (url.pathname === "/contact") {
         trackContactCta({ ...common, cta_label: knownCtaLabel(link.textContent ?? ""), service: knownService(url.searchParams.get("service")) ?? sourceService, destination_path: "/contact" });
+      } else if (url.pathname === source_path && url.hash === "#devis") {
+        trackContactCta({ ...common, cta_label: knownCtaLabel(link.textContent ?? "") });
       } else if (url.pathname === "/realisations" && link.closest("main") && (sourceService || ["/", "/solutions", "/ressources"].includes(source_path) || Object.hasOwn(config.articles, source_path))) {
         trackConversion("realization_click", { ...common, project_slug: config.projectAnchors?.[url.hash.slice(1)], destination_path: "/realisations" });
       } else if (Object.hasOwn(config.articles, source_path)) {
