@@ -4,7 +4,7 @@ import styles from "./footer.module.css";
 
 const groups = [
   { title: "Solutions", links: [...quickServiceNavigation, { href: "/solutions", label: "Toutes les solutions" }] },
-  { title: "CODE-V", links: [{ href: "/realisations", label: "Réalisations" }, { href: "/qui-sommes-nous", label: "À propos" }, { href: "/contact", label: "Contact" }] },
+  { title: "CODE-V", links: [{ href: "/realisations", label: "Réalisations" }, { href: "/tarifs", label: "Tarifs & fonctionnement" }, { href: "/qui-sommes-nous", label: "À propos" }, { href: "/contact", label: "Contact" }] },
   { title: "Ressources", links: [{ href: "/ressources", label: "Ressources" }, { href: "/articles", label: "Articles" }, { href: "/facebook", label: "Publications Facebook" }] },
   { title: "Légal", links: [{ href: "/mentions-legales", label: "Mentions légales" }, { href: "/politique-confidentialite", label: "Politique de confidentialité" }] },
 ];
