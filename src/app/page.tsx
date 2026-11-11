@@ -3,12 +3,12 @@ import Home from "@/components/home/Home";
 import { defaultShareImages, jsonLd, organizationSchema, websiteSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Agence digitale à Perpignan | Sites, Google & automatisation | CODE-V",
-  description: "CODE-V aide les TPE et PME de Perpignan et des Pyrénées-Orientales à obtenir plus de demandes grâce à un site efficace, une meilleure visibilité Google et des automatisations utiles.",
+  title: "Agence digitale pour TPE & PME | Sites, Google & automatisation | CODE-V",
+  description: "CODE-V aide les TPE et PME à obtenir plus de demandes grâce à un site efficace, une meilleure visibilité Google et des automatisations utiles, avec un suivi clair à distance.",
   alternates: { canonical: "https://www.code-v.fr" },
   openGraph: {
     title: "CODE-V — Plus de demandes clients, sans vous compliquer avec le digital",
-    description: "Sites web, visibilité Google et automatisation pour les entreprises de Perpignan et des Pyrénées-Orientales.",
+    description: "Sites web, visibilité Google et automatisation pour les entreprises partout en France, avec un suivi clair à distance.",
     url: "https://www.code-v.fr",
     type: "website",
     locale: "fr_FR",
