@@ -4,6 +4,7 @@ import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import Reveal from "@/components/motion/Reveal";
 import MotionVideo from "@/components/media/MotionVideo";
+import FeaturedSitePreview from "./FeaturedSitePreview";
 import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import { getPublishedProjects, type Project } from "@/data/projects";
 import styles from "./page.module.css";
@@ -57,7 +58,7 @@ export default function ProjectsPage() {
 
     {featured && <section id="selection" className={styles.feature} aria-labelledby="featured-title"><div className="container">
       <Reveal className={styles.featuredHeading}><div><p className={styles.eyebrow}>À LA UNE / HÉBERGEMENT</p><h2 id="featured-title">{featured.name}</h2></div><div><p>{featured.summary}</p><VisitSite project={featured} /></div></Reveal>
-      {featured.coverImage && <Reveal className={`${styles.largeMedia} ${styles.featuredMedia}`}><figure><Image src={featured.coverImage.src} alt={featured.coverImage.alt} width={featured.coverImage.width} height={featured.coverImage.height} sizes="(max-width: 1260px) calc(100vw - 40px), 1122px" /><figcaption>{featured.coverImage.caption}</figcaption></figure>{featured.screenshots[1] && <figure className={styles.mobilePreview}><Image src={featured.screenshots[1].src} alt={featured.screenshots[1].alt} width={featured.screenshots[1].width} height={featured.screenshots[1].height} sizes="(max-width: 600px) 120px, 190px" /></figure>}</Reveal>}
+      {featured.coverImage && <Reveal className={`${styles.largeMedia} ${styles.featuredMedia}`}>{featured.slug === "chateau-de-projan" && featured.publicUrl ? <FeaturedSitePreview image={featured.coverImage} url={featured.publicUrl} /> : <figure><Image src={featured.coverImage.src} alt={featured.coverImage.alt} width={featured.coverImage.width} height={featured.coverImage.height} sizes="(max-width: 1260px) calc(100vw - 40px), 1122px" /><figcaption>{featured.coverImage.caption}</figcaption></figure>}{featured.screenshots[1] && <figure className={styles.mobilePreview}><Image src={featured.screenshots[1].src} alt={featured.screenshots[1].alt} width={featured.screenshots[1].width} height={featured.screenshots[1].height} sizes="(max-width: 600px) 120px, 190px" /></figure>}</Reveal>}
       <Reveal className={styles.featuredDetails}><p className={styles.featuredStatement}>Un lieu.<br /><span>Plusieurs expériences.</span></p><div><p>Le site présente les chambres, la table et le domaine. Sa navigation propose de découvrir les espaces et de préparer un séjour.</p><p className={styles.location}>{featured.location}</p><ul>{featured.features.map(feature => <li key={feature}>{feature}</li>)}</ul></div></Reveal>
     </div></section>}
 
