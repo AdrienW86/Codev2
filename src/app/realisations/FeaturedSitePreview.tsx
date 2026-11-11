@@ -63,7 +63,7 @@ export default function FeaturedSitePreview({ image, url, fit = "responsive" }: 
   }, []);
 
   return <figure>
-    <div ref={container} className={styles.featuredSiteFrame}>
+    <div ref={container} className={`${styles.featuredSiteFrame} ${fit === "desktop" ? styles.featuredSiteFrameDesktop : ""}`}>
       <Image
         src={image.src}
         alt={image.alt}
