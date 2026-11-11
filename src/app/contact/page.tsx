@@ -6,9 +6,9 @@ import { defaultShareImages } from "@/lib/seo";
 
 export const metadata = {
   title: "Contact — CODE-V",
-  description: "Parlez-nous de votre projet digital et de vos objectifs.",
+  description: "Parlez à CODE-V de votre besoin : construire votre présence, générer des demandes, automatiser votre activité ou mieux piloter votre digital.",
   alternates: { canonical: "https://www.code-v.fr/contact" },
-  openGraph: { title: "Contact — CODE-V", description: "Parlez-nous de votre projet digital et de vos objectifs.", url: "https://www.code-v.fr/contact", type: "website", locale: "fr_FR", images: defaultShareImages },
+  openGraph: { title: "Contact — CODE-V", description: "Un besoin concret : construire, attirer, automatiser ou piloter ? Parlons du bon point d’entrée.", url: "https://www.code-v.fr/contact", type: "website", locale: "fr_FR", images: defaultShareImages },
 };
 
 export default function ContactPage() {
@@ -18,11 +18,11 @@ export default function ContactPage() {
         eyebrow="Contact"
         title={
           <>
-            Une idée ?<br />
-            <span>On l'écoute.</span>
+            Un besoin concret ?<br />
+            <span>Trouvons le bon levier.</span>
           </>
         }
-        text="Un projet de site, une question de visibilité ou simplement l'envie de faire le point ? Écrivez-nous, nous vous répondrons avec plaisir."
+        text="Créer ou refondre un site, obtenir plus de demandes, automatiser des tâches ou structurer votre digital : décrivez la situation, nous cadrerons la suite."
       />
       <section className="section contact-section">
         <div className="container contact-layout">
@@ -32,11 +32,11 @@ export default function ContactPage() {
               Restons en contact
             </span>
             <h2>
-              Construisons la<br />
-              <span>suite ensemble.</span>
+              Partons du<br />
+              <span>problème à résoudre.</span>
             </h2>
             <p>
-              Un premier échange suffit souvent à faire émerger les bonnes questions. Pas de jargon, pas d'engagement : juste une conversation utile.
+              Vous n’avez pas à connaître le nom de la prestation. Expliquez ce qui vous freine ou ce que vous voulez obtenir ; nous identifierons le bon point d’entrée.
             </p>
             <div className="contact-links">
               <Link href="mailto:contact@code-v.fr">
