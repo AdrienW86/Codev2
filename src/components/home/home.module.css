@@ -218,3 +218,5 @@
   .home *,.home *::before,.home *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .graphSurface,.heroVisual:hover .graphSurface{transform:none}
 }
+
+.pricingLink{display:flex;justify-content:center;margin-top:18px}.pricingLink a{display:inline-flex;align-items:center;gap:10px;min-height:44px;color:var(--blue-deep);font-size:13px;font-weight:600}.pricingLink a:hover{text-decoration:underline;text-underline-offset:4px}
