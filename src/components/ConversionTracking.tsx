@@ -19,6 +19,21 @@ export default function ConversionTracking({ config }: { config: TrackingConfig 
   useEffect(() => {
     configureTracking(config);
     setReady(true);
+    const seenDepths = new Set<string>();
+    const onScroll = () => {
+      const source_path = knownPath(window.location.pathname);
+      if (!source_path) return;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max <= 0) return;
+      const ratio = window.scrollY / max;
+      for (const [threshold, value] of [[.25,"25"],[.5,"50"],[.75,"75"],[.9,"90"]] as const) {
+        const key = `${source_path}:${value}`;
+        if (ratio >= threshold && !seenDepths.has(key)) {
+          seenDepths.add(key);
+          trackConversion("scroll_depth", { source_path, depth: value });
+        }
+      }
+    };
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0) return;
       const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
@@ -50,7 +65,12 @@ export default function ConversionTracking({ config }: { config: TrackingConfig 
     };
     // Capture runs before Next Link changes route; no preventDefault, no delayed navigation.
     document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      document.removeEventListener("click", onClick, true);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, [config]);
   return ready ? <Analytics beforeSend={sanitizeAnalyticsEvent} /> : null;
 }
