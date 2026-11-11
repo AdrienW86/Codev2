@@ -197,7 +197,7 @@ export const projects: readonly Project[] = [
   }),
   observedClient({
     slug: "antiquite-canetoise", name: "Antiquité Canétoise", publicUrl: "https://www.antiquitecanetoise.fr/",
-    sector: "antiques", location: "Canet-en-Roussillon, Pyrénées-Orientales",
+    sector: "antiques", location: "Canet-en-Roussillon",
     summary: "Site de présentation d’antiquités, de restauration et d’estimation, avec un aperçu de pièces proposées.",
     features: ["Navigation catalogue, restaurations, estimations, entreprise et contact", "Aperçu de produits avec prix sur demande", "Vidéo présente dans la page d’accueil"],
     visualStyle: "Fond de page blanc et typographie de corps Arial, observés dans le navigateur.",
