@@ -1,6 +1,6 @@
 // Shared by the contact form (client) and /api/contact (server). No secrets here.
 
-export const projectOptions = ["Créer ou refaire un site / une application", "Obtenir plus de clients", "Automatiser des tâches ou des outils métier", "Autre sujet"] as const;
+export const projectOptions = ["Créer ou refaire mon site", "Obtenir plus de demandes grâce à Google", "Automatiser certaines tâches", "Je ne sais pas encore"] as const;
 
 /** Invisible anti-bot field. Deliberately unremarkable name; a human never sees or fills it. */
 export const trapField = "reference";
@@ -13,6 +13,7 @@ export type ContactPayload = {
   name: string;
   company: string;
   email: string;
+  phone: string;
   project: string;
   message: string;
   service: string;
