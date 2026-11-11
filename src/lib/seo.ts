@@ -20,10 +20,7 @@ export const organizationSchema = {
   email: "contact@code-v.fr",
   telephone: "+33666672709",
   address: { "@type": "PostalAddress", streetAddress: "142 rue de Rivoli", postalCode: "75001", addressLocality: "Paris", addressCountry: "FR" },
-  areaServed: [
-    { "@type": "City", name: "Perpignan" },
-    { "@type": "AdministrativeArea", name: "Pyrénées-Orientales" },
-  ],
+  areaServed: { "@type": "Country", name: "France" },
 };
 
 /** No SearchAction: the site has no internal search. */
