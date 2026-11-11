@@ -99,7 +99,7 @@ export default function ContactForm({ compact = false }: { compact?: boolean }) 
       </label>
     </div>
 
-    <button className="button button-dark" type="submit" disabled={status === "sending"}>
+    <button className="button button-primary" type="submit" disabled={status === "sending"}>
       {status === "sending" ? "Envoi en cours..." : "Recevoir mon devis gratuit"} <span aria-hidden="true">↗</span>
     </button>
 
