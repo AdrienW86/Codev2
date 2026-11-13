@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import type { AuditResult, Strategy } from "@/lib/performance/audit";
+import type { PerformanceDiagnostic } from "@/lib/performance/diagnostic";
 import styles from "./page.module.css";
 
 const labels = [
@@ -19,7 +20,7 @@ function tone(score: number | null) { return score === null ? "unknown" : score 
 export default function PerformanceAnalyzer() {
   const [url, setUrl] = useState("");
   const [strategy, setStrategy] = useState<Strategy>("mobile");
-  const [report, setReport] = useState<AuditResult | null>(null);
+  const [report, setReport] = useState<(AuditResult & { diagnostic: PerformanceDiagnostic }) | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -30,7 +31,7 @@ export default function PerformanceAnalyzer() {
       const res = await fetch("/api/performance", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url, strategy }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "L'analyse est indisponible.");
-      setReport(data as AuditResult);
+      setReport(data as AuditResult & { diagnostic: PerformanceDiagnostic });
     } catch (e) { setError(e instanceof Error ? e.message : "Une erreur s'est produite."); }
     finally { setLoading(false); }
   }
@@ -70,6 +71,28 @@ export default function PerformanceAnalyzer() {
           <div><span>INP réel</span><strong>{report.field.inpMs === null ? "—" : report.field.inpMs + " ms"}</strong></div>
           <div><span>CLS réel</span><strong>{report.field.cls === null ? "—" : report.field.cls.toLocaleString("fr-FR")}</strong></div>
         </div></>}
+      {report.diagnostic && <section className={styles.diagnostic} aria-label="Plan d'amélioration personnalisé">
+        <span className={styles.sectionEyebrow}>DIAGNOSTIC CODE-V · BASÉ SUR LES MESURES</span>
+        <h3>Comprendre les résultats et savoir quoi améliorer</h3>
+        <p className={styles.diagnosticIntro}>{report.diagnostic.summary}</p>
+        {report.diagnostic.strengths.length > 0 && <div className={styles.strengths}><strong>Points solides détectés</strong><ul>{report.diagnostic.strengths.map((item, i) => <li key={i}>{item}</li>)}</ul></div>}
+        {report.diagnostic.recommendations.length > 0 && <div className={styles.priorityGrid}>
+          {report.diagnostic.recommendations.map((item, index) => <article key={item.id} className={styles.priorityCard}>
+            <div className={styles.priorityTop}><span>PRIORITÉ {index + 1}</span><span data-level={item.priority}>{item.priority}</span></div>
+            <h4>{item.finding}</h4>
+            <p className={styles.evidence}>{item.evidence}</p>
+            <p>{item.explanation}</p>
+            <div className={styles.action}><strong>Que faire ?</strong><p>{item.action}</p></div>
+            <a className={styles.solutionLink} href={item.service.href}>Solution CODE-V : {item.service.label} →</a>
+          </article>)}
+        </div>}
+        {report.diagnostic.primaryService && <aside className={styles.offer}>
+          <div><span>NOTRE RECOMMANDATION POUR CE RAPPORT</span><h4>{report.diagnostic.primaryService.label}</h4>
+          <p>Un accompagnement adapté aux anomalies constatées. L'étendue des corrections sera vérifiée lors d'un échange.</p></div>
+          <div className={styles.offerLinks}><a href={report.diagnostic.primaryService.href}>Découvrir la solution</a><a href={report.diagnostic.primaryService.contactHref}>Demander un diagnostic humain</a></div>
+        </aside>}
+        <ul className={styles.methodology}>{report.diagnostic.methodology.map((line, index) => <li key={index}>{line}</li>)}</ul>
+      </section>}
       <h3>Optimisations identifiées</h3>
       {report.opportunities.length ? <ol className={styles.opportunities}>{report.opportunities.map(item => <li key={item.id}>
         <strong>{item.title}</strong>{item.savingsMs !== null && <span>Gain estimé : {(item.savingsMs / 1000).toLocaleString("fr-FR", { maximumFractionDigits: 2 })} s</span>}
