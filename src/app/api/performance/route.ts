@@ -22,7 +22,7 @@ async function publicQuota(request: NextRequest): Promise<boolean> {
   const base = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!base || !token || process.env.PERFORMANCE_PUBLIC_ENABLED !== "true") return false;
-  const ip = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "";
+  const ip = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "";
   if (!ip) return false;
   const digest = createHash("sha256").update(ip).digest("hex");
   const key = "codev:perf:" + digest + ":" + Math.floor(Date.now() / 3600000);
@@ -43,9 +43,11 @@ async function publicQuota(request: NextRequest): Promise<boolean> {
 export async function POST(request: NextRequest) {
   if (Number(request.headers.get("content-length") || 0) > 2500) return response("Requête trop volumineuse.", 413);
   const trusted = internalRequest(request);
-  if (!trusted && !(await publicQuota(request))) return response("Limite d'analyses atteinte ou service public non configuré.", 429);
+  if (!trusted && process.env.PERFORMANCE_PUBLIC_ENABLED !== "true") return response("Service public en cours de configuration.", 503);
+  if (!trusted && !(await publicQuota(request))) return response("Limite d'analyses atteinte ou protection anti-abus indisponible.", 429);
   let input: { url?: unknown; strategy?: unknown };
   try { input = await request.json(); } catch { return response("JSON invalide.", 400); }
+  if (!input || typeof input !== "object") return response("JSON invalide.", 400);
   let url: string;
   try { url = normalizePublicUrl(input.url); } catch (e) { return response(e instanceof Error ? e.message : "URL invalide.", 400); }
   const strategy: Strategy = input.strategy === "desktop" ? "desktop" : "mobile";
