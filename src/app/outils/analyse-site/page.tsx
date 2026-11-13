@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import PerformanceAnalyzer from "./PerformanceAnalyzer";
 import styles from "./page.module.css";
 import { defaultShareImages } from "@/lib/seo";
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function AuditPage() {
+  if (process.env.PERFORMANCE_PUBLIC_ENABLED !== "true") notFound();
   return <div className={styles.page}>
     <section className={styles.hero}>
       <div className={styles.shell}>
