@@ -32,4 +32,19 @@ const empty = build({
 assert.equal(empty.recommendations.length, 0);
 assert.equal(empty.primaryService, null);
 assert(!empty.summary.includes("0/100"));
+const auditExports = {};
+vm.runInNewContext(ts.transpileModule(fs.readFileSync("src/lib/performance/audit.ts", "utf8"), {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+}).outputText, { exports: auditExports, URL, Date });
+const extracted = auditExports.extractAudit({ lighthouseResult: {
+  requestedUrl: "https://example.fr/", fetchTime: "2026-11-13T12:00:00Z",
+  categories: { seo: { score: 0.6, auditRefs: [{ id: "meta-description", weight: 1 }] },
+    accessibility: { score: 0.8, auditRefs: [{ id: "color-contrast", weight: 1 }] } },
+  audits: { "meta-description": { title: "Ajouter une méta-description", description: "Description absente", score: 0 },
+    "color-contrast": { title: "Contrastes insuffisants", description: "Contraste faible", score: 0 } },
+} }, "https://example.fr/", "mobile");
+assert(extracted.opportunities.some(x => x.id === "meta-description"));
+assert(extracted.opportunities.some(x => x.id === "color-contrast"));
+assert(build(extracted).recommendations.some(x => x.id === "psi:meta-description" && x.service.href === "/referencement"));
+
 console.log("Performance diagnostics: metrics, real offers, null handling and evidence OK");
