@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import PerformanceAnalyzer from "./PerformanceAnalyzer";
 import styles from "./page.module.css";
+import { defaultShareImages } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Test de vitesse et audit SEO gratuit | CODE-V Performance",
   description: "Testez gratuitement la vitesse de votre site sur mobile et ordinateur : score Lighthouse, SEO, accessibilité, Core Web Vitals et pistes d'optimisation.",
   alternates: { canonical: "https://www.code-v.fr/outils/analyse-site" },
-  openGraph: { title: "CODE-V Performance — Audit de site gratuit", description: "Mesurez la vitesse et les points d'amélioration de votre site web.", url: "https://www.code-v.fr/outils/analyse-site", type: "website" },
+  openGraph: { title: "CODE-V Performance — Audit de site gratuit", description: "Mesurez la vitesse et les points d'amélioration de votre site web.", url: "https://www.code-v.fr/outils/analyse-site", type: "website", images: defaultShareImages },
 };
 
 export default function AuditPage() {
