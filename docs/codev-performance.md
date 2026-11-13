@@ -1,7 +1,7 @@
 # CODE-V Performance — moteur d'audit partagé (V1)
 
 ## Interfaces
-- Public : /outils/analyse-site
+- Public : /outils/analyse-site (page masquée et 404 tant que PERFORMANCE_PUBLIC_ENABLED n'est pas true ; lien footer et sitemap également masqués)
 - HTTP : POST /api/performance avec JSON { "url": "https://example.org", "strategy": "mobile"|"desktop" }.
 - CODE-V OS : envoie la même requête avec x-codev-service-key depuis son serveur (jamais le navigateur).
 
@@ -12,7 +12,7 @@ L'API Google PageSpeed Insights v5 fournit les scores Lighthouse mobile ou deskt
 - PAGESPEED_API_KEY : clé Google PageSpeed Insights (quota API et autorisations à vérifier ; optionnelle pour les essais, recommandée en production).
 - CODEV_PERFORMANCE_SERVICE_KEY : secret aléatoire d'au moins 24 caractères, partagé uniquement avec le serveur CODE-V OS.
 - PERFORMANCE_PUBLIC_ENABLED=true : ouvre l'API aux visiteurs uniquement après configuration anti-abus.
-- UPSTASH_REDIS_REST_URL et UPSTASH_REDIS_REST_TOKEN : instance Redis REST pour quota distribué (5 audits / IP / heure).
+- UPSTASH_REDIS_REST_URL et UPSTASH_REDIS_REST_TOKEN : instance Redis REST pour quota distribué (5 audits / IP / heure). Sans ces deux variables, conserver PERFORMANCE_PUBLIC_ENABLED=false.
 
 Sans le secret, l'OS ne peut pas utiliser le moteur avec le privilège de service. Sans Redis, le public est bloqué (« fail closed »), même si PERFORMANCE_PUBLIC_ENABLED=true. Les clés restent côté serveur et ne doivent jamais utiliser NEXT_PUBLIC_.
 
