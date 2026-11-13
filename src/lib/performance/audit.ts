@@ -17,7 +17,7 @@ type PsiResult = {
   lighthouseResult?: {
     requestedUrl?: string;
     fetchTime?: string;
-    categories?: Record<string, { score?: number | null }>;
+    categories?: Record<string, { score?: number | null; auditRefs?: { id: string; weight?: number }[] }>;
     audits?: Record<string, PsiAudit>;
     runtimeError?: { message?: string };
   };
@@ -70,6 +70,22 @@ export function extractAudit(data: unknown, url: string, strategy: Strategy): Au
     id, title: a.title!, description: (a.description ?? "").replace(/\[[^\]]+\]\([^)]+\)/g, "").slice(0, 300),
     display: a.displayValue ?? "", savingsMs: typeof a.details?.overallSavingsMs === "number" ? a.details.overallSavingsMs : null,
   })).sort((a, b) => (b.savingsMs ?? 0) - (a.savingsMs ?? 0)).slice(0, 8);
+  // Signaux explicites SEO / accessibilité / bonnes pratiques : le score seul ne suffit pas
+  // pour proposer une correction concrète. On ne présente que les contrôles ayant échoué.
+  const categoryFindings: AuditResult["opportunities"] = [];
+  for (const category of ["seo", "accessibility", "best-practices"] as const) {
+    const label = category === "seo" ? "SEO" : category === "accessibility" ? "Accessibilité" : "Bonnes pratiques";
+    const refs = result.lighthouseResult.categories?.[category]?.auditRefs ?? [];
+    for (const ref of refs) {
+      const a = audits[ref.id];
+      if (!a?.title || typeof a.score !== "number" || a.score >= 0.9 || opportunities.some(item => item.id === ref.id) || categoryFindings.some(item => item.id === ref.id)) continue;
+      categoryFindings.push({ id: ref.id, title: label + " : " + a.title,
+        description: (a.description ?? "").replace(/\\[[^\\]]+\\]\\([^)]+\\)/g, "").slice(0, 300),
+        display: a.displayValue ?? "", savingsMs: null });
+      if (categoryFindings.length >= 6) break;
+    }
+    if (categoryFindings.length >= 6) break;
+  }
   const clsField = percentile(fieldSource, ["CUMULATIVE_LAYOUT_SHIFT_SCORE"]);
   return {
     url: result.lighthouseResult.requestedUrl || url,
@@ -89,7 +105,7 @@ export function extractAudit(data: unknown, url: string, strategy: Strategy): Au
       cls: clsField === null ? null : clsField / 100,
       scope: result.loadingExperience?.metrics ? "url" : result.originLoadingExperience?.metrics ? "origin" : "unavailable",
     },
-    opportunities,
+    opportunities: [...opportunities, ...categoryFindings],
   };
 }
 

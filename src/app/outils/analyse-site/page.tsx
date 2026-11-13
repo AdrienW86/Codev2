@@ -6,7 +6,7 @@ import { defaultShareImages } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Test de vitesse et audit SEO gratuit | CODE-V Performance",
-  description: "Testez gratuitement la vitesse de votre site sur mobile et ordinateur : score Lighthouse, SEO, accessibilité, Core Web Vitals et pistes d'optimisation.",
+  description: "Analysez la vitesse, le SEO et les Core Web Vitals de votre site et recevez un plan d’amélioration détaillé avec les solutions CODE-V adaptées.",
   alternates: { canonical: "https://www.code-v.fr/outils/analyse-site" },
   openGraph: { title: "CODE-V Performance — Audit de site gratuit", description: "Mesurez la vitesse et les points d'amélioration de votre site web.", url: "https://www.code-v.fr/outils/analyse-site", type: "website", images: defaultShareImages },
 };
@@ -18,7 +18,7 @@ export default function AuditPage() {
       <div className={styles.shell}>
         <p className={styles.eyebrow}>OUTIL GRATUIT · CODE-V PERFORMANCE</p>
         <h1>Votre site est-il <em>vraiment rapide&nbsp;?</em></h1>
-        <p className={styles.lead}>Analysez la vitesse de chargement, le SEO, l'accessibilité et les bonnes pratiques techniques de votre site. Résultats mesurés par Google Lighthouse, sans score inventé.</p>
+        <p className={styles.lead}>Analysez la vitesse de chargement, le SEO, l'accessibilité et les bonnes pratiques techniques de votre site. Obtenez un rapport priorisé et des solutions CODE-V adaptées aux anomalies mesurées, sans score inventé.</p>
         <PerformanceAnalyzer />
       </div>
     </section>

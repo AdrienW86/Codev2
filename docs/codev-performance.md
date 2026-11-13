@@ -8,7 +8,7 @@
 ## Fonctionnement
 L'API Google PageSpeed Insights v5 fournit les scores Lighthouse mobile ou desktop, métriques de laboratoire et audits d'optimisation. Les métriques réelles CrUX sont facultatives et pourraient ne plus être incluses dans PageSpeed ; il faudra alors une intégration CrUX API séparée. LCP/CLS de laboratoire sont distincts des métriques terrain. INP n'est affiché que s'il est disponible dans CrUX. Impression navigateur → Enregistrer en PDF, pas de service PDF serveur.
 
-## Variables Vercel (site vitrine)
+## Rapport détaillé et offres adaptées\n- La réponse /api/performance contient diagnostic (synthèse, points forts, actions ordonnées, preuves Lighthouse, corrections et correspondances vers les pages commerciales réellement publiées). Les offres sont des suggestions conditionnelles, non un diagnostic commercial garanti.\n- Les métriques de laboratoire sont distinctes de CrUX. Les signaux absents ne deviennent jamais des zéros et aucune hausse de conversion/SEO n’est promise.\n- Le rapport imprimé inclut les actions et limites méthodologiques. Les données visiteurs ne sont pas archivées.\n- En production, la page publique demeure volontairement 404 tant que PERFORMANCE_PUBLIC_ENABLED !== true ; toute activation publique exige UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN et vérification anti-abus.\n\n## Variables Vercel (site vitrine)
 - PAGESPEED_API_KEY : clé Google PageSpeed Insights (quota API et autorisations à vérifier ; optionnelle pour les essais, recommandée en production).
 - CODEV_PERFORMANCE_SERVICE_KEY : secret aléatoire d'au moins 24 caractères, partagé uniquement avec le serveur CODE-V OS.
 - PERFORMANCE_PUBLIC_ENABLED=true : ouvre l'API aux visiteurs uniquement après configuration anti-abus.
