@@ -1,6 +1,6 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { normalizePublicUrl, runAudit, type Strategy } from "@/lib/performance/audit";
+import { normalizePublicUrl, runAudit, PageSpeedError, type Strategy } from "@/lib/performance/audit";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -55,6 +55,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(await runAudit(url, strategy), { headers });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Analyse indisponible.";
-    return response(message.startsWith("Quota") ? message : "Analyse indisponible : " + message, e instanceof Error && e.name === "TimeoutError" ? 504 : 502);
+    if (e instanceof PageSpeedError) {
+      console.warn("[performance] PageSpeed refusal", { upstreamCode: e.code, status: e.httpStatus, keyConfigured: Boolean(process.env.PAGESPEED_API_KEY) });
+      return response(e.message, e.httpStatus);
+    }
+    return response("Analyse indisponible : " + message, e instanceof Error && e.name === "TimeoutError" ? 504 : 502);
   }
 }

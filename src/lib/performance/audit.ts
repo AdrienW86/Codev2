@@ -93,6 +93,34 @@ export function extractAudit(data: unknown, url: string, strategy: Strategy): Au
   };
 }
 
+export class PageSpeedError extends Error {
+  constructor(message: string, public readonly httpStatus: number, public readonly code: string) {
+    super(message);
+    this.name = "PageSpeedError";
+  }
+}
+
+/** Conserve uniquement un motif Google documenté, jamais sa réponse complète (clé et URL sensibles). */
+export function classifyPageSpeedFailure(status: number, body: unknown, hasKey: boolean): PageSpeedError {
+  const error = body && typeof body === "object" && "error" in body
+    ? (body as { error?: { status?: unknown; errors?: Array<{ reason?: unknown }>; details?: Array<{ reason?: unknown }> } }).error
+    : undefined;
+  const reasons = [...(error?.errors ?? []), ...(error?.details ?? [])]
+    .map(entry => typeof entry.reason === "string" ? entry.reason.toLowerCase() : "");
+  const googleStatus = typeof error?.status === "string" ? error.status.toLowerCase() : "";
+  const quota = status === 429 || reasons.some(v => /quota|ratelimit|rate_limit|dailylimit|user_rate_limit/.test(v)) || googleStatus === "resource_exhausted";
+  if (quota) return new PageSpeedError("Quota Google PageSpeed atteint. Vérifiez les quotas du projet Google Cloud et réessayez ultérieurement.", 429, "quota");
+  const keyInvalid = reasons.some(v => /keyinvalid|api_key_invalid|keyexpired|api_key_expired/.test(v));
+  if (keyInvalid) return new PageSpeedError("Clé API PageSpeed invalide ou expirée. Vérifiez PAGESPEED_API_KEY sur le projet Vercel codev.", 503, "invalid_key");
+  if (status === 403 || googleStatus === "permission_denied") {
+    return hasKey
+      ? new PageSpeedError("Google refuse la clé PageSpeed. Vérifiez l'activation de l'API et les restrictions de la clé dans Google Cloud.", 503, "permission")
+      : new PageSpeedError("Google PageSpeed refuse l'analyse sans clé API. Ajoutez PAGESPEED_API_KEY dans les variables serveur Vercel du projet codev.", 503, "missing_key");
+  }
+  if (status === 400) return new PageSpeedError("Google PageSpeed n'a pas pu analyser cette page (HTTP 400). Vérifiez que son URL est accessible publiquement.", 422, "unavailable_page");
+  return new PageSpeedError("Google PageSpeed est momentanément indisponible (HTTP " + status + ").", 502, "upstream");
+}
+
 export async function runAudit(url: string, strategy: Strategy): Promise<AuditResult> {
   const endpoint = new URL("https://www.googleapis.com/pagespeedonline/v5/runPagespeed");
   endpoint.searchParams.set("url", url);
@@ -102,8 +130,8 @@ export async function runAudit(url: string, strategy: Strategy): Promise<AuditRe
   if (process.env.PAGESPEED_API_KEY) endpoint.searchParams.set("key", process.env.PAGESPEED_API_KEY);
   const response = await fetch(endpoint, { cache: "no-store", signal: AbortSignal.timeout(55000) });
   if (!response.ok) {
-    if (response.status === 429 || response.status === 403) throw new Error("Quota Google PageSpeed atteint ou clé API non autorisée.");
-    throw new Error("Google PageSpeed ne peut pas analyser cette adresse pour le moment.");
+    const details: unknown = await response.json().catch(() => null);
+    throw classifyPageSpeedFailure(response.status, details, Boolean(process.env.PAGESPEED_API_KEY));
   }
   return extractAudit(await response.json(), url, strategy);
 }
