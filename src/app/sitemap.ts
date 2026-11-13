@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: `${siteOrigin}/realisations/protection-nuisibles` },
     { url: `${siteOrigin}/realisations/nuisibles-toulon` },
-    ...publicRoutes.filter(route => route !== "/articles" || hasArticles).map(route => ({ url: `${siteOrigin}${route === "/" ? "" : route}` })),
+    ...publicRoutes.filter(route => (route !== "/articles" || hasArticles) && (route !== "/outils/analyse-site" || process.env.PERFORMANCE_PUBLIC_ENABLED === "true")).map(route => ({ url: `${siteOrigin}${route === "/" ? "" : route}` })),
     ...resources.map(resource => ({ url: resource.canonical, lastModified: resource.updatedAt ?? resource.publishedAt! })),
   ];
 }
