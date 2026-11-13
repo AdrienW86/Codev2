@@ -75,7 +75,7 @@ export function buildPerformanceDiagnostic(report: AuditResult): PerformanceDiag
     action: "Analyser les interactions coûteuses sur les pages concernées et contrôler les longs traitements.",
     service: solutions.ux,
   });
-  for (const item of report.opportunities.slice(0, 8)) {
+  for (const item of report.opportunities.slice(0, 14)) {
     const rule = rules.find(candidate => candidate.matches.test(item.id));
     push({
       id: "psi:" + item.id,
