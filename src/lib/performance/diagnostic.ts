@@ -31,13 +31,13 @@ type Service = (typeof solutions)[keyof typeof solutions];
 type Item = PerformanceRecommendation;
 type Rule = { matches: RegExp; explanation: string; action: string; service: Service };
 const rules: Rule[] = [
+  { matches: /color-contrast|aria-|label|button-name|image-alt|heading-order|tabindex/i, explanation: "Certains éléments peuvent être moins accessibles au clavier ou aux technologies d'assistance.", action: "Corriger les éléments signalés et compléter par des tests clavier et lecteur d'écran.", service: solutions.ux },
   { matches: /image|modern-image|uses-optimized-images|offscreen|responsive-image/i, explanation: "Des images peuvent retarder l'affichage de la page.", action: "Vérifier les formats, dimensions, compressions et chargements différés des images signalées.", service: solutions.web },
   { matches: /unused-javascript|legacy-javascript|bootup-time|mainthread|script-treemap/i, explanation: "Le JavaScript mobilise le navigateur et peut rendre les interactions plus lentes.", action: "Mesurer les scripts responsables, supprimer le code inutile et différer les composants non essentiels.", service: solutions.maintenance },
   { matches: /unused-css|render-blocking|critical-request|font-display|font/i, explanation: "Des ressources peuvent bloquer l'affichage initial.", action: "Prioriser les styles nécessaires à l'affichage et vérifier le chargement des polices et scripts.", service: solutions.maintenance },
   { matches: /server-response-time|document-request-latency|uses-long-cache-ttl|network-rtt/i, explanation: "La réponse du serveur ou les règles de cache peuvent ralentir le chargement.", action: "Contrôler TTFB, cache HTTP, hébergement et ressources responsables avant de modifier l'infrastructure.", service: solutions.maintenance },
   { matches: /layout-shift|unsized-images|cls/i, explanation: "La page peut se déplacer pendant son chargement.", action: "Réserver l'espace des médias et vérifier les éléments qui changent de taille après l'affichage.", service: solutions.ux },
   { matches: /meta-description|document-title|crawlable-anchors|robots-txt|hreflang|canonical|link-text|structured-data/i, explanation: "Un contrôle SEO technique de Lighthouse mérite une vérification.", action: "Inspecter les balises et liens concernés, puis vérifier l'indexation dans Search Console.", service: solutions.seo },
-  { matches: /color-contrast|aria-|label|button-name|image-alt|heading-order|tabindex/i, explanation: "Certains éléments peuvent être moins accessibles au clavier ou aux technologies d'assistance.", action: "Corriger les éléments signalés et compléter par des tests clavier et lecteur d'écran.", service: solutions.ux },
 ];
 
 export function buildPerformanceDiagnostic(report: AuditResult): PerformanceDiagnostic {
