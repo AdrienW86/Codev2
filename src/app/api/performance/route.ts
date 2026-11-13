@@ -22,7 +22,7 @@ async function publicQuota(request: NextRequest): Promise<boolean> {
   const base = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
   if (!base || !token || process.env.PERFORMANCE_PUBLIC_ENABLED !== "true") return false;
-  const ip = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "";
+  const ip = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || "";
   if (!ip) return false;
   const digest = createHash("sha256").update(ip).digest("hex");
   const key = "codev:perf:" + digest + ":" + Math.floor(Date.now() / 3600000);
