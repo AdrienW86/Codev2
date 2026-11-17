@@ -1,6 +1,8 @@
-import { createHash, timingSafeEqual } from "node:crypto";
+import { timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { normalizePublicUrl, runAudit, PageSpeedError, type Strategy } from "@/lib/performance/audit";
+
+import { QuotaError, reserveAudit } from "@/lib/performance/quota";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -17,43 +19,41 @@ function internalRequest(request: NextRequest) {
   return timingSafeEqual(Buffer.from(supplied), Buffer.from(configured));
 }
 
-// Limitation distribuée obligatoire pour les analyses publiques : fail closed si Redis n'est pas configuré.
-async function publicQuota(request: NextRequest): Promise<boolean> {
-  const base = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!base || !token || process.env.PERFORMANCE_PUBLIC_ENABLED !== "true") return false;
-  const ip = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || "";
-  if (!ip) return false;
-  const digest = createHash("sha256").update(ip).digest("hex");
-  const key = "codev:perf:" + digest + ":" + Math.floor(Date.now() / 3600000);
-  try {
-    const r = await fetch(base.replace(/\/$/, "") + "/pipeline", {
-      method: "POST",
-      headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
-      body: JSON.stringify([["INCR", key], ["EXPIRE", key, 3700]]),
-      cache: "no-store",
-      signal: AbortSignal.timeout(3000),
-    });
-    if (!r.ok) return false;
-    const body = await r.json() as { result?: number }[];
-    return typeof body[0]?.result === "number" && body[0].result <= 5;
-  } catch { return false; }
-}
-
 export async function POST(request: NextRequest) {
   if (Number(request.headers.get("content-length") || 0) > 2500) return response("Requête trop volumineuse.", 413);
   const trusted = internalRequest(request);
+  if (!trusted && request.headers.get("sec-fetch-site") === "cross-site") return response("Requête non autorisée.", 403);
   if (!trusted && process.env.PERFORMANCE_PUBLIC_ENABLED !== "true") return response("Service public en cours de configuration.", 503);
-  if (!trusted && !(await publicQuota(request))) return response("Limite d'analyses atteinte ou protection anti-abus indisponible.", 429);
   let input: { url?: unknown; strategy?: unknown };
-  try { input = await request.json(); } catch { return response("JSON invalide.", 400); }
+  try {
+    if (!request.body) return response("JSON invalide.", 400);
+    const reader = request.body.getReader();
+    const chunks: Uint8Array[] = []; let size = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > 2500) { await reader.cancel(); return response("Requête trop volumineuse.", 413); }
+      chunks.push(value);
+    }
+    input = JSON.parse(Buffer.concat(chunks).toString("utf8"));
+  } catch { return response("JSON invalide.", 400); }
   if (!input || typeof input !== "object") return response("JSON invalide.", 400);
   let url: string;
   try { url = normalizePublicUrl(input.url); } catch (e) { return response(e instanceof Error ? e.message : "URL invalide.", 400); }
   const strategy: Strategy = input.strategy === "desktop" ? "desktop" : "mobile";
+  let reservation: Awaited<ReturnType<typeof reserveAudit>> | undefined;
   try {
-    return NextResponse.json(await runAudit(url, strategy), { headers });
+    if (trusted) return NextResponse.json(await runAudit(url, strategy), { headers });
+    const ip = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || "";
+    reservation = await reserveAudit(url, strategy, ip, trusted);
+    if (reservation.cached) return NextResponse.json(reservation.cached, { headers });
+    const report = await runAudit(url, strategy);
+    await reservation.finish(report).catch(() => {});
+    return NextResponse.json(report, { headers });
   } catch (e) {
+    if (reservation) await reservation.finish().catch(() => {});
+    if (e instanceof QuotaError) return response(e.message, e.status);
     const message = e instanceof Error ? e.message : "Analyse indisponible.";
     if (e instanceof PageSpeedError) {
       console.warn("[performance] PageSpeed refusal", { upstreamCode: e.code, status: e.httpStatus, keyConfigured: Boolean(process.env.PAGESPEED_API_KEY) });
