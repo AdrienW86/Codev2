@@ -48,9 +48,10 @@ export default function PerformanceAnalyzer() {
       <div className={styles.controls} role="group" aria-label="Type d'appareil">
         <button type="button" className={strategy === "mobile" ? styles.selected : ""} aria-pressed={strategy === "mobile"} onClick={() => setStrategy("mobile")}>Mobile</button>
         <button type="button" className={strategy === "desktop" ? styles.selected : ""} aria-pressed={strategy === "desktop"} onClick={() => setStrategy("desktop")}>Ordinateur</button>
-        <span>Analyse gratuite · Source : Google PageSpeed Insights</span>
+        <span>2 analyses par jour et par connexion Internet · Sans inscription</span>
       </div>
     </form>
+    <p className={styles.subtle}>Limite commune aux personnes utilisant le même réseau, réinitialisée à minuit (heure de Paris). Les résultats récents peuvent être réutilisés pendant 24 h ; leur date figure dans le rapport. Les tentatives échouées comptent dans la limite. Télécharger le PDF ne consomme pas d’analyse.</p>
     {loading && <p className={styles.notice} role="status">Lighthouse exécute un test réel. Cela peut prendre plusieurs dizaines de secondes.</p>}
     {error && <p className={styles.error} role="alert">{error}</p>}
     {report && <section className={styles.results} aria-label="Résultats de l'analyse">
