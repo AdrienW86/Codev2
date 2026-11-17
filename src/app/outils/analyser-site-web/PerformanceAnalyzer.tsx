@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import type { AuditResult, Strategy } from "@/lib/performance/audit";
+import { downloadAuditPdf } from "@/lib/performance/report-pdf";
 import styles from "./page.module.css";
 
 const labels = [
@@ -14,6 +15,8 @@ const labLabels = [
   { key: "speedIndex", label: "Speed Index", detail: "Vitesse visuelle" },
 ] as const;
 
+const statusLabel = { passed: "Validé", failed: "À corriger", manual: "À vérifier manuellement", unavailable: "Non mesuré", notApplicable: "Non applicable" };
+
 function tone(score: number | null) { return score === null ? "unknown" : score >= 90 ? "good" : score >= 50 ? "medium" : "poor"; }
 
 export default function PerformanceAnalyzer() {
@@ -21,6 +24,7 @@ export default function PerformanceAnalyzer() {
   const [strategy, setStrategy] = useState<Strategy>("mobile");
   const [report, setReport] = useState<AuditResult | null>(null);
   const [error, setError] = useState("");
+  const [exporting, setExporting] = useState(false);
   const [loading, setLoading] = useState(false);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -52,7 +56,11 @@ export default function PerformanceAnalyzer() {
     {report && <section className={styles.results} aria-label="Résultats de l'analyse">
       <div className={styles.reportHeader}>
         <div><span className={styles.eyebrow}>RAPPORT TECHNIQUE</span><h2>Résultats de l'analyse</h2><p className={styles.domain}>{report.url} · {report.strategy === "mobile" ? "Mobile" : "Ordinateur"} · {new Date(report.analyzedAt).toLocaleString("fr-FR")}</p></div>
-        <button type="button" onClick={() => window.print()} className={styles.print}>Imprimer / PDF</button>
+        <button type="button" disabled={exporting} onClick={async () => {
+          setExporting(true);
+          try { await downloadAuditPdf(report); } catch { setError("Le PDF n’a pas pu être généré. Réessayez."); }
+          finally { setExporting(false); }
+        }} className={styles.print}>{exporting ? "Préparation…" : "Télécharger le rapport PDF"}</button>
       </div>
       <div className={styles.scores}>{labels.map(({ key, label }) =>
         <div className={styles.score} data-tone={tone(report.scores[key])} key={key}>
@@ -74,6 +82,19 @@ export default function PerformanceAnalyzer() {
       {report.opportunities.length ? <ol className={styles.opportunities}>{report.opportunities.map(item => <li key={item.id}>
         <strong>{item.title}</strong>{item.savingsMs !== null && <span>Gain estimé : {(item.savingsMs / 1000).toLocaleString("fr-FR", { maximumFractionDigits: 2 })} s</span>}
         <p>{item.description || item.display}</p></li>)}</ol> : <p className={styles.subtle}>Aucune opportunité prioritaire détectée par cette analyse. D'autres vérifications peuvent rester nécessaires.</p>}
+      <h3>Contrôles détaillés et actions à mener</h3>
+      <p className={styles.subtle}>Cette analyse porte sur l’URL testée, pas sur l’ensemble du site, ses backlinks ou ses positions Google. Corrigez les échecs, vérifiez les points manuels puis relancez le test. Les descriptions ci-dessous expliquent chaque contrôle.</p>
+      {labels.map(({ key, label }) => {
+        const checks = (report.checks ?? []).filter(item => item.category === (key === "bestPractices" ? "best-practices" : key));
+        return <div key={key}><h3>{label} — {checks.filter(c => c.status === "failed").length} point(s) à corriger</h3>
+          {!checks.length && <p>Détails indisponibles pour cette catégorie.</p>}
+          {checks.map(item => <details key={item.id} className={styles.check} open={item.status === "failed"}>
+            <summary><strong>{statusLabel[item.status]} · {item.title}</strong></summary>
+            <p>{item.description}</p>{item.display && <p>{item.display}</p>}
+            {item.examples.length > 0 && <><p>Exemples concernés (10 maximum) :</p><ul>{item.examples.map((example, index) => <li key={index}><code>{example}</code></li>)}</ul></>}
+          </details>)}
+        </div>;
+      })}
       <p className={styles.subtle}>Les estimations ne constituent pas une garantie. Ce rapport ne remplace pas un audit approfondi.</p>
       <a href="/contact" className={styles.contact}>Faire optimiser mon site par CODE-V →</a>
     </section>}

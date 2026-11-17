@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import Link from "next/link";
+import Breadcrumb from "@/components/Breadcrumb";
+import { getPageBreadcrumb } from "@/data/breadcrumbs";
 import PerformanceAnalyzer from "./PerformanceAnalyzer";
 import styles from "./page.module.css";
 import { defaultShareImages } from "@/lib/seo";
@@ -7,19 +9,20 @@ import { defaultShareImages } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "Test de vitesse et audit SEO gratuit | CODE-V Performance",
   description: "Testez gratuitement la vitesse de votre site sur mobile et ordinateur : score Lighthouse, SEO, accessibilité, Core Web Vitals et pistes d'optimisation.",
-  alternates: { canonical: "https://www.code-v.fr/outils/analyse-site" },
-  openGraph: { title: "CODE-V Performance — Audit de site gratuit", description: "Mesurez la vitesse et les points d'amélioration de votre site web.", url: "https://www.code-v.fr/outils/analyse-site", type: "website", images: defaultShareImages },
+  alternates: { canonical: "https://www.code-v.fr/outils/analyser-site-web" },
+  openGraph: { title: "CODE-V Performance — Audit de site gratuit", description: "Mesurez la vitesse et les points d'amélioration de votre site web.", url: "https://www.code-v.fr/outils/analyser-site-web", type: "website", images: defaultShareImages },
 };
 
 export default function AuditPage() {
-  if (process.env.PERFORMANCE_PUBLIC_ENABLED !== "true") notFound();
+
   return <div className={styles.page}>
     <section className={styles.hero}>
       <div className={styles.shell}>
+        <Breadcrumb {...getPageBreadcrumb("/outils/analyser-site-web")} />
         <p className={styles.eyebrow}>OUTIL GRATUIT · CODE-V PERFORMANCE</p>
         <h1>Votre site est-il <em>vraiment rapide&nbsp;?</em></h1>
         <p className={styles.lead}>Analysez la vitesse de chargement, le SEO, l'accessibilité et les bonnes pratiques techniques de votre site. Résultats mesurés par Google Lighthouse, sans score inventé.</p>
-        <PerformanceAnalyzer />
+        {process.env.PERFORMANCE_PUBLIC_ENABLED === "true" ? <PerformanceAnalyzer /> : <p className={styles.notice}>L’analyse est momentanément indisponible. Vous pouvez <Link href="/contact">contacter CODE-V</Link> ou <Link href="/outils">découvrir nos autres outils</Link>.</p>}
       </div>
     </section>
     <section className={styles.explain}>

@@ -64,6 +64,7 @@ export const quickServiceNavigation = [
   { href: "/contact?service=social-management", label: "Réseaux sociaux" },
 ];
 export const siteNavigation = [
+  { href: "/outils", label: "Outils", description: "Remplir un PDF et analyser votre site web gratuitement" },
   { href: "/realisations", label: "Réalisations", description: "Découvrir les réalisations documentées de CODE-V" },
   { href: "/ressources", label: "Ressources", description: "Repères, guides et médias pour vos décisions digitales" },
   { href: "/qui-sommes-nous", label: "À propos", description: "Découvrir l’approche CODE-V" },

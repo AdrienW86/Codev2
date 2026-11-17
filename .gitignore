@@ -34,3 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Generated, same-origin PDF.js worker and support assets
+/public/pdf-assets/

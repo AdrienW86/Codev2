@@ -1,6 +1,9 @@
 import type { BreadcrumbProps } from "@/components/Breadcrumb";
 
 const labels = {
+  "/outils": "Outils gratuits",
+  "/outils/remplir-pdf": "Remplir un PDF",
+  "/outils/analyser-site-web": "Analyser un site web",
   "/solutions": "Solutions",
   "/realisations": "Réalisations",
   "/ressources": "Ressources",
@@ -22,7 +25,7 @@ const labels = {
 } as const;
 
 export function getPageBreadcrumb(path: keyof typeof labels): BreadcrumbProps {
-  const ancestors = path.startsWith("/solutions/") ? [{ label: "Solutions", href: "/solutions" }] : [];
+  const ancestors = path.startsWith("/outils/") ? [{ label: "Outils gratuits", href: "/outils" }] : path.startsWith("/solutions/") ? [{ label: "Solutions", href: "/solutions" }] : [];
   return { currentPath: path, items: [{ label: "Accueil", href: "/" }, ...ancestors, { label: labels[path] }] };
 }
 
