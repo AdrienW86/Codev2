@@ -11,7 +11,7 @@ export type CrawlPage = {
 export type CrawlReport = { status: "complete" | "partial" | "unavailable"; scanned: number; limit: number; discovered: number; pages: CrawlPage[]; issues: CrawlIssue[]; notes: string[] };
 const MAX_PAGES=8, MAX_BYTES=500000, TIME_BUDGET=24000;
 const ua="CODEV-SEO-Audit/1.0 (+https://www.code-v.fr/outils/analyser-site-web)";
-function decode(s:string){ return s.replace(/&(?:amp|quot|apos|lt|gt|nbsp);/gi,m=>({amp:"&",quot:'"',apos:"'",lt:"<",gt:">",nbsp:" "}[m.slice(1,-1).toLowerCase()]||m)); }
+function decode(s:string) { const entities: Record<string,string>={amp:"&",quot:'"',apos:"'",lt:"<",gt:">",nbsp:" "}; return s.replace(/&(?:amp|quot|apos|lt|gt|nbsp);/gi,m=>entities[m.slice(1,-1).toLowerCase()]||m); }
 function strip(s:string){return decode(s.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi," ").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim());}
 function attr(tag:string,name:string) {
  const re=new RegExp("(?:\\s|^)"+name+"\\s*=\\s*(?:\\\"([^\\\"]*)\\\"|'([^']*)'|([^\\s>]+))","i");
