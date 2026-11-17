@@ -101,6 +101,24 @@ export default function PerformanceAnalyzer() {
           </article>)}</div>
         </section>;
       })}
+      <h3>Exploration SEO de plusieurs pages</h3>
+      {report.crawl ? <div className={styles.crawlSection}>
+        <p className={styles.subtle}>Statut : {report.crawl.status === "complete" ? "Échantillon analysé" : report.crawl.status === "partial" ? "Analyse partielle" : "Non disponible"} · {report.crawl.scanned}/{report.crawl.limit} pages examinées · {report.crawl.discovered} URL découvertes ou demandées.</p>
+        <p className={styles.subtle}>Contrôles HTML : titre, méta description, canonical, H1, indexation, texte, liens internes et attributs ALT. Échantillon limité, pas un inventaire exhaustif du domaine.</p>
+        {report.crawl.issues.length > 0 && <div className={styles.crawlFindings}>
+          {report.crawl.issues.slice(0, 25).map((item, index) => <div key={item.code + item.url + index}>
+            <strong>{item.severity === "high" ? "Élevée" : item.severity === "medium" ? "Moyenne" : "Faible"} · {item.message}</strong>
+            <a href={item.url} target="_blank" rel="noopener noreferrer">{item.url}</a>
+          </div>)}
+        </div>}
+        {report.crawl.pages.length > 0 && <div className={styles.crawlTableWrap}><table className={styles.crawlTable}>
+          <thead><tr><th>Page</th><th>Title</th><th>Mots</th><th>Liens internes</th><th>Entrants échantillon</th><th>Images sans ALT</th></tr></thead>
+          <tbody>{report.crawl.pages.map(p => <tr key={p.url}>
+            <td><a href={p.url} target="_blank" rel="noopener noreferrer">{new URL(p.url).pathname || "/"}</a></td>
+            <td>{p.title || "Manquant"}</td><td>{p.words}</td><td>{p.internal}</td><td>{p.incoming}</td><td>{p.missingAlt}</td>
+          </tr>)}</tbody></table></div>}
+        {report.crawl.notes.map((note,i)=><p className={styles.subtle} key={i}>{note}</p>)}
+      </div> : <p className={styles.subtle}>Exploration non disponible pour cette analyse. Les résultats Lighthouse restent valables.</p>}
       <h3>Données de laboratoire</h3>
       <div className={styles.metrics}>{labLabels.map(({ key, label, detail }) =>
         <div key={key}><span>{label} <small>{detail}</small></span><strong>{report.lab[key].display}</strong></div>)}</div>
