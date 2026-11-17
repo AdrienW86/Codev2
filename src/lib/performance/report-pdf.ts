@@ -67,7 +67,24 @@ export async function createAuditPdf(report: AuditResult): Promise<Uint8Array> {
       line("Recommandation : " + insight.recommendation);
     }
   }
-    line("Mesures de laboratoire", true);
+    line("Exploration SEO multi-pages", true);
+  if (!report.crawl) line("Exploration HTML non disponible pour cette analyse.");
+  else {
+    line("Statut : " + report.crawl.status + "; " + report.crawl.scanned + " pages analysees sur " + report.crawl.limit + " maximum.");
+    for (const item of report.crawl.pages) {
+      line(item.url, true);
+      line("Title : " + (item.title || "absent"));
+      line("Meta description : " + (item.description || "absente"));
+      line("Canonical : " + (item.canonical || "absente"));
+      line("H1 : " + (item.h1.join(" | ") || "absent"));
+      line("Mots : " + item.words + "; liens internes : " + item.internal + "; liens externes : " + item.external + "; liens entrants dans l'echantillon : " + item.incoming + "; images sans ALT : " + item.missingAlt);
+    }
+    line("Anomalies de l'exploration", true);
+    if (!report.crawl.issues.length) line("Aucune anomalie detectee dans l'echantillon.");
+    for (const item of report.crawl.issues) line("[" + item.severity + "] " + item.message + " - " + item.url);
+    for (const note of report.crawl.notes) line(note);
+  }
+  line("Mesures de laboratoire", true);
   for (const [key, metric] of Object.entries(report.lab)) line(`${key.toUpperCase()} : ${metric.display}`);
   line("Données utilisateurs réels (CrUX)", true);
   if (report.field.scope === "unavailable") line("Données indisponibles : cela ne signifie pas que les indicateurs valent zéro.");
