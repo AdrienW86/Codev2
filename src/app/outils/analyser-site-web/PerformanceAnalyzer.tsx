@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import type { AuditResult, Strategy } from "@/lib/performance/audit";
+import { buildActionPlan, buildInsights } from "@/lib/performance/insights";
 import { downloadAuditPdf } from "@/lib/performance/report-pdf";
 import styles from "./page.module.css";
 
@@ -15,6 +16,13 @@ const labLabels = [
   { key: "speedIndex", label: "Speed Index", detail: "Vitesse visuelle" },
 ] as const;
 
+const insightGroups = [
+  { key: "seo", title: "Référencement sur la page", summary: "Titres, indexation, liens internes, images et visibilité organique." },
+  { key: "geo", title: "GEO et moteurs IA", summary: "Données structurées et visibilité IA : distinguer les mesures des hypothèses." },
+  { key: "links", title: "Liens et popularité", summary: "Backlinks, domaines référents et ancres : sources spécialisées nécessaires." },
+  { key: "ux", title: "Expérience et convivialité", summary: "Usage mobile, lisibilité et accessibilité." },
+  { key: "performance", title: "Performance et ressources", summary: "Ressources critiques, images et temps de chargement." },
+] as const;
 const statusLabel = { passed: "Validé", failed: "À corriger", manual: "À vérifier manuellement", unavailable: "Non mesuré", notApplicable: "Non applicable" };
 
 function tone(score: number | null) { return score === null ? "unknown" : score >= 90 ? "good" : score >= 50 ? "medium" : "poor"; }
@@ -48,7 +56,7 @@ export default function PerformanceAnalyzer() {
       <div className={styles.controls} role="group" aria-label="Type d'appareil">
         <button type="button" className={strategy === "mobile" ? styles.selected : ""} aria-pressed={strategy === "mobile"} onClick={() => setStrategy("mobile")}>Mobile</button>
         <button type="button" className={strategy === "desktop" ? styles.selected : ""} aria-pressed={strategy === "desktop"} onClick={() => setStrategy("desktop")}>Ordinateur</button>
-        <span>Analyse gratuite · Source : Google PageSpeed Insights</span>
+        <span>Audit complet gratuit · Données Google PageSpeed Insights et contrôles SEO documentés</span>
       </div>
     </form>
     {loading && <p className={styles.notice} role="status">Lighthouse exécute un test réel. Cela peut prendre plusieurs dizaines de secondes.</p>}
@@ -64,9 +72,35 @@ export default function PerformanceAnalyzer() {
       </div>
       <div className={styles.scores}>{labels.map(({ key, label }) =>
         <div className={styles.score} data-tone={tone(report.scores[key])} key={key}>
-          <strong>{report.scores[key] ?? "—"}<small>{report.scores[key] !== null && "/100"}</small></strong>
+          <div className={styles.ring} style={{ "--score": `${report.scores[key] ?? 0}%` } as React.CSSProperties}><strong>{report.scores[key] ?? "—"}</strong></div>
           <span>{label}</span>
         </div>)}</div>
+      <div className={styles.executive}>
+        <h3>Synthèse de votre audit</h3>
+        <p>Les notes proviennent des tests officiels Lighthouse. Le diagnostic complémentaire explique les vérifications SEO, GEO, ergonomie et liens ; les données absentes sont indiquées sans extrapolation.</p>
+        <div className={styles.summaryNumbers}>
+          <div><strong>{(report.checks ?? []).filter(c => c.status === "failed").length}</strong><span>Contrôles à améliorer</span></div>
+          <div><strong>{(report.checks ?? []).filter(c => c.status === "passed").length}</strong><span>Contrôles réussis</span></div>
+          <div><strong>{buildActionPlan(report).length}</strong><span>Actions priorisées</span></div>
+        </div>
+      </div>
+      <h3>Plan d'action prioritaire</h3>
+      {buildActionPlan(report).length ? <ol className={styles.actionPlan}>{buildActionPlan(report).map(a => <li key={a.id} data-priority={a.priority}>
+        <span className={styles.priority}>{a.priority === "high" ? "Priorité élevée" : a.priority === "medium" ? "Priorité moyenne" : "Priorité faible"}</span>
+        <strong>{a.title}</strong><p>{a.detail || "Examiner le contrôle détaillé correspondant."}</p>
+      </li>)}</ol> : <p className={styles.subtle}>Aucun point prioritaire détecté par Lighthouse sur cette URL. Une vérification SEO manuelle reste utile.</p>}
+      <h3>Audit SEO, GEO et expérience — contrôle par contrôle</h3>
+      <div className={styles.chapterNav}>{insightGroups.map(group => <a key={group.key} href={`#audit-${group.key}`}>{group.title}</a>)}</div>
+      {insightGroups.map(group => {
+        const insights = buildInsights(report).filter(i => i.category === group.key);
+        return <section id={`audit-${group.key}`} key={group.key} className={styles.chapter}>
+          <div className={styles.chapterHeader}><h4>{group.title}</h4><p>{group.summary}</p></div>
+          <div className={styles.insightList}>{insights.map(i => <article key={i.id}>
+            <span className={styles.findingStatus} data-status={i.status}>{i.status === "good" ? "Validé" : i.status === "warning" ? "À améliorer" : "Non mesuré"}</span>
+            <h5>{i.title}</h5><p>{i.evidence}</p><p><strong>Conseil :</strong> {i.recommendation}</p>
+          </article>)}</div>
+        </section>;
+      })}
       <h3>Données de laboratoire</h3>
       <div className={styles.metrics}>{labLabels.map(({ key, label, detail }) =>
         <div key={key}><span>{label} <small>{detail}</small></span><strong>{report.lab[key].display}</strong></div>)}</div>
