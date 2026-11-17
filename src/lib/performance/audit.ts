@@ -1,10 +1,12 @@
+import type { CrawlReport } from "./crawler";
 export type Strategy = "mobile" | "desktop";
 export type ScoreKey = "performance" | "accessibility" | "bestPractices" | "seo";
 export type AuditResult = {
   url: string;
   strategy: Strategy;
   analyzedAt: string;
-  source: "PageSpeed Insights / Lighthouse";
+  source: "PageSpeed Insights / Lighthouse" | "Exploration SEO seule (PageSpeed indisponible)";
+  crawl?: CrawlReport;
   scores: Record<ScoreKey, number | null>;
   lab: Record<"lcp" | "fcp" | "cls" | "tbt" | "speedIndex", { value: number | null; display: string }>;
   field: { lcpMs: number | null; inpMs: number | null; cls: number | null; scope: "url" | "origin" | "unavailable" };

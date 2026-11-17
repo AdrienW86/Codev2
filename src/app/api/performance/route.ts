@@ -1,6 +1,7 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { normalizePublicUrl, runAudit, PageSpeedError, type Strategy } from "@/lib/performance/audit";
+import { crawlSite } from "@/lib/performance/crawler";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -52,7 +53,26 @@ export async function POST(request: NextRequest) {
   try { url = normalizePublicUrl(input.url); } catch (e) { return response(e instanceof Error ? e.message : "URL invalide.", 400); }
   const strategy: Strategy = input.strategy === "desktop" ? "desktop" : "mobile";
   try {
-    return NextResponse.json(await runAudit(url, strategy), { headers });
+    // PSI et exploration SEO sont indépendants : la panne de Google ne masque
+    // pas les constats HTML réellement collectés, sans inventer de score.
+    const [psi, crawl] = await Promise.allSettled([runAudit(url, strategy), crawlSite(url)]);
+    if (psi.status === "fulfilled") {
+      const report = psi.value;
+      if (crawl.status === "fulfilled") report.crawl = crawl.value;
+      return NextResponse.json(report, { headers });
+    }
+    if (crawl.status === "fulfilled" && crawl.value.pages.length > 0) {
+      const unavailable = { value: null, display: "Non mesuré : PageSpeed indisponible" };
+      return NextResponse.json({
+        url, strategy, analyzedAt: new Date().toISOString(),
+        source: "Exploration SEO seule (PageSpeed indisponible)",
+        scores: { performance: null, seo: null, accessibility: null, bestPractices: null },
+        lab: { lcp: unavailable, fcp: unavailable, cls: unavailable, tbt: unavailable, speedIndex: unavailable },
+        field: { lcpMs: null, inpMs: null, cls: null, scope: "unavailable" },
+        opportunities: [], checks: [], crawl: crawl.value,
+      }, { headers });
+    }
+    throw psi.reason;
   } catch (e) {
     const message = e instanceof Error ? e.message : "Analyse indisponible.";
     if (e instanceof PageSpeedError) {
