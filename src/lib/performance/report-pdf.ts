@@ -1,4 +1,5 @@
 import type { AuditResult } from "./audit";
+import { buildActionPlan, buildInsights } from "./insights";
 
 const categories = { performance: "Performance", seo: "SEO technique", accessibility: "Accessibilité", "best-practices": "Bonnes pratiques" };
 const statuses = { passed: "Validé", failed: "À corriger", manual: "À vérifier manuellement", unavailable: "Non mesuré", notApplicable: "Non applicable" };
@@ -48,7 +49,25 @@ export async function createAuditPdf(report: AuditResult): Promise<Uint8Array> {
   line(`${checks.filter(c => c.status === "failed").length} contrôles à corriger ; ${checks.filter(c => c.status === "manual").length} vérifications manuelles. Un même contrôle peut concerner plusieurs catégories.`);
   line("Plan d’action", true);
   line("1. Traiter les échecs SEO et les problèmes d’accès au contenu. 2. Examiner les gains de performance ci-dessous. 3. Corriger les autres échecs et réaliser les contrôles manuels. 4. Relancer une analyse sur mobile et ordinateur après correction. Les scores ne constituent pas un audit SEO complet.");
-  line("Mesures de laboratoire", true);
+  line("Plan d'action prioritaire — diagnostic personnalisé", true);
+  const plan = buildActionPlan(report);
+  if (!plan.length) line("Aucune correction prioritaire detectee par Lighthouse sur cette URL.");
+  for (const [index, action] of plan.entries()) {
+    line(`${index + 1}. [${action.priority === "high" ? "Haute" : action.priority === "medium" ? "Moyenne" : "Faible"}] ${action.title}`, true);
+    line(action.detail || "Verifier le controle correspondant.");
+  }
+  line("Audit SEO, GEO, liens et convivialite", true);
+  const insightLabels = { seo: "Referencement sur la page", geo: "GEO et moteurs IA", links: "Liens et popularite", ux: "Convivialite et accessibilite", performance: "Performance et ressources" };
+  for (const [category, label] of Object.entries(insightLabels)) {
+    line(label, true);
+    for (const insight of buildInsights(report).filter(item => item.category === category)) {
+      const status = insight.status === "good" ? "Valide" : insight.status === "warning" ? "A ameliorer" : "Non mesure";
+      line(`[${status}] ${insight.title}`, true);
+      line(insight.evidence);
+      line("Recommandation : " + insight.recommendation);
+    }
+  }
+    line("Mesures de laboratoire", true);
   for (const [key, metric] of Object.entries(report.lab)) line(`${key.toUpperCase()} : ${metric.display}`);
   line("Données utilisateurs réels (CrUX)", true);
   if (report.field.scope === "unavailable") line("Données indisponibles : cela ne signifie pas que les indicateurs valent zéro.");
