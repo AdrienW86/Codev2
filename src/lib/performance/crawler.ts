@@ -68,11 +68,49 @@ export function parseSeoPage(html:string,url:string,robots=""){
  return {title,description,canonical,h1,internal,external,images:imgs.length,missingAlt:imgs.filter(t=>!/\s+alt\s*=/i.test(t)).length,words:text.split(/\s+/).filter(Boolean).length,noindex};
 }
 function finding(code:string,severity:CrawlIssue["severity"],message:string,url:string):CrawlIssue{return{code,severity,message,url};}
+/** Respect de robots.txt : contrôle conservateur des directives User-agent: *.
+ * Si robots.txt est indisponible (hors 404), l'exploration est interrompue.
+ */
+async function robotRules(start:string): Promise<{ allow: (url:string)=>boolean; notes: string[] }> {
+ const u=new URL("/robots.txt",start);
+ await safeHost(u.toString());
+ const c=new AbortController(), timer=setTimeout(()=>c.abort(),3000);
+ try {
+  const res=await fetch(u,{redirect:"manual",signal:c.signal,cache:"no-store",headers:{"User-Agent":ua}});
+  if(res.status===404)return {allow:()=>true,notes:["robots.txt absent (404)."]};
+  if(!res.ok)throw Error("robots.txt non accessible.");
+  if(Number(res.headers.get("content-length")||0)>100000)throw Error("robots.txt trop volumineux.");
+  const source=(await res.text()).slice(0,100000);
+  const lines=source.split(/\r?\n/);
+  let applies=false, groupStarted=false;const rules:{allow:boolean;path:string}[]=[];
+  for(const line of lines){
+   const clean=line.split("#")[0].trim(), parts=clean.match(/^([a-z-]+)\s*:\s*(.*)$/i);
+   if(!parts)continue;
+   const directive=parts[1].toLowerCase(),value=parts[2].trim();
+   if(directive==="user-agent"){
+    if(groupStarted){applies=false;groupStarted=false;}
+    if(value==="*"||value.toLowerCase()==="codev-seo-audit")applies=true;
+   } else if(directive==="allow"||directive==="disallow"){
+    groupStarted=true;
+    if(applies&&value.startsWith("/"))rules.push({allow:directive==="allow",path:value.split("*")[0].replace(/\$/,"")});
+   }
+  }
+  return {allow:(url:string)=>{
+   const path=new URL(url).pathname;
+   const matching=rules.filter(r=>path.startsWith(r.path)).sort((a,b)=>b.path.length-a.path.length);
+   return !matching.length||matching[0].allow;
+  },notes:["Directives robots.txt prises en compte pour les chemins explorés (règles simples)."]};
+ } finally {clearTimeout(timer);}
+}
+
 export async function crawlSite(input:string):Promise<CrawlReport>{
  const start=normalizePublicUrl(input),root=hostname(start),queue=[start],visited=new Set<string>(),pages:CrawlPage[]=[],issues:CrawlIssue[]=[];
  const incoming=new Map<string,number>(),stop=Date.now()+TIME_BUDGET;
+ let robots: Awaited<ReturnType<typeof robotRules>>;
+ try { robots=await robotRules(start); } catch { return {status:"unavailable",scanned:0,limit:MAX_PAGES,discovered:0,pages:[],issues:[],notes:["Exploration interrompue : impossible de vérifier robots.txt."]}; }
  while(queue.length&&pages.length<MAX_PAGES&&visited.size<20&&Date.now()<stop){
   const url=queue.shift()!;if(visited.has(url))continue;visited.add(url);
+  if(!robots.allow(url))continue;
   const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort(),Math.min(4500,Math.max(500,stop-Date.now())));
   try{
    const doc=await getHtml(url,root,ctl.signal);const p=parseSeoPage(doc.html,doc.url,doc.robots);
@@ -97,5 +135,5 @@ export async function crawlSite(input:string):Promise<CrawlReport>{
  const grouped=new Map<string,CrawlPage[]>();
  for(const page of pages)if(page.title){const key=page.title.toLowerCase();grouped.set(key,[...(grouped.get(key)||[]),page]);}
  for(const group of grouped.values())if(group.length>1)for(const page of group)issues.push(finding("duplicate-title","medium","Title dupliqué dans l'échantillon.",page.url));
- return {status:pages.length===0?"unavailable":issues.some(i=>i.code==="fetch")?"partial":"complete",scanned:pages.length,limit:MAX_PAGES,discovered:visited.size+queue.length,pages,issues,notes:["Échantillon de 8 pages maximum, HTML sans exécution JavaScript ; le maillage concerne les pages explorées uniquement.","Cette collecte ne fournit ni backlinks externes, ni positions Google, ni citations IA."]};
+ return {status:pages.length===0?"unavailable":issues.some(i=>i.code==="fetch")?"partial":"complete",scanned:pages.length,limit:MAX_PAGES,discovered:visited.size+queue.length,pages,issues,notes:[...robots.notes,"Échantillon de 8 pages maximum, HTML sans exécution JavaScript ; le maillage concerne les pages explorées uniquement.","Cette collecte ne fournit ni backlinks externes, ni positions Google, ni citations IA."]};
 }
