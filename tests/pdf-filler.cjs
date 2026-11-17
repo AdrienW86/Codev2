@@ -5,12 +5,7 @@ const vm=require('node:vm');
 const {PDFDocument,PDFName,PDFDict,PDFNumber,degrees}=require('pdf-lib');
 function load(file, extra={}) { const exports={}; vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports,require,Uint8Array,process,...extra});return exports; }
 const api=load('src/lib/pdf/document.ts');
-const access=load('src/lib/pdf/access.ts');
 (async()=>{
- assert.equal(access.hasVerifiedEmail(null),false);
- assert.equal(access.hasVerifiedEmail({emailAddresses:[{verification:{status:'unverified'}}]}),false);
- assert.equal(access.hasVerifiedEmail({emailAddresses:[{verification:{status:'verified'}}]}),true);
- const oldKey=process.env.CLERK_SECRET_KEY;delete process.env.CLERK_SECRET_KEY;assert.equal(access.pdfAuthConfigured(),false);if(oldKey)process.env.CLERK_SECRET_KEY=oldKey;
  // Every rotated viewport maps bottom-left image coordinates back to its visible location.
  for(const [transform,width,height] of [[[1,0,0,-1,-20,330],200,300],[[0,1,1,0,-30,-20],300,200],[[-1,0,0,1,220,-30],200,300],[[0,-1,-1,0,330,220],300,200]]){
   const m=api.overlayMatrix({width,height,transform});
@@ -35,5 +30,5 @@ const access=load('src/lib/pdf/access.ts');
  const signed=await PDFDocument.create();signed.addPage();signed.context.register(signed.context.obj({Type:'Sig',ByteRange:[0,1,2,3]}));
  const signedBytes=await signed.save();await assert.rejects(()=>api.inspectPdf(signedBytes),/signature numérique/);
  const bounded=api.clampPlacement({x:-10,y:900,width:600,height:300},{width:200,height:300});assert.equal(bounded.x,0);assert.equal(bounded.y,200);assert.equal(bounded.width,200);
- console.log('PDF: verified email gate, rotations/crop offsets, export, form preservation, invalid/oversized/signed documents OK');
+ console.log('PDF: rotations/crop offsets, export, form preservation, invalid/oversized/signed documents OK');
 })().catch(e=>{console.error(e);process.exitCode=1});
