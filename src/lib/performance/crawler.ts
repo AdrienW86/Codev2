@@ -14,11 +14,11 @@ const ua="CODEV-SEO-Audit/1.0 (+https://www.code-v.fr/outils/analyser-site-web)"
 function decode(s:string){ return s.replace(/&(?:amp|quot|apos|lt|gt|nbsp);/gi,m=>({amp:"&",quot:'"',apos:"'",lt:"<",gt:">",nbsp:" "}[m.slice(1,-1).toLowerCase()]||m)); }
 function strip(s:string){return decode(s.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi," ").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim());}
 function attr(tag:string,name:string) {
- const re=new RegExp("(?:\\\\s|^)"+name+"\\\\s*=\\\\s*(?:\\\"([^\\\"]*)\\\"|'([^']*)'|([^\\\\s>]+))","i");
+ const re=new RegExp("(?:\\s|^)"+name+"\\s*=\\s*(?:\\\"([^\\\"]*)\\\"|'([^']*)'|([^\\s>]+))","i");
  const m=tag.match(re);return decode(m?.[1]??m?.[2]??m?.[3]??"");
 }
-function tags(s:string,n:string){return [...s.matchAll(new RegExp("<"+n+"\\\\b[^>]*>","gi"))].map(m=>m[0]);}
-function textTag(s:string,n:string){return strip(s.match(new RegExp("<"+n+"\\\\b[^>]*>([\\\\s\\\\S]*?)<\\\\/"+n+">","i"))?.[1]??"");}
+function tags(s:string,n:string){return [...s.matchAll(new RegExp("<"+n+"\\b[^>]*>","gi"))].map(m=>m[0]);}
+function textTag(s:string,n:string){return strip(s.match(new RegExp("<"+n+"\\b[^>]*>([\\s\\S]*?)<\\/"+n+">","i"))?.[1]??"");}
 function hostname(s:string){return new URL(s).hostname.toLowerCase().replace(/^www\./,"");}
 function link(v:string,base:string) {try {const u=new URL(v,base);u.search="";u.hash="";return normalizePublicUrl(u.toString());}catch{return null;}}
 function blocked(ip:string){
