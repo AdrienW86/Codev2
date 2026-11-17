@@ -1,6 +1,5 @@
 
-import { lookup } from "node:dns/promises";
-import { isIP } from "node:net";
+import { safeRead } from "./safe-fetch";
 import { normalizePublicUrl } from "./audit";
 
 export type CrawlIssue = { code: string; severity: "high" | "medium" | "low"; message: string; url: string };
@@ -21,35 +20,18 @@ function tags(s:string,n:string){return [...s.matchAll(new RegExp("<"+n+"\\b[^>]
 function textTag(s:string,n:string){return strip(s.match(new RegExp("<"+n+"\\b[^>]*>([\\s\\S]*?)<\\/"+n+">","i"))?.[1]??"");}
 function hostname(s:string){return new URL(s).hostname.toLowerCase().replace(/^www\./,"");}
 function link(v:string,base:string) {try {const u=new URL(v,base);u.search="";u.hash="";return normalizePublicUrl(u.toString());}catch{return null;}}
-function blocked(ip:string){
- const k=ip.toLowerCase();
- if(isIP(ip)===6)return k==="::1"||k==="::"||k.startsWith("fe80:")||k.startsWith("fc")||k.startsWith("fd")||k.startsWith("ff")||k.startsWith("2001:db8:")||k.startsWith("::ffff:");
- const n=ip.split(".").map(Number);
- return n.length!==4||n[0]===0||n[0]===10||n[0]===127||n[0]>=224||(n[0]===169&&n[1]===254)||(n[0]===172&&n[1]>=16&&n[1]<=31)||(n[0]===192&&n[1]===168)||(n[0]===100&&n[1]>=64&&n[1]<=127)||(n[0]===198&&[18,19].includes(n[1]))||(n[0]===192&&n[1]===0);
-}
-async function safeHost(url:string){
- const addresses=await lookup(new URL(normalizePublicUrl(url)).hostname,{all:true,verbatim:true});
- if(!addresses.length||addresses.some(x=>blocked(x.address)))throw Error("Adresse non publique.");
-}
 async function getHtml(start:string,root:string,signal:AbortSignal){
  let url=start;
  for(let i=0;i<3;i++){
   if(hostname(url)!==root)throw Error("Redirection hors du domaine.");
-  await safeHost(url);
-  const res=await fetch(url,{redirect:"manual",signal,cache:"no-store",headers:{"User-Agent":ua,"Accept":"text/html"}});
+  const res=await safeRead(url,signal,"text/html",MAX_BYTES);
   if([301,302,303,307,308].includes(res.status)){
-   const target=res.headers.get("location");if(!target)throw Error("Redirection invalide.");
-   url=normalizePublicUrl(new URL(target,url).toString());continue;
+   if(!res.location)throw Error("Redirection invalide.");
+   url=normalizePublicUrl(new URL(res.location,url).toString());continue;
   }
-  if(!res.ok)throw Error("HTTP "+res.status);
-  if(!/text\/html/i.test(res.headers.get("content-type")||""))throw Error("Contenu non HTML.");
-  if(Number(res.headers.get("content-length")||0)>MAX_BYTES)throw Error("HTML trop volumineux.");
-  const reader=res.body?.getReader();if(!reader)throw Error("Page vide.");
-  const chunks:Uint8Array[]=[];let size=0;
-  try {for(;;){const r=await reader.read();if(r.done)break;size+=r.value.byteLength;if(size>MAX_BYTES)throw Error("HTML trop volumineux.");chunks.push(r.value);}}
-  finally{await reader.cancel().catch(()=>{});}
-  const bytes=new Uint8Array(size);let offset=0;for(const x of chunks){bytes.set(x,offset);offset+=x.byteLength;}
-  return {url,html:new TextDecoder().decode(bytes),robots:res.headers.get("x-robots-tag")||""};
+  if(res.status<200||res.status>=300)throw Error("HTTP "+res.status);
+  if(!/text\/html/i.test(res.contentType))throw Error("Contenu non HTML.");
+  return {url,html:res.text,robots:res.xRobots};
  }
  throw Error("Trop de redirections.");
 }
@@ -73,14 +55,12 @@ function finding(code:string,severity:CrawlIssue["severity"],message:string,url:
  */
 async function robotRules(start:string): Promise<{ allow: (url:string)=>boolean; notes: string[] }> {
  const u=new URL("/robots.txt",start);
- await safeHost(u.toString());
  const c=new AbortController(), timer=setTimeout(()=>c.abort(),3000);
  try {
-  const res=await fetch(u,{redirect:"manual",signal:c.signal,cache:"no-store",headers:{"User-Agent":ua}});
+  const res=await safeRead(u.toString(),c.signal,"text/plain",100000);
   if(res.status===404)return {allow:()=>true,notes:["robots.txt absent (404)."]};
-  if(!res.ok)throw Error("robots.txt non accessible.");
-  if(Number(res.headers.get("content-length")||0)>100000)throw Error("robots.txt trop volumineux.");
-  const source=(await res.text()).slice(0,100000);
+  if(res.status!==200)throw Error("robots.txt non accessible.");
+  const source=res.text;
   const lines=source.split(/\r?\n/);
   let applies=false, groupStarted=false;const rules:{allow:boolean;path:string}[]=[];
   for(const line of lines){
