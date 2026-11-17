@@ -1,6 +1,7 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { normalizePublicUrl, runAudit, PageSpeedError, type Strategy } from "@/lib/performance/audit";
+import { crawlSite } from "@/lib/performance/crawler";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -52,7 +53,9 @@ export async function POST(request: NextRequest) {
   try { url = normalizePublicUrl(input.url); } catch (e) { return response(e instanceof Error ? e.message : "URL invalide.", 400); }
   const strategy: Strategy = input.strategy === "desktop" ? "desktop" : "mobile";
   try {
-    return NextResponse.json(await runAudit(url, strategy), { headers });
+    const [audit, crawl] = await Promise.all([runAudit(url, strategy), crawlSite(url).catch(() => null)]);
+    if (crawl) audit.crawl = crawl;
+    return NextResponse.json(audit, { headers });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Analyse indisponible.";
     if (e instanceof PageSpeedError) {
