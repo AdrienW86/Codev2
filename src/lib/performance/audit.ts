@@ -8,16 +8,17 @@ export type AuditResult = {
   scores: Record<ScoreKey, number | null>;
   lab: Record<"lcp" | "fcp" | "cls" | "tbt" | "speedIndex", { value: number | null; display: string }>;
   field: { lcpMs: number | null; inpMs: number | null; cls: number | null; scope: "url" | "origin" | "unavailable" };
+  checks: { id: string; category: string; title: string; description: string; display: string; status: "passed" | "failed" | "manual" | "unavailable" | "notApplicable"; examples: string[] }[];
   opportunities: { id: string; title: string; description: string; display: string; savingsMs: number | null }[];
 };
 
-type PsiAudit = { title?: string; description?: string; displayValue?: string; numericValue?: number; score?: number | null; details?: { type?: string; overallSavingsMs?: number } };
+type PsiAudit = { title?: string; description?: string; displayValue?: string; numericValue?: number; score?: number | null; scoreDisplayMode?: string; details?: { type?: string; overallSavingsMs?: number; items?: Record<string, unknown>[] } };
 type PsiResult = {
   id?: string;
   lighthouseResult?: {
     requestedUrl?: string;
     fetchTime?: string;
-    categories?: Record<string, { score?: number | null }>;
+    categories?: Record<string, { score?: number | null; auditRefs?: { id: string }[] }>;
     audits?: Record<string, PsiAudit>;
     runtimeError?: { message?: string };
   };
@@ -89,6 +90,18 @@ export function extractAudit(data: unknown, url: string, strategy: Strategy): Au
       cls: clsField === null ? null : clsField / 100,
       scope: result.loadingExperience?.metrics ? "url" : result.originLoadingExperience?.metrics ? "origin" : "unavailable",
     },
+    checks: Object.entries(result.lighthouseResult.categories ?? {}).flatMap(([category, value]) =>
+      (value.auditRefs ?? []).flatMap(({ id }) => {
+        const a = audits[id];
+        if (!a?.title) return [];
+        const status = a.scoreDisplayMode === "notApplicable" ? "notApplicable" : a.scoreDisplayMode === "manual" ? "manual" : typeof a.score !== "number" ? "unavailable" : a.score === 1 ? "passed" : "failed";
+        return [{ id, category, title: a.title, description: (a.description ?? "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").slice(0, 2000), display: a.displayValue ?? "", status,
+          examples: (a.details?.items ?? []).slice(0, 10).flatMap(item => {
+            const node = item.node as { snippet?: unknown } | undefined;
+            const text = typeof item.url === "string" ? item.url : typeof node?.snippet === "string" ? node.snippet : null;
+            return text ? [text.slice(0, 500)] : [];
+          }) }];
+      })),
     opportunities,
   };
 }
