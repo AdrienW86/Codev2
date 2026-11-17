@@ -76,6 +76,19 @@ export function buildActionPlan(report: AuditResult): Action[] {
       category: "performance",
     });
   }
+  for (const finding of report.crawl?.issues ?? []) {
+    if (finding.code === "fetch") continue;
+    const key = "crawl:" + finding.code + ":" + finding.url;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    actions.push({
+      id: key,
+      title: finding.message,
+      detail: "Page concernée : " + finding.url + ". Vérifier la cause, puis relancer l'exploration SEO.",
+      priority: finding.severity,
+      category: "seo",
+    });
+  }
   const rank = { high: 0, medium: 1, low: 2 };
   return actions.sort((a,b) => rank[a.priority] - rank[b.priority]).slice(0, 12);
 }
