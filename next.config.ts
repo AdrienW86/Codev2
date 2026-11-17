@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   // /conditions-generales has no current equivalent and stays a 404 on purpose.
   async redirects() {
     return [
+      { source: "/outils/analyse-site", destination: "/outils/analyser-site-web", statusCode: 301 },
+      { source: "/outils/remplir-pdf/espace/:path*", destination: "/outils/remplir-pdf/editeur", statusCode: 301 },
       { source: "/sites", destination: "/creation-site", statusCode: 301 },
       { source: "/ads", destination: "/publicite", statusCode: 301 },
       { source: "/mentions", destination: "/mentions-legales", statusCode: 301 },

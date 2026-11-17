@@ -3,8 +3,9 @@
 ## Routes et accès libre
 
 - `/outils/remplir-pdf` : présentation publique, indexable, liée depuis le pied de page et le sitemap.
-- `/outils/remplir-pdf/espace/editeur` : outil accessible immédiatement, sans compte ni configuration d’authentification.
-- Les anciennes routes connexion/inscription redirigent vers l’éditeur.
+- `/outils/remplir-pdf/editeur` : outil accessible immédiatement, sans compte ni configuration d’authentification.
+- Les anciennes routes sous `/outils/remplir-pdf/espace` redirigent vers l’éditeur.
+- `/outils` regroupe cet outil et `/outils/analyser-site-web`.
 - Aucune route d’upload, aucun stockage de PDF. PDF.js et son worker sont auto-hébergés. Les PDF, annotations et images restent en mémoire navigateur.
 - Aucune dépendance Clerk, clé d’authentification ou base de données nécessaire.
 

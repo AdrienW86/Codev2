@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import Link from 'next/link';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { clampPlacement, exportFilledPdf, inspectPdf, MAX_PDF_BYTES, type Placement, type PageGeometry } from '@/lib/pdf/document';
 import styles from './pdf.module.css';
@@ -98,6 +99,7 @@ export default function PdfEditor() {
   }
   async function download(){if(!bytes.current)return;setBusy(true);setError('');try{const result=await exportFilledPdf(bytes.current,items,geometries.current);const blob=new Blob([new Uint8Array(result)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name.replace(/\.pdf$/i,'')+'-rempli.pdf';a.click();window.setTimeout(()=>URL.revokeObjectURL(url),30000);}catch(e){setError(e instanceof Error?e.message:'Export impossible. Vos ajouts sont conservés.');}finally{setBusy(false);}}
   return <div className={styles.editor}>
+    <Link href="/outils">← Tous les outils</Link>
     <header className={styles.editorHeading}><div><p className={styles.eyebrow}>CODE-V PDF / LIBRE SERVICE</p><h1>Remplir. Cocher. C’est fait.</h1></div><div className={styles.actions}><button className={styles.primary} onClick={download} disabled={!pdf||busy||rendering}>Télécharger le PDF ↓</button></div></header>
     <p className={styles.privacy}>Vos documents restent sur cet appareil. Téléchargez votre copie avant de quitter la page.</p>
     {error&&<div role="alert" className={styles.error}>{error}<button onClick={()=>setError('')} aria-label="Fermer le message">×</button></div>}
