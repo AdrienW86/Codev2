@@ -2,6 +2,8 @@ import type { AuditResult } from "./audit";
 import { buildActionPlan, buildInsights } from "./insights";
 import { factStatusLabels, type FactSection } from "./facts";
 import type { PDFFont, PDFPage, RGB } from "pdf-lib";
+import { auditExportJson, auditExportName, downloadFile } from "./report-export";
+import { summarizeAudit, excerpt, MAX_AUDIT_PDF_PAGES } from "./report-summary";
 
 export type PdfAssets = { regular: Uint8Array; bold: Uint8Array; logo: Uint8Array };
 const categories = { performance: "Performance", seo: "SEO technique", accessibility: "Accessibilité", "best-practices": "Bonnes pratiques" };
@@ -16,15 +18,24 @@ function loadAssets(): Promise<PdfAssets> {
   return assetPromise;
 }
 
-/** Complete, selectable text; page breaks never discard an overflow row. */
+class PdfPageBudgetError extends Error {}
+
+/** Select a reading density before rendering; always preserve the full audit as an attachment. */
 export async function createAuditPdf(report: AuditResult, suppliedAssets?: PdfAssets): Promise<Uint8Array> {
+  const assets=suppliedAssets||await loadAssets();
+  for(let level=0;level<4;level++) {
+    try {return await renderAuditPdf(summarizeAudit(report,level),report,level,assets);}
+    catch(error){if(!(error instanceof PdfPageBudgetError))throw error;}
+  }
+  throw Error("Impossible de préparer le rapport dans la limite de 20 pages.");
+}
+async function renderAuditPdf(report:AuditResult,sourceReport:AuditResult,level:number,assets:PdfAssets):Promise<Uint8Array> {
   const { PDFDocument, rgb, PDFName, PDFString } = await import("pdf-lib");
   const { default: fontkit } = await import("@pdf-lib/fontkit");
-  const assets = suppliedAssets || await loadAssets();
   const pdf = await PDFDocument.create();
   pdf.registerFontkit(fontkit);
   pdf.setTitle("Audit SEO et performances - " + new URL(report.url).hostname + " - CODE-V");
-  pdf.setAuthor("CODE-V"); pdf.setSubject("Rapport technique complet et plan d’action"); pdf.setLanguage("fr-FR");
+  pdf.setAuthor("CODE-V"); pdf.setSubject("Synthèse et données exhaustives jointes / 20 pages maximum"); pdf.setLanguage("fr-FR");
   const regular = await pdf.embedFont(assets.regular, { subset: true });
   const bold = await pdf.embedFont(assets.bold, { subset: true });
   const logo = await pdf.embedPng(assets.logo);
@@ -54,6 +65,11 @@ export async function createAuditPdf(report: AuditResult, suppliedAssets?: PdfAs
     }
     return lines;
   }
+  function limitedLines(input:string,font:PDFFont,size:number,available:number,max:number) {
+    const all=wrap(input,font,size,available),selected=all.slice(0,max);
+    if(all.length>max){let last=selected[max-1];while(last&&measure(font,size,last+"…")>available)last=last.slice(0,-1);selected[max-1]=last+"…";}
+    return selected;
+  }
   const cover = pdf.addPage([W,H]);
   const contents = pdf.addPage([W,H]);
   const pageIndex=report.crawl?.pages.length?pdf.addPage([W,H]):undefined;
@@ -64,10 +80,10 @@ export async function createAuditPdf(report: AuditResult, suppliedAssets?: PdfAs
   function header(p: PDFPage, label: string) {
     p.drawRectangle({ x: 0, y: H-65, width: W, height: 65, color: C.navy });
     p.drawText("CODE-V  /  AUDIT SEO & PERFORMANCE", {x:left,y:H-29,size:9,font:bold,color:C.white});
-    p.drawText(safe(new URL(report.url).hostname + "  /  " + label), {x:left,y:H-47,size:8,font:regular,color:rgb(.72,.79,.87)});
+    p.drawText(limitedLines(new URL(report.url).hostname + "  /  " + label,regular,8,width-45,1)[0], {x:left,y:H-47,size:8,font:regular,color:rgb(.72,.79,.87)});
     p.drawImage(logo,{x:W-78,y:H-58,width:32,height:40});
   }
-  function nextPage() { page=pdf.addPage([W,H]); y=748; header(page,chapter); }
+  function nextPage() { if(pdf.getPageCount()>=MAX_AUDIT_PDF_PAGES)throw new PdfPageBudgetError();page=pdf.addPage([W,H]); y=748; header(page,chapter); }
   function ensure(height: number) { if (y-height<64) nextPage(); }
   function space(amount=9) { y-=amount; }
   function paragraph(value: string, options: {size?:number; color?:RGB; bold?:boolean; inset?:number; gap?:number}={}) {
@@ -89,7 +105,8 @@ export async function createAuditPdf(report: AuditResult, suppliedAssets?: PdfAs
     space(major?13:7);
   }
   function major(title:string) { chapter=title; nextPage(); heading(title,C.blue,true); }
-  function rule() { ensure(9);page.drawLine({start:{x:left,y},end:{x:W-left,y},thickness:.5,color:C.line});space(11); }
+  // A decorative separator must not create an otherwise empty continuation page.
+  function rule() { if(y<76)return;page.drawLine({start:{x:left,y},end:{x:W-left,y},thickness:.5,color:C.line});space(11); }
   async function factSections(sections:FactSection[]) {
     for(const section of sections) {
       const color=section.status==="critical"?C.red:section.status==="warning"?C.orange:section.status==="good"?C.green:C.blue;
@@ -110,7 +127,7 @@ export async function createAuditPdf(report: AuditResult, suppliedAssets?: PdfAs
           const lines=row.map((cell,i)=>wrap(cell||"Non déclaré",regular,7.8,widths[i]-10));
           const height=Math.max(...lines.map(value=>value.length))*10.5+6;
           if(y-height<64){nextPage();paragraph(section.title+" (suite)",{size:9,bold:true});tableHeader();}
-          lines.forEach((value,i)=>value.forEach((line,j)=>page.drawText(line,{x:left+offsets[i]+5,y:y-j*10.5,size:7.8,font:regular,color:C.ink})));
+          lines.forEach((value,i)=>value.forEach((line,j)=>page.drawText(line,{x:left+offsets[i]+5,y:y-j*10.5,size:7.8,font:regular,color:row[i]===factStatusLabels.critical?C.red:row[i]===factStatusLabels.warning?C.orange:row[i]===factStatusLabels.good?C.green:C.ink})));
           y-=height;page.drawLine({start:{x:left,y:y+7},end:{x:W-left,y:y+7},thickness:.4,color:C.line});
         }
         space(14);rule();continue;
@@ -127,7 +144,8 @@ export async function createAuditPdf(report: AuditResult, suppliedAssets?: PdfAs
       rule();
     }
   }
-  const plan=buildActionPlan(report), checks=report.checks||[];
+  const fullPlan=buildActionPlan(sourceReport), fullChecks=sourceReport.checks||[];
+  const plan=fullPlan.slice(0,level?4:6).map(a=>({...a,title:excerpt(a.title,100),detail:excerpt(a.detail,level?140:240)})), checks=report.checks||[];
   const date=new Date(report.analyzedAt).toLocaleString("fr-FR",{timeZone:"Europe/Paris"});
   // Cover: a separate reading level, never a replacement for the full appendix.
   cover.drawRectangle({x:0,y:0,width:W,height:H,color:C.navy});
@@ -149,39 +167,41 @@ export async function createAuditPdf(report: AuditResult, suppliedAssets?: PdfAs
     cover.drawText(score===null?"N/M":String(score),{x:x+13,y:404,size:30,font:bold,color});
     cover.drawText(safe(label),{x:x+13,y:376,size:9,font:bold,color:C.ink});
   });
-  cover.drawText(`${plan.filter(a=>a.priority==="high").length} urgences  /  ${plan.filter(a=>a.priority!=="high").length} actions à prévoir`,{x:left,y:310,size:13,font:bold,color:C.white});
-  cover.drawText(`${checks.filter(c=>c.status==="passed").length} contrôles réussis  /  ${report.crawl?.scanned||0} pages explorées`,{x:left,y:286,size:10,font:regular,color:rgb(.73,.81,.88)});
+  cover.drawText(`${fullPlan.filter(a=>a.priority==="high").length} urgences  /  ${fullPlan.filter(a=>a.priority!=="high").length} actions à prévoir`,{x:left,y:310,size:13,font:bold,color:C.white});
+  cover.drawText(`${fullChecks.filter(c=>c.status==="passed").length} contrôles réussis  /  ${sourceReport.crawl?.scanned||0} pages explorées`,{x:left,y:286,size:10,font:regular,color:rgb(.73,.81,.88)});
   let ny=234;
-  for(const line of wrap("Les scores Lighthouse sont des mesures de laboratoire. Les observations HTML, leurs limites et les données non disponibles sont détaillées dans le rapport. Tous les constats collectés sont conservés.",regular,9,width)) {cover.drawText(line,{x:left,y:ny,size:9,font:regular,color:rgb(.73,.81,.88)});ny-=14;}
+  for(const line of wrap("20 pages maximum : synthèse, priorités, mesures et observations par page. Toutes les données collectées sont conservées dans le fichier JSON joint au PDF et téléchargeable séparément sur la page de résultats.",regular,9,width)) {cover.drawText(line,{x:left,y:ny,size:9,font:regular,color:rgb(.73,.81,.88)});ny-=14;}
   cover.drawText("AUDIT SEO / EXPÉRIENCE / PERFORMANCE / INVENTAIRES",{x:left,y:85,size:8,font:bold,color:C.mint});
   header(contents,"Sommaire et mode de lecture");
 
   major("01 / Synthèse et méthode");
-  paragraph(report.url,{bold:true});paragraph(`${report.strategy==="mobile"?"Mobile":"Ordinateur"} - ${date} (Paris) - ${report.source}`);
+  paragraph(excerpt(report.url,320),{bold:true});paragraph(`${report.strategy==="mobile"?"Mobile":"Ordinateur"} - ${date} (Paris) - ${report.source}`);
   heading("Comment lire les couleurs");
   paragraph("URGENT - Problème prioritaire détecté : accès au contenu, indexation ou autre point à fort impact.",{color:C.red,bold:true});
   paragraph("ACTION À PRÉVOIR - Amélioration modérée ou de priorité plus faible ; suivre les observations et leur contexte.",{color:C.orange,bold:true});
   paragraph("CONFORME AU CONTRÔLE - Vérification mesurée et réussie. Cela ne garantit pas que tout le site est exempt de problème.",{color:C.green,bold:true});
   paragraph("INFORMATION / NON MESURÉ - Constat descriptif, contrôle manuel ou donnée indisponible. Une absence de mesure n’est jamais un résultat égal à zéro.",{color:C.gray});
   heading("Périmètre et limites");
-  paragraph("Les mesures Lighthouse portent sur l’URL indiquée. L’exploration HTML complémentaire porte sur un échantillon limité et n’exécute pas JavaScript. Les tableaux reprennent toutes les données collectées sans couper descriptions, listes d’actions ou exemples. La collecte elle-même reste bornée en durée, taille et nombre de pages : ses limites sont signalées.");
+  paragraph("Les mesures Lighthouse portent sur l'URL indiquée. L'exploration HTML complémentaire porte sur un échantillon limité et n'exécute pas JavaScript. Les pages du PDF proposent une sélection : champs abrégés avec …, inventaires résumés et exemples ciblés. Toutes les descriptions, listes et données originales sont conservées dans la pièce jointe donnees-audit-code-v.json et dans l'export séparé.");
   paragraph("Les scores varient selon les conditions du test. Cet audit ne mesure ni positions Google, ni backlinks, ni citations par les IA, ni efficacité commerciale. Aucun classement ni gain n’est garanti. Les recommandations dépendent du contexte de la page.");
   paragraph("Les caractères hors de la police sont conservés sous forme de codepoint [U+XXXX]. Les captures binaires internes à Lighthouse ne sont pas des tableaux de diagnostic et ne sont pas incluses dans les annexes textuelles.",{size:8.5,color:C.muted});
   for(const [key,label] of scoreEntries){const k=key==="best-practices"?"bestPractices":key as keyof AuditResult["scores"];paragraph(`${label} : ${report.scores[k]===null?"Non mesuré":report.scores[k]+" / 100"}`,{bold:true});}
-  paragraph(`${checks.filter(c=>c.status==="failed").length} contrôles à améliorer ; ${checks.filter(c=>c.status==="manual").length} vérifications manuelles. Un même contrôle peut concerner plusieurs catégories.`);
-  major("02 / Plan d’action complet");
+  paragraph(`${fullChecks.filter(c=>c.status==="failed").length} contrôles à améliorer ; ${fullChecks.filter(c=>c.status==="manual").length} vérifications manuelles. Un même contrôle peut concerner plusieurs catégories.`);
+  major("02 / Priorités et plan d'action");
+  paragraph(`${plan.length} priorités présentées sur ${fullPlan.length} actions identifiées. Toutes les actions et leurs descriptions intégrales figurent dans le fichier joint.`,{size:8.5,color:C.muted});
   paragraph("Traiter d’abord les urgences, puis les actions modérées et les améliorations plus faibles. Vérifier les contrôles manuels. Relancer sur mobile et ordinateur après correction.");
   if(!plan.length)paragraph("Aucune correction prioritaire détectée par les contrôles disponibles. Une vérification manuelle reste utile.");
   plan.forEach((action,index)=>{const color=action.priority==="high"?C.red:C.orange;heading(`${index+1}. ${action.title}`,color);paragraph(action.priority==="high"?"URGENT / priorité élevée":action.priority==="medium"?"ACTION À PRÉVOIR / priorité modérée":"ACTION À PRÉVOIR / priorité faible",{color,bold:true,size:8});paragraph(action.detail||"Examiner le contrôle correspondant.");rule();});
   major("03 / Diagnostic SEO, GEO et expérience");
   const insightLabels={seo:"Référencement sur la page",geo:"GEO et moteurs IA",links:"Liens et popularité",ux:"Convivialité et accessibilité",performance:"Performance et ressources"};
-  for(const [category,label] of Object.entries(insightLabels)){heading(label);for(const item of buildInsights(report).filter(i=>i.category===category)){const color=item.status==="good"?C.green:item.status==="warning"?C.orange:C.gray;heading(`${item.status==="good"?"Conforme":item.status==="warning"?"À améliorer":"Non mesuré"} - ${item.title}`,color);paragraph(item.evidence);paragraph("Conseil : "+item.recommendation,{color:C.muted});}}
+  for(const [category,label] of Object.entries(insightLabels)){heading(label);for(const item of buildInsights(sourceReport).filter(i=>i.category===category)){const color=item.status==="good"?C.green:item.status==="warning"?C.orange:C.gray;heading(`${item.status==="good"?"Conforme":item.status==="warning"?"À améliorer":"Non mesuré"} - ${item.title}`,color);paragraph(excerpt(item.evidence,level?140:240));paragraph("Conseil : "+excerpt(item.recommendation,level?100:170),{color:C.muted});}}
   major("04 / Exploration SEO des pages");
   if(!report.crawl)paragraph("Exploration HTML non disponible pour cette analyse.");
   else {
     paragraph(`Statut : ${report.crawl.status} ; ${report.crawl.scanned} pages analysées sur ${report.crawl.limit} maximum ; ${report.crawl.discovered} URL découvertes ou demandées.`);
+    paragraph(`${report.crawl.pages.length} fiches présentées sur ${sourceReport.crawl?.pages.length||0} pages collectées ; ${report.crawl.issues.length} exemples de constats sur ${sourceReport.crawl?.issues.length||0}. Les valeurs intégrales et les autres observations sont dans la pièce jointe.`,{size:8.5,color:C.muted});
     for(const note of report.crawl.notes)paragraph(note,{color:C.muted});
-    heading("Tous les constats de l’exploration");
+    heading("Constats principaux de l'exploration");
     if(!report.crawl.issues.length)paragraph("Aucune anomalie détectée dans l’échantillon. Vérifier son état de complétude.");
     for(const item of report.crawl.issues){heading(item.message,item.severity==="high"?C.red:C.orange);paragraph(`[${item.severity}] ${item.url}`);}
     if(report.crawl.siteChecks)await factSections(report.crawl.siteChecks);
@@ -199,12 +219,14 @@ export async function createAuditPdf(report: AuditResult, suppliedAssets?: PdfAs
   heading("Données utilisateurs réels (CrUX)");
   if(report.field.scope==="unavailable")paragraph("Données indisponibles : cela ne signifie pas que les indicateurs valent zéro.");
   else {paragraph(`75e percentile - périmètre : ${report.field.scope==="url"?"page":"domaine"}`);paragraph(`LCP : ${report.field.lcpMs===null?"indisponible":report.field.lcpMs+" ms"} ; INP : ${report.field.inpMs===null?"indisponible":report.field.inpMs+" ms"} ; CLS : ${report.field.cls??"indisponible"}`);}
-  heading("Toutes les opportunités de performance");if(!report.opportunities.length)paragraph("Aucune opportunité chiffrée disponible. D’autres corrections peuvent rester nécessaires.");
+  heading("Opportunités de performance prioritaires");paragraph(`${report.opportunities.length} présentées sur ${sourceReport.opportunities.length}. Estimations non cumulables et non garanties.`,{size:8.5,color:C.muted});if(!report.opportunities.length)paragraph("Aucune opportunité chiffrée disponible. D'autres corrections peuvent rester nécessaires.");
   for(const item of report.opportunities){heading(item.title,C.orange);paragraph(item.description);paragraph(item.display);if(item.savingsMs!==null)paragraph(`Gain estimé : ${item.savingsMs} ms (estimations non cumulables et non garanties).`);}
-  major("06 / Tous les contrôles Lighthouse");
+  major("06 / Bilan des contrôles Lighthouse");
+  paragraph(`${checks.length} exemples sélectionnés sur ${fullChecks.length} contrôles ; priorité aux échecs, puis aux contrôles manuels. Descriptions et exemples exhaustifs dans la pièce jointe.`,{size:8.5,color:C.muted});
+  for(const [category,label] of scoreEntries){const group=fullChecks.filter(c=>c.category===category);paragraph(`${label} : ${group.filter(c=>c.status==="passed").length} réussis / ${group.filter(c=>c.status==="failed").length} à corriger / ${group.filter(c=>c.status==="manual").length} manuels / ${group.filter(c=>c.status==="unavailable").length} non mesurés / ${group.filter(c=>c.status==="notApplicable").length} non applicables.`,{size:8.5});}
   for(const [category,label] of scoreEntries){heading(label);const group=checks.filter(c=>c.category===category);if(!group.length)paragraph("Détails indisponibles pour cette catégorie.");for(const item of group){const urgent=item.status==="failed"&&/crawlable|robots|document-title|canonical/.test(item.id);const color=urgent?C.red:item.status==="failed"?C.orange:item.status==="passed"?C.green:C.gray;heading(`${urgent?"Urgent":statuses[item.status]} - ${item.title}`,color);paragraph(item.description);paragraph(item.display);if(item.examples.length){paragraph(`Éléments concernés (${item.examples.length}) :`,{bold:true});for(const example of item.examples)paragraph(example,{size:8.5,inset:10});}rule();}}
   major("07 / Données techniques Lighthouse");
-  paragraph("Tous les tableaux collectés sont reproduits ci-dessous, avec leur structure et leurs unités d’origine. Les lignes d’un tableau long se poursuivent sur les pages suivantes.");
+  paragraph("Ces tableaux résument les diagnostics collectés. Les valeurs complètes, objets imbriqués, listes de liens, termes et ressources sont conservés dans donnees-audit-code-v.json, joint au PDF. Ouvrir le panneau des pièces jointes dans un lecteur PDF compatible. Le même contenu est disponible avec « Télécharger toutes les données » sur la page des résultats.");
   if(report.technical?.length)await factSections(report.technical);else paragraph("Données techniques non disponibles pour cette analyse.");
   heading("Besoin d’aide pour appliquer les corrections ?");paragraph("CODE-V - https://www.code-v.fr/contact - contact@code-v.fr");
   // Populate the contents after pagination so the references remain exact.
@@ -213,25 +235,24 @@ export async function createAuditPdf(report: AuditResult, suppliedAssets?: PdfAs
   for(const item of toc){const label=item.title;contents.drawText(safe(label),{x:left,y:ty,size:11,font:bold,color:C.ink});contents.drawText(String(item.number),{x:W-left-16,y:ty,size:11,font:bold,color:C.blue});
     const annotation=pdf.context.register(pdf.context.obj({Type:"Annot",Subtype:"Link",Rect:[left,ty-5,W-left,ty+14],Border:[0,0,0],Dest:[item.page.ref,PDFName.of("XYZ"),null,item.y+22,null]}));contents.node.addAnnot(annotation);ty-=35;}
   contents.drawText("Un rapport à deux niveaux de lecture",{x:left,y:ty-18,size:12,font:bold,color:C.blue});ty-=48;
-  for(const line of wrap("Commencez par la synthèse et le plan d’action. Consultez ensuite les inventaires par page et les annexes pour retrouver chaque valeur, URL, exemple et diagnostic collectés. Aucun détail textuel n’est supprimé pour raccourcir la mise en page.",regular,10,width)){contents.drawText(line,{x:left,y:ty,size:10,font:regular,color:C.muted});ty-=16;}
+  for(const line of wrap("Commencez par la synthèse et les priorités. Les pages suivantes réunissent diagnostic, mesures et fiches SEO. Le PDF reste limité à 20 pages : les champs longs sont abrégés avec … et les listes sont résumées. Pour chaque valeur et diagnostic d'origine, ouvrez le fichier JSON joint ou téléchargez toutes les données depuis les résultats.",regular,10,width)){contents.drawText(line,{x:left,y:ty,size:10,font:regular,color:C.muted});ty-=16;}
   if(pageIndex){header(pageIndex,"Index des pages analysées");let py=735;pageIndex.drawText("Vos pages, une par une",{x:left,y:py,size:24,font:bold,color:C.blue});py-=43;
-    pageIndex.drawText("Cliquez sur une page pour accéder à tous ses inventaires.",{x:left,y:py,size:9,font:regular,color:C.muted});py-=34;
+    pageIndex.drawText("Cliquez sur une page pour accéder à sa fiche de synthèse.",{x:left,y:py,size:9,font:regular,color:C.muted});py-=34;
     for(const [i,item] of pageReferences.entries()){
-      const top=py;for(const line of wrap(`${i+1}. ${item.title}`,bold,10,width-40)){pageIndex.drawText(line,{x:left,y:py,size:10,font:bold,color:C.ink});py-=15;}
+      const top=py;for(const line of limitedLines(`${i+1}. ${item.title}`,bold,10,width-40,2)){pageIndex.drawText(line,{x:left,y:py,size:10,font:bold,color:C.ink});py-=15;}
       pageIndex.drawText(String(item.number),{x:W-left-19,y:top,size:10,font:bold,color:C.blue});
-      for(const line of wrap(item.url,regular,8.2,width-40)){pageIndex.drawText(line,{x:left,y:py,size:8.2,font:regular,color:C.muted});py-=12;}
+      for(const line of limitedLines(item.url,regular,8.2,width-40,2)){pageIndex.drawText(line,{x:left,y:py,size:8.2,font:regular,color:C.muted});py-=12;}
       pageIndex.node.addAnnot(pdf.context.register(pdf.context.obj({Type:"Annot",Subtype:"Link",Rect:[left,py-3,W-left,top+14],Border:[0,0,0],Dest:[item.page.ref,PDFName.of("XYZ"),null,item.y+22,null]})));py-=19;
     }
   }
   const pages=pdf.getPages();pages.forEach((p,index)=>{const color=index===0?rgb(.73,.81,.88):C.muted;p.drawText(`CODE-V  /  ${index+1} / ${pages.length}`,{x:left,y:29,size:8,font:regular,color});if(index>0)p.drawText("www.code-v.fr",{x:W-left-67,y:29,size:8,font:regular,color});});
   // Add a real, selectable source URL on the cover in addition to visual text.
   cover.node.addAnnot(pdf.context.register(pdf.context.obj({Type:"Annot",Subtype:"Link",Rect:[left,cy-7,W-left,565],Border:[0,0,0],A:{Type:"Action",S:"URI",URI:PDFString.of(report.url)}})));
+  await pdf.attach(new TextEncoder().encode(auditExportJson(sourceReport)),"donnees-audit-code-v.json",{mimeType:"application/json",description:"Audit intégral, inventaires, diagnostics, exemples et plan d'action."});
   return pdf.save();
 }
 
 export async function downloadAuditPdf(report:AuditResult) {
   const bytes=await createAuditPdf(report);
-  const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:"application/pdf"}));
-  const a=document.createElement("a");a.href=url;a.download=`rapport-code-v-${new URL(report.url).hostname}-${report.strategy}.pdf`;
-  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+  downloadFile(new Blob([new Uint8Array(bytes)],{type:"application/pdf"}),auditExportName(report,"pdf"));
 }

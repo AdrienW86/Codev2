@@ -81,3 +81,5 @@
 @media(max-width:720px){.reportHeader h2{font-size:26px}.factTable{min-width:480px}.pageIdentity{grid-template-columns:1fr}.pageIdentity dt{border-bottom:0}.factSection>summary>.findingStatus{display:table;margin-left:0}.pageInventory>summary{padding:15px}.print{white-space:normal}.results h3[id]{font-size:20px}}
 @media print{.reportToolbar,.chapterNav{display:none}.factTableWrap{overflow:visible}.factTable{min-width:0;font-size:9px}.factSection,.pageInventory{break-inside:auto}.factTable tr{break-inside:avoid}.factTable thead{display:table-header-group}}
 @media(max-width:720px){.contact{white-space:normal;max-width:100%}}
+.exportActions { display: flex; flex-direction: column; gap: 10px; align-items: stretch; max-width: 100%; }
+.exportActions button { white-space: normal; }
