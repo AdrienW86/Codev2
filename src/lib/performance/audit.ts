@@ -98,7 +98,8 @@ export function extractAudit(data: unknown, url: string, strategy: Strategy): Au
         if (!a?.title) return [];
         const status = a.scoreDisplayMode === "notApplicable" ? "notApplicable" : a.scoreDisplayMode === "manual" ? "manual" : typeof a.score !== "number" ? "unavailable" : a.score === 1 ? "passed" : "failed";
         return [{ id, category, title: a.title, description: (a.description ?? "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").slice(0, 2000), display: a.displayValue ?? "", status,
-          examples: (a.details?.items ?? []).slice(0, 10).flatMap(item => {
+          examples: (Array.isArray(a.details?.items) ? a.details.items : []).slice(0, 10).flatMap(item => {
+            if (!item || typeof item !== "object") return [];
             const node = item.node as { snippet?: unknown } | undefined;
             const text = typeof item.url === "string" ? item.url : typeof node?.snippet === "string" ? node.snippet : null;
             return text ? [text.slice(0, 500)] : [];
