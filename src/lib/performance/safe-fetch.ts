@@ -26,20 +26,26 @@ function blocked(ip: string) {
 }
 
 export async function safeRead(url: string, signal: AbortSignal, accept: string, maxBytes: number) {
+ const started=Date.now();
  const target=new URL(url);
  if(!["http:","https:"].includes(target.protocol)||target.username||target.password)throw Error("URL interdite.");
  if(target.port&&!["80","443"].includes(target.port))throw Error("Port interdit.");
  const addresses=await lookup(target.hostname,{all:true,verbatim:true});
  if(!addresses.length||addresses.some(a=>blocked(a.address)))throw Error("Adresse IP non publique.");
  const selected=addresses.find(a=>a.family===4)||addresses[0];
- return new Promise<{status:number; contentType:string; location:string; xRobots:string; text:string}>((resolve,reject)=>{
+ return new Promise<{status:number; contentType:string; location:string; xRobots:string; text:string; bytes:number; elapsedMs:number; httpVersion:string; address:string; headers:Record<string,string>}>((resolve,reject)=>{
   const req=(target.protocol==="https:"?httpsRequest:httpRequest)(target,{
    signal,timeout:4500,
    headers:{"User-Agent":"CODEV-SEO-Audit/1.0 (+https://www.code-v.fr/outils/analyser-site-web)","Accept":accept},
-   lookup:(_host,_options,callback)=>callback(null,selected.address,selected.family),
+   // Node 22 requests an address array when autoSelectFamily sets all:true.
+   // Return only the verified pinned address in either callback shape.
+   lookup:(_host,options,callback)=>{
+    if (typeof options === "object" && options.all) callback(null,[selected]);
+    else callback(null,selected.address,selected.family);
+   },
   },res=>{
    const status=res.statusCode||0,declared=Number(res.headers["content-length"]||0);
-   if(declared>maxBytes){res.destroy(Error("Ressource trop volumineuse."));return;}
+   if(declared>maxBytes){res.destroy();reject(Error("Ressource trop volumineuse."));return;}
    const chunks:Buffer[]=[];let bytes=0;
    res.on("data",(part:Buffer)=>{
     bytes+=part.length;
@@ -51,7 +57,8 @@ export async function safeRead(url: string, signal: AbortSignal, accept: string,
     status,contentType:String(res.headers["content-type"]||""),
     location:String(res.headers.location||""),
     xRobots:String(res.headers["x-robots-tag"]||""),
-    text:Buffer.concat(chunks).toString("utf8"),
+    text:Buffer.concat(chunks).toString("utf8"),bytes,elapsedMs:Date.now()-started,httpVersion:res.httpVersion,address:selected.address,
+    headers:Object.fromEntries(["content-type","content-encoding","cache-control","server","x-powered-by","x-robots-tag","strict-transport-security","content-security-policy","x-content-type-options","x-frame-options","referrer-policy","permissions-policy","cross-origin-opener-policy"].flatMap(key=>res.headers[key]===undefined?[]:[[key,String(res.headers[key])]])),
    }));
   });
   req.on("timeout",()=>req.destroy(Error("Délai réseau dépassé.")));
