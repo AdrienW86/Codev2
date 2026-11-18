@@ -4,6 +4,7 @@ import { useMemo, useState, type FormEvent } from "react";
 import type { AuditResult, Strategy } from "@/lib/performance/audit";
 import { buildActionPlan, buildInsights } from "@/lib/performance/insights";
 import { downloadAuditPdf } from "@/lib/performance/report-pdf";
+import { downloadAuditData } from "@/lib/performance/report-export";
 import styles from "./page.module.css";
 import FactTables from "./FactTables";
 
@@ -67,12 +68,17 @@ export default function PerformanceAnalyzer() {
     {error && <p className={styles.error} role="alert">{error}</p>}
     {report && <section className={styles.results} aria-label="Résultats de l'analyse">
       <div className={styles.reportHeader}>
-        <div><span className={styles.eyebrow}>CODE-V / RAPPORT TECHNIQUE</span><h2>Votre site, en détail.</h2><p className={styles.domain}>{report.url} · {report.strategy === "mobile" ? "Mobile" : "Ordinateur"} · {new Date(report.analyzedAt).toLocaleString("fr-FR")}</p><p className={styles.subtle}>Source : {report.source}. Les inventaires collectés sont conservés intégralement dans cette page et dans le PDF.</p></div>
+        <div><span className={styles.eyebrow}>CODE-V / RAPPORT TECHNIQUE</span><h2>Votre site, en détail.</h2><p className={styles.domain}>{report.url} · {report.strategy === "mobile" ? "Mobile" : "Ordinateur"} · {new Date(report.analyzedAt).toLocaleString("fr-FR")}</p><p className={styles.subtle}>Source : {report.source}. PDF de 20 pages maximum : synthèse, priorités et observations par page. Toutes les données restent sur cette page, dans le fichier joint au PDF et dans le téléchargement complémentaire.</p></div>
+        <div className={styles.exportActions}>
         <button type="button" disabled={exporting} onClick={async () => {
           setExporting(true);
           try { await downloadAuditPdf(report); } catch { setError("Le PDF n’a pas pu être généré. Réessayez."); }
           finally { setExporting(false); }
-        }} className={styles.print}>{exporting ? "Préparation…" : "Télécharger le rapport PDF"}</button>
+        }} className={styles.print}>{exporting ? "Préparation…" : "Télécharger le rapport PDF (20 p. max)"}</button>
+        <button type="button" className={styles.expandButton} onClick={()=>{
+          try {downloadAuditData(report);} catch {setError("Les données n’ont pas pu être téléchargées. Réessayez.");}
+        }}>Télécharger toutes les données (JSON)</button>
+        </div>
       </div>
       <div className={styles.reportToolbar}>
         <div className={styles.legend} aria-label="Légende des priorités"><span data-level="critical">Urgent</span><span data-level="warning">Action à prévoir</span><span data-level="good">Conforme au contrôle</span><span data-level="unknown">Information / non mesuré</span></div>
