@@ -5,7 +5,7 @@ const realRequire = require;
 function load(path) {
   const exports = {};
   const code = ts.transpileModule(fs.readFileSync(path, "utf8"), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
-  new Function("exports","require",code)(exports,id => id === "./audit" ? {normalizePublicUrl: v => new URL(v).toString()} : id === "./safe-fetch" ? {safeRead: async () => {throw Error("Network disabled in test");}} : realRequire(id));
+  new Function("exports","require",code)(exports,id => id === "./audit" ? {normalizePublicUrl: v => new URL(v).toString()} : id === "./safe-fetch" ? {safeRead: async () => {throw Error("Network disabled in test");}} : id.startsWith('./') ? load(require('node:path').join(require('node:path').dirname(path),id+'.ts')) : realRequire(id));
   return exports;
 }
 const {parseSeoPage} = load("src/lib/performance/crawler.ts");

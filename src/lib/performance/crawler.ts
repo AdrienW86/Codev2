@@ -1,15 +1,16 @@
 
 import { safeRead } from "./safe-fetch";
 import { normalizePublicUrl } from "./audit";
+import { inspectHtml } from "./html-facts";
+import type { PageFacts, FactSection } from "./facts";
 
 export type CrawlIssue = { code: string; severity: "high" | "medium" | "low"; message: string; url: string };
 export type CrawlPage = {
  url: string; title: string; description: string; canonical: string; h1: string[];
- words: number; internal: number; external: number; images: number; missingAlt: number; noindex: boolean; incoming: number;
+ words: number; internal: number; external: number; images: number; missingAlt: number; noindex: boolean; incoming: number; facts?: PageFacts;
 };
-export type CrawlReport = { status: "complete" | "partial" | "unavailable"; scanned: number; limit: number; discovered: number; pages: CrawlPage[]; issues: CrawlIssue[]; notes: string[] };
+export type CrawlReport = { status: "complete" | "partial" | "unavailable"; scanned: number; limit: number; discovered: number; pages: CrawlPage[]; issues: CrawlIssue[]; notes: string[]; siteChecks?: FactSection[] };
 const MAX_PAGES=8, MAX_BYTES=500000, TIME_BUDGET=24000;
-const ua="CODEV-SEO-Audit/1.0 (+https://www.code-v.fr/outils/analyser-site-web)";
 function decode(s:string) { const entities: Record<string,string>={amp:"&",quot:'"',apos:"'",lt:"<",gt:">",nbsp:" "}; return s.replace(/&(?:amp|quot|apos|lt|gt|nbsp);/gi,m=>entities[m.slice(1,-1).toLowerCase()]||m); }
 function strip(s:string){return decode(s.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi," ").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim());}
 function attr(tag:string,name:string) {
@@ -19,7 +20,7 @@ function attr(tag:string,name:string) {
 function tags(s:string,n:string){return [...s.matchAll(new RegExp("<"+n+"\\b[^>]*>","gi"))].map(m=>m[0]);}
 function textTag(s:string,n:string){return strip(s.match(new RegExp("<"+n+"\\b[^>]*>([\\s\\S]*?)<\\/"+n+">","i"))?.[1]??"");}
 function hostname(s:string){return new URL(s).hostname.toLowerCase().replace(/^www\./,"");}
-function link(v:string,base:string) {try {const u=new URL(v,base);u.search="";u.hash="";return normalizePublicUrl(u.toString());}catch{return null;}}
+function link(v:string,base:string) {try {const u=new URL(v,base);u.hash="";return normalizePublicUrl(u.toString());}catch{return null;}}
 async function getHtml(start:string,root:string,signal:AbortSignal){
  let url=start;
  for(let i=0;i<3;i++){
@@ -31,7 +32,7 @@ async function getHtml(start:string,root:string,signal:AbortSignal){
   }
   if(res.status<200||res.status>=300)throw Error("HTTP "+res.status);
   if(!/text\/html/i.test(res.contentType))throw Error("Contenu non HTML.");
-  return {url,html:res.text,robots:res.xRobots};
+  return {url,html:res.text,robots:res.xRobots,status:res.status,contentType:res.contentType,network:res};
  }
  throw Error("Trop de redirections.");
 }
@@ -40,7 +41,7 @@ export function parseSeoPage(html:string,url:string,robots=""){
  const description=attr(tags(html,"meta").find(t=>attr(t,"name").toLowerCase()==="description")||"","content");
  const canonicalTag=tags(html,"link").find(t=>attr(t,"rel").toLowerCase().split(/\s+/).includes("canonical"));
  const canonical=canonicalTag?(link(attr(canonicalTag,"href"),url)||""):"";
- const h1=[...html.matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/gi)].map(x=>strip(x[1])).filter(Boolean).slice(0,8);
+ const h1=[...html.matchAll(/<h1\b[^>]*>([\s\S]*?)<\/h1>/gi)].map(x=>strip(x[1])).filter(Boolean);
  const links=tags(html,"a").map(t=>link(attr(t,"href"),url)).filter((v):v is string=>Boolean(v));
  const internal=[...new Set(links.filter(v=>hostname(v)===hostname(url)))];
  const external=[...new Set(links.filter(v=>hostname(v)!==hostname(url)))];
@@ -53,12 +54,13 @@ function finding(code:string,severity:CrawlIssue["severity"],message:string,url:
 /** Respect de robots.txt : contrôle conservateur des directives User-agent: *.
  * Si robots.txt est indisponible (hors 404), l'exploration est interrompue.
  */
-async function robotRules(start:string): Promise<{ allow: (url:string)=>boolean; notes: string[] }> {
+async function robotRules(start:string): Promise<{ allow: (url:string)=>boolean; notes: string[]; source: string; url: string; status: number }> {
  const u=new URL("/robots.txt",start);
  const c=new AbortController(), timer=setTimeout(()=>c.abort(),3000);
  try {
-  const res=await safeRead(u.toString(),c.signal,"text/plain",100000);
-  if(res.status===404)return {allow:()=>true,notes:["robots.txt absent (404)."]};
+  const fetched=await readSiteFile(u.toString(),c.signal,100000);
+  const res=fetched.res;
+  if(res.status===404)return {allow:()=>true,notes:["robots.txt absent (404)."],source:"",url:fetched.url,status:404};
   if(res.status!==200)throw Error("robots.txt non accessible.");
   const source=res.text;
   const lines=source.split(/\r?\n/);
@@ -79,8 +81,41 @@ async function robotRules(start:string): Promise<{ allow: (url:string)=>boolean;
    const path=new URL(url).pathname;
    const matching=rules.filter(r=>path.startsWith(r.path)).sort((a,b)=>b.path.length-a.path.length);
    return !matching.length||matching[0].allow;
-  },notes:["Directives robots.txt prises en compte pour les chemins explorés (règles simples)."]};
+  },notes:["Directives robots.txt prises en compte pour les chemins explorés (règles simples)."],source,url:fetched.url,status:res.status};
  } finally {clearTimeout(timer);}
+}
+
+/** Follow at most 3 same-site redirects, revalidating and pinning DNS at every hop. */
+async function readSiteFile(start:string,signal:AbortSignal,maxBytes:number) {
+ let url=start;
+ for(let i=0;i<4;i++) {
+  if(hostname(url)!==hostname(start))throw Error("Redirection hors du domaine.");
+  const res=await safeRead(url,signal,"text/plain, application/xml, text/xml",maxBytes);
+  if(![301,302,303,307,308].includes(res.status))return {url,res};
+  if(!res.location)throw Error("Redirection sans destination.");
+  url=normalizePublicUrl(new URL(res.location,url).toString());
+ }
+ throw Error("Trop de redirections.");
+}
+
+async function siteFiles(start:string,robots:Awaited<ReturnType<typeof robotRules>>):Promise<FactSection[]> {
+ const rows:string[][]=[["robots.txt",robots.url,String(robots.status),robots.source || "Absent (404)"]];
+ const urls=[new URL("/sitemap.xml",start).toString(),new URL("/llms.txt",start).toString()];
+ for(const match of robots.source.matchAll(/^sitemap:\s*(\S+)/gim)) {
+  try { const url=normalizePublicUrl(match[1]); if(hostname(url)===hostname(start)&&!urls.includes(url)&&urls.length<5)urls.push(url); } catch { /* not a safe same-site document */ }
+ }
+ const notes:string[]=[];
+ await Promise.all(urls.map(async url=>{
+  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),3000);
+  try {
+   if(!robots.allow(url)){rows.push([new URL(url).pathname,url,"Non demandé","Chemin interdit par les règles robots appliquées."]);return;}
+   const file=await readSiteFile(url,ctl.signal,150000);
+   rows.push([new URL(url).pathname,file.url,String(file.res.status),file.res.status===200?file.res.text:"Contenu non exploité (HTTP "+file.res.status+")"]);
+  }catch(e){rows.push([new URL(url).pathname,url,"Non mesuré",e instanceof Error?e.message:"Réseau indisponible"]);}
+  finally{clearTimeout(timer);}
+ }));
+ notes.push("Documents limités à 150 Ko chacun ; 5 URL maximum avec robots.txt. Une ressource trop volumineuse est signalée, jamais présentée comme complète.","La présence de llms.txt ne prouve pas une visibilité IA. Les fichiers sitemap sont inventoriés, pas une preuve d’indexation.");
+ return [{id:"site-files",title:"Robots, sitemaps et fichier llms.txt",status:"unknown",columns:["Document","URL finale","HTTP / état","Contenu collecté ou motif"],rows:rows.sort((a,b)=>a[0].localeCompare(b[0])),note:notes.join(" ")}];
 }
 
 export async function crawlSite(input:string):Promise<CrawlReport>{
@@ -94,7 +129,10 @@ export async function crawlSite(input:string):Promise<CrawlReport>{
   const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort(),Math.min(4500,Math.max(500,stop-Date.now())));
   try{
    const doc=await getHtml(url,root,ctl.signal);const p=parseSeoPage(doc.html,doc.url,doc.robots);
-   const page:CrawlPage={url:doc.url,title:p.title,description:p.description,canonical:p.canonical,h1:p.h1,words:p.words,internal:p.internal.length,external:p.external.length,images:p.images,missingAlt:p.missingAlt,noindex:p.noindex,incoming:0};
+   const facts=inspectHtml(doc.html,doc.url);
+   facts.sections.unshift({id:"http",title:"Réponse HTTP et indexation",status:p.noindex?"warning":"good",columns:["Contrôle","Valeur"],rows:[["URL demandée",url],["URL finale",doc.url],["HTTP",String(doc.status)],["Type de contenu",doc.contentType],["En-tête X-Robots-Tag",doc.robots||"Non déclaré"],["Directive noindex",p.noindex?"Présente (peut être volontaire)":"Non détectée"],["HTTPS",new URL(doc.url).protocol==="https:"?"Oui":"Non"]],note:"Constats sur la réponse collectée. HTTPS n’est pas une analyse complète du certificat ni de sa configuration."});
+   facts.sections.push({id:"network",title:"Serveur et en-têtes observés",status:"unknown",columns:["Élément","Valeur"],rows:[["Adresse IP publique utilisée",doc.network.address],["Version HTTP observée",doc.network.httpVersion],["Taille du HTML reçu",doc.network.bytes+" octets"],["Durée de collecte HTML (DNS inclus)",doc.network.elapsedMs+" ms"],...Object.entries(doc.network.headers)],note:"Mesures du serveur d’audit, sans navigateur ni sous-ressources. Cette durée n’est pas le temps de chargement utilisateur. Le client de collecte emploie HTTP/1.1 : cela ne conclut rien sur la prise en charge HTTP/2 ou HTTP/3 par le site. En-têtes de sécurité relevés, sans audit complet de leur efficacité."});
+   const page:CrawlPage={url:doc.url,title:p.title,description:p.description,canonical:p.canonical,h1:p.h1,words:p.words,internal:p.internal.length,external:p.external.length,images:p.images,missingAlt:p.missingAlt,noindex:p.noindex,incoming:0,facts};
    pages.push(page);
    if(!p.title)issues.push(finding("title","high","Balise title absente.",url));
    if(!p.description)issues.push(finding("description","medium","Méta description absente.",url));
@@ -115,5 +153,7 @@ export async function crawlSite(input:string):Promise<CrawlReport>{
  const grouped=new Map<string,CrawlPage[]>();
  for(const page of pages)if(page.title){const key=page.title.toLowerCase();grouped.set(key,[...(grouped.get(key)||[]),page]);}
  for(const group of grouped.values())if(group.length>1)for(const page of group)issues.push(finding("duplicate-title","medium","Title dupliqué dans l'échantillon.",page.url));
- return {status:pages.length===0?"unavailable":issues.some(i=>i.code==="fetch")?"partial":"complete",scanned:pages.length,limit:MAX_PAGES,discovered:visited.size+queue.length,pages,issues,notes:[...robots.notes,"Échantillon de 8 pages maximum, HTML sans exécution JavaScript ; le maillage concerne les pages explorées uniquement.","Cette collecte ne fournit ni backlinks externes, ni positions Google, ni citations IA."]};
+ const siteChecks=await siteFiles(start,robots);
+ const bounded=queue.length>0||visited.size>=20||Date.now()>=stop;
+ return {status:pages.length===0?"unavailable":issues.some(i=>i.code==="fetch")||bounded?"partial":"complete",scanned:pages.length,limit:MAX_PAGES,discovered:visited.size+queue.length,pages,issues,siteChecks,notes:[...robots.notes,"Échantillon de 8 pages maximum, 500 Ko de HTML par page, budget d’exploration 24 secondes, HTML sans exécution JavaScript. Tous les constats collectés sont conservés ; les limites de collecte ne sont pas une analyse exhaustive du domaine.","Le maillage concerne les pages explorées uniquement. Cette collecte ne fournit ni backlinks externes, ni positions Google, ni citations IA."]};
 }

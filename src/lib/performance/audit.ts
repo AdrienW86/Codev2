@@ -1,4 +1,5 @@
 import type { CrawlReport } from "./crawler";
+import type { FactSection } from "./facts";
 export type Strategy = "mobile" | "desktop";
 export type ScoreKey = "performance" | "accessibility" | "bestPractices" | "seo";
 export type AuditResult = {
@@ -7,6 +8,7 @@ export type AuditResult = {
   analyzedAt: string;
   source: "PageSpeed Insights / Lighthouse" | "Exploration SEO seule (PageSpeed indisponible)";
   crawl?: CrawlReport;
+  technical?: FactSection[];
   scores: Record<ScoreKey, number | null>;
   lab: Record<"lcp" | "fcp" | "cls" | "tbt" | "speedIndex", { value: number | null; display: string }>;
   field: { lcpMs: number | null; inpMs: number | null; cls: number | null; scope: "url" | "origin" | "unavailable" };
@@ -14,7 +16,7 @@ export type AuditResult = {
   opportunities: { id: string; title: string; description: string; display: string; savingsMs: number | null }[];
 };
 
-type PsiAudit = { title?: string; description?: string; displayValue?: string; numericValue?: number; score?: number | null; scoreDisplayMode?: string; details?: { type?: string; overallSavingsMs?: number; items?: Record<string, unknown>[] } };
+type PsiAudit = { title?: string; description?: string; displayValue?: string; numericValue?: number; score?: number | null; scoreDisplayMode?: string; details?: { type?: string; overallSavingsMs?: number; items?: Record<string, unknown>[]; [key:string]:unknown } };
 type PsiResult = {
   id?: string;
   lighthouseResult?: {
@@ -70,9 +72,9 @@ export function extractAudit(data: unknown, url: string, strategy: Strategy): Au
     (a.details?.type === "opportunity" || (typeof a.details?.overallSavingsMs === "number" && a.details.overallSavingsMs > 0)) &&
     !["metrics", "diagnostics"].includes(id)
   ).map(([id, a]) => ({
-    id, title: a.title!, description: (a.description ?? "").replace(/\[[^\]]+\]\([^)]+\)/g, "").slice(0, 300),
+    id, title: a.title!, description: (a.description ?? "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1"),
     display: a.displayValue ?? "", savingsMs: typeof a.details?.overallSavingsMs === "number" ? a.details.overallSavingsMs : null,
-  })).sort((a, b) => (b.savingsMs ?? 0) - (a.savingsMs ?? 0)).slice(0, 8);
+  })).sort((a, b) => (b.savingsMs ?? 0) - (a.savingsMs ?? 0));
   const clsField = percentile(fieldSource, ["CUMULATIVE_LAYOUT_SHIFT_SCORE"]);
   return {
     url: result.lighthouseResult.requestedUrl || url,
@@ -97,15 +99,26 @@ export function extractAudit(data: unknown, url: string, strategy: Strategy): Au
         const a = audits[id];
         if (!a?.title) return [];
         const status = a.scoreDisplayMode === "notApplicable" ? "notApplicable" : a.scoreDisplayMode === "manual" ? "manual" : typeof a.score !== "number" ? "unavailable" : a.score === 1 ? "passed" : "failed";
-        return [{ id, category, title: a.title, description: (a.description ?? "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").slice(0, 2000), display: a.displayValue ?? "", status,
-          examples: (Array.isArray(a.details?.items) ? a.details.items : []).slice(0, 10).flatMap(item => {
+        return [{ id, category, title: a.title, description: (a.description ?? "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1"), display: a.displayValue ?? "", status,
+          examples: (Array.isArray(a.details?.items) ? a.details.items : []).flatMap(item => {
             if (!item || typeof item !== "object") return [];
             const node = item.node as { snippet?: unknown } | undefined;
             const text = typeof item.url === "string" ? item.url : typeof node?.snippet === "string" ? node.snippet : null;
-            return text ? [text.slice(0, 500)] : [];
+            return text ? [text] : [];
           }) }];
       })),
     opportunities,
+    technical: Object.entries(audits).flatMap(([id,a]):FactSection[] => {
+      // Binary screenshots are media, not diagnostic tables. All supplied table
+      // rows and nested values remain available, including rows without a URL.
+      if(!a.details || ["screenshot","filmstrip"].includes(a.details.type || ""))return [];
+      const rows:string[][]=[];
+      for(const [key,value] of Object.entries(a.details)) {
+        if(key==="items" && Array.isArray(value)) value.forEach((item,index)=>rows.push([`items[${index+1}]`,JSON.stringify(item,null,2)]));
+        else rows.push([key,typeof value==="string"?value:JSON.stringify(value,null,2)??String(value)]);
+      }
+      return [{id,title:a.title || id,status:a.score===1?"good":typeof a.score==="number"?"warning":"unknown",columns:["Champ Lighthouse","Valeur complète"],rows,note:(a.displayValue||"")+" Données techniques transmises par Lighthouse ; unités et structure d’origine conservées. Les captures binaires Lighthouse ne font pas partie de ces tableaux."}];
+    }),
   };
 }
 

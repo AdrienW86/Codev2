@@ -31,14 +31,27 @@ const statusOf = (status: AuditResult["checks"][number]["status"]): Insight["sta
 
 export function buildInsights(report: AuditResult): Insight[] {
   const checks = report.checks ?? [];
+  const page = report.crawl?.pages[0];
+  const html = page?.facts?.sections;
   const measured = rules.map(rule => {
     const found = rule.checks.map(id => checks.find(c => c.id === id)).filter((v): v is NonNullable<typeof v> => Boolean(v));
     const failures = found.filter(c => c.status === "failed");
     const status = failures.length ? "warning" : found.some(c => c.status === "passed") ? "good" : "unknown";
-    const evidence = failures.length
+    let evidence = failures.length
       ? failures.map(c => c.title + (c.display ? " : " + c.display : "")).join(" ; ")
       : status === "good" ? "Contrôle Lighthouse validé sur l'URL analysée."
       : "Non vérifié par ce rapport ; contrôle manuel nécessaire.";
+    if(page) {
+      if(rule.id==="title")evidence=`Titre collecté : ${page.title || "absent"} (${Array.from(page.title).length} caractères). `+evidence;
+      if(rule.id==="description")evidence=`Description collectée : ${page.description || "absente"} (${Array.from(page.description).length} caractères). `+evidence;
+      if(rule.id==="canonical")evidence=`Canonical collectée : ${page.canonical || "absente"}. `+evidence;
+      if(rule.id==="headings")evidence=`${page.h1.length} H1 collecté(s) : ${page.h1.join(" | ") || "aucun"}. La structure H1–H6 complète figure dans les inventaires. `+evidence;
+      if(rule.id==="images")evidence=`${page.images} images ; ${page.missingAlt} sans attribut ALT dans le HTML. Un ALT vide peut convenir à une image décorative. `+evidence;
+      if(rule.id==="structured") {
+        const schema=html?.find(s=>s.id==="schema");
+        if(schema)evidence=`${schema.rows.length} bloc(s) JSON-LD collecté(s). Types déclarés : ${schema.rows.map(row=>row[1]).join(" ; ") || "aucun"}. La syntaxe est détaillée dans les inventaires ; conformité sémantique à vérifier manuellement.`;
+      }
+    }
     return { id: rule.id, category: rule.category, title: rule.title, status: status as Insight["status"], evidence, recommendation: rule.advice };
   });
   return [
@@ -61,7 +74,7 @@ export function buildActionPlan(report: AuditResult): Action[] {
     actions.push({
       id: check.id,
       title: check.title,
-      detail: check.description.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").slice(0, 300),
+      detail: check.description.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1"),
       priority: criticalSeo ? "high" : check.category === "seo" || check.category === "accessibility" ? "medium" : "low",
       category: check.category,
     });
@@ -90,5 +103,5 @@ export function buildActionPlan(report: AuditResult): Action[] {
     });
   }
   const rank = { high: 0, medium: 1, low: 2 };
-  return actions.sort((a,b) => rank[a.priority] - rank[b.priority]).slice(0, 12);
+  return actions.sort((a,b) => rank[a.priority] - rank[b.priority]);
 }
