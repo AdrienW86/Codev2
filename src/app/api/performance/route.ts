@@ -20,8 +20,8 @@ function internalRequest(request: NextRequest) {
 
 // Limitation distribuée obligatoire pour les analyses publiques : fail closed si Redis n'est pas configuré.
 async function publicQuota(request: NextRequest): Promise<boolean> {
-  const base = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const base = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (!base || !token || process.env.PERFORMANCE_PUBLIC_ENABLED !== "true") return false;
   const ip = request.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || "";
   if (!ip) return false;
