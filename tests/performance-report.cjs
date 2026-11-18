@@ -18,4 +18,14 @@ assert.equal(buildInsights(report).find(x=>x.id==='backlinks').status,'unknown')
 assert.equal(buildInsights(report).find(x=>x.id==='positions').status,'unknown');
 assert(buildActionPlan(report).some(x=>x.title==='Titre absent'));
 
+// Lighthouse detail types do not always expose a table of items.
+for (const items of [{type:'debugdata'}, 'not-a-table', 42, null, undefined]) {
+  const result = extractAudit({lighthouseResult:{categories:{seo:{score:1,auditRefs:[{id:'detail'}]}},audits:{detail:{title:'Detail',score:1,details:{items}}}}},'https://example.com','mobile');
+  assert.equal(result.checks.length,1);
+  assert.deepEqual(result.checks[0].examples,[]);
+  assert.equal(result.scores.seo,100);
+}
+const mixed = extractAudit({lighthouseResult:{categories:{seo:{auditRefs:[{id:'detail'}]}},audits:{detail:{title:'Detail',score:0,details:{items:[null,42,{url:'https://example.com/asset'},{node:{snippet:'<img>'}}]}}}}},'https://example.com','mobile');
+assert.deepEqual(mixed.checks[0].examples,['https://example.com/asset','<img>']);
+
 (async()=>{ report.checks = Array.from({length:60},(_,i)=>({...report.checks[0],id:String(i),description:'Description longue '.repeat(30)})); const bytes=await createAuditPdf(report); const {PDFDocument}=require('pdf-lib'); const pdf=await PDFDocument.load(bytes); assert(pdf.getPageCount()>5); fs.writeFileSync('/tmp/codev-report-test.pdf',bytes); console.log('Detailed audits, missing metrics, Unicode and multipage PDF export OK'); })().catch(e=>{console.error(e);process.exitCode=1;});
