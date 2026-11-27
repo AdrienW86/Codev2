@@ -6,7 +6,7 @@ type ProjectBase = {
   context: string; intervention: string; technologies: readonly string[];
   relatedServices: readonly ServiceId[]; sourceRefs: readonly string[];
   visuals: readonly { src: string; alt: string; width: number; height: number; caption: string }[];
-  video: { src: string; poster: string; title: string; description: string } | null;
+  video: { src: string; /** Lighter version for screens up to 900px wide. */ srcSmall?: string; poster: string; title: string; description: string } | null;
   cta: { href: string; label: string };
   verifiedResults: readonly { label: string; value: string; sourceRef: string; methodology: string; publicationApprovalRef: string }[];
   testimonial: { quote: string; author: string; publicationApprovalRef: string } | null;
@@ -39,7 +39,7 @@ const existingProjects: readonly LegacyProject[] = [
     intervention: "Intégration du film dans la page Automatisation & IA, extraction d’un poster réel et lecture volontaire avec une description textuelle accessible.",
     technologies: ["MP4 / H.264", "Poster WebP", "MotionVideo"], relatedServices: ["video-motion"],
     sourceRefs: ["public/videos/automatisation.mp4", "src/components/media/MotionVideo.tsx", "docs/service-page-pilot-automation-ai.md"], visuals: [],
-    video: { src: "/videos/automatisation.mp4", poster: "/videos/automatisation-poster.webp", title: "Automatisation & intelligence artificielle", description: "Le film relie site web, emails, CRM, réseaux sociaux, facturation et automatisations. Il présente ensuite un parcours prospect, site, automatisation et client. Les compteurs visibles sont des données de démonstration, pas des résultats clients." },
+    video: { src: "/videos/automatisation.mp4", srcSmall: "/videos/automatisation-720.mp4", poster: "/videos/automatisation-poster.webp", title: "Automatisation & intelligence artificielle", description: "Le film relie site web, emails, CRM, réseaux sociaux, facturation et automatisations. Il présente ensuite un parcours prospect, site, automatisation et client. Les compteurs visibles sont des données de démonstration, pas des résultats clients." },
     cta: { href: "/solutions/automatisation-ia", label: "Explorer Automatisation & IA" }, verifiedResults: [], testimonial: null,
   },
 ];

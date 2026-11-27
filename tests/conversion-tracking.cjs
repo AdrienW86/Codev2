@@ -44,3 +44,27 @@ a.setAnalyticsAdapter(() => { throw Error('provider offline'); });
 assert.doesNotThrow(() => a.trackContactSuccess('website'));
 assert(!JSON.stringify(sent).includes('PRIVATE'));
 console.log('Conversions: schema allowlists, URL privacy, service aliases, success helper and non-blocking adapter validated.');
+
+// Owner's own visits: excluded per browser with ?mes-visites=ignorer, counted again with ?mes-visites=compter.
+{
+  const store = new Map(), ownSent = [], own = {};
+  const localStorage = { getItem: key => store.get(key) ?? null, setItem: (key, value) => store.set(key, String(value)), removeItem: key => store.delete(key) };
+  vm.runInNewContext(code, { exports: own, URL, URLSearchParams, window: { location: { pathname: '/contact' }, localStorage }, require: name => name === '@vercel/analytics' ? { track: (event, props) => ownSent.push({ event, props }) } : { publicRoutes: ['/contact'] } });
+  own.applyOwnVisitsPreference('?mes-visites=ignorer');
+  assert.equal(own.isOwnVisit(), true);
+  assert.equal(own.sanitizeAnalyticsEvent({ type: 'pageview', url: 'https://www.code-v.fr/contact?mes-visites=ignorer' }), null);
+  own.trackConversion('email_click', { source_path: '/contact' });
+  assert.equal(ownSent.length, 0);
+  own.applyOwnVisitsPreference('?utm_source=facebook');
+  assert.equal(own.isOwnVisit(), true, 'Other parameters keep the preference');
+  own.applyOwnVisitsPreference('?mes-visites=compter');
+  assert.equal(own.isOwnVisit(), false);
+  assert.equal(own.sanitizeAnalyticsEvent({ type: 'pageview', url: 'https://www.code-v.fr/contact' }).url, 'https://www.code-v.fr/contact');
+  own.trackConversion('email_click', { source_path: '/contact' });
+  assert.equal(ownSent.length, 1);
+  const blocked = {};
+  vm.runInNewContext(code, { exports: blocked, URL, URLSearchParams, window: { location: { pathname: '/contact' }, get localStorage() { throw new Error('blocked'); } }, require: name => name === '@vercel/analytics' ? { track() {} } : { publicRoutes: ['/contact'] } });
+  assert.doesNotThrow(() => blocked.applyOwnVisitsPreference('?mes-visites=ignorer'));
+  assert.equal(blocked.isOwnVisit(), false, 'Blocked storage: visit counted as usual');
+  console.log('Conversions: owner visits excluded per browser and restorable.');
+}
