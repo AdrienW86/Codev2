@@ -50,12 +50,15 @@ export default function FeaturedSitePreview({ image, url, fit = "responsive" }: 
     const element = container.current;
     if (!element || !window.IntersectionObserver) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // The live site is a full desktop page: phones and small tablets keep the screenshot.
+    const wide = window.matchMedia("(min-width: 901px)");
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
     let inView = false;
     const sync = () => {
-      const allow = inView && !reduced.matches && !connection?.saveData;
-      setVisible(allow);
-      if (!allow) setReady(false);
+      const allowed = !reduced.matches && wide.matches && !connection?.saveData;
+      if (!allowed) { setVisible(false); setReady(false); return; }
+      // Mounted once, on first approach, then kept: scrolling away and back must not reload the whole site.
+      if (inView) setVisible(true);
     };
     const observer = new IntersectionObserver(([entry]) => {
       inView = entry.isIntersecting;
@@ -63,9 +66,11 @@ export default function FeaturedSitePreview({ image, url, fit = "responsive" }: 
     }, { rootMargin: "160px 0px", threshold: 0.01 });
     observer.observe(element);
     reduced.addEventListener("change", sync);
+    wide.addEventListener("change", sync);
     return () => {
       observer.disconnect();
       reduced.removeEventListener("change", sync);
+      wide.removeEventListener("change", sync);
     };
   }, []);
 

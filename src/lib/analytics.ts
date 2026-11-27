@@ -38,8 +38,25 @@ export function knownService(value: string | null | undefined) {
   return id && config.serviceIds.includes(id) ? id : undefined;
 }
 
+/**
+ * The owner's own visits: open any page with ?mes-visites=ignorer once per browser/device
+ * to stop counting it, ?mes-visites=compter to count it again. Stored only in that browser.
+ */
+export const ownVisitsParam = "mes-visites";
+const ownVisitsKey = "codev-ignore-analytics";
+export function applyOwnVisitsPreference(search: string) {
+  try {
+    const value = new URLSearchParams(search).get(ownVisitsParam);
+    if (value === "ignorer") window.localStorage.setItem(ownVisitsKey, "1");
+    else if (value === "compter") window.localStorage.removeItem(ownVisitsKey);
+  } catch { /* Storage blocked: the visit is counted as usual. */ }
+}
+export function isOwnVisit() {
+  try { return window.localStorage.getItem(ownVisitsKey) === "1"; } catch { return false; }
+}
+
 export function trackConversion(event: ConversionEvent, input: ConversionProperties) {
-  if (typeof window === "undefined" || !conversionEvents.includes(event)) return;
+  if (typeof window === "undefined" || !conversionEvents.includes(event) || isOwnVisit()) return;
   const source = knownPath(input.source_path);
   if (!source) return;
   const properties: ConversionProperties = { source_path: source };
@@ -81,6 +98,7 @@ export function trackChatIntent(intent: string) {
 }
 /** Also protect SDK pageview/custom-event URLs, beyond our custom properties. */
 export function sanitizeAnalyticsEvent(event: BeforeSendEvent): BeforeSendEvent | null {
+  if (isOwnVisit()) return null;
   const path = knownPath(event.url);
   if (!path) return null;
   return { ...event, url: `https://www.code-v.fr${path}` };

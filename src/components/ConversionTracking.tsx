@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Analytics } from "@vercel/analytics/next";
-import { configureTracking, knownCtaLabel, knownPath, knownService, sanitizeAnalyticsEvent, trackContactCta, trackConversion, type TrackingConfig } from "@/lib/analytics";
+import { applyOwnVisitsPreference, configureTracking, knownCtaLabel, knownPath, knownService, sanitizeAnalyticsEvent, trackContactCta, trackConversion, type TrackingConfig } from "@/lib/analytics";
 
 function locationOf(link: HTMLAnchorElement) {
   if (link.closest("header:not(main header)")) return "header";
@@ -18,6 +18,8 @@ export default function ConversionTracking({ config }: { config: TrackingConfig 
   const [ready, setReady] = useState(false);
   useEffect(() => {
     configureTracking(config);
+    // Before the first pageview is sent, so the visit that sets the preference is not counted either.
+    applyOwnVisitsPreference(window.location.search);
     setReady(true);
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0) return;
